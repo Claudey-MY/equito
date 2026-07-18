@@ -1111,6 +1111,62 @@ footer .brand {
   user-select: none;
 }
 
+/* ===== USER GUIDE ===== */
+#guide-overlay {
+  position: fixed; inset: 0;
+  z-index: 900;
+  background: rgba(22,16,10,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 18px;
+}
+#guide-overlay.open { display: flex; }
+.guide-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  max-width: 480px; width: 100%;
+  max-height: 82vh; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px 20px;
+  position: relative;
+}
+.guide-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--amber-deep);
+  font-size: 20px;
+  margin-bottom: 16px;
+  padding-right: 44px;
+}
+#guide-close {
+  position: absolute; top: 10px; right: 10px;
+  width: 40px; height: 40px;
+  min-width: 40px; min-height: 40px;
+  border-radius: 50%; border: none;
+  background: var(--g100);
+  color: var(--g500);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.guide-step {
+  display: flex; gap: 12px;
+  margin-bottom: 14px;
+  font-size: 14px; line-height: 1.65;
+  color: var(--g700);
+}
+.gnum {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber-deep), var(--amber));
+  color: #FFF;
+  font-weight: 800; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+
 /* ===== DARK THEME ===== */
 [data-theme="dark"] {
   --parchment: #171412;
@@ -1175,6 +1231,9 @@ body, .card, .sel-btn, .sel-panel, .person-section,
 }
 @media (max-width: 360px) {
   .tax-service { grid-template-columns: 1fr; }
+  .topbar { gap: 4px; }
+  .sel-btn { padding: 5px 7px; min-height: 30px; font-size: 11px; }
+  .mode-btn { padding: 4px 7px; min-height: 24px; font-size: 10.5px; }
   .logo { font-size: 28px; letter-spacing: 2px; }
   .item-row .item-qty,
   .shared-item-inputs .item-qty { width: 38px; }
@@ -1197,6 +1256,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
 </div>
 
 <div class="topbar" id="topbar">
+  <button class="sel-btn" id="guide-btn" aria-label="Guide">❓</button>
   <button class="sel-btn" id="theme-btn" aria-label="Theme">🌙</button>
   <div class="sel-wrap">
     <button class="sel-btn" id="lang-btn"><span id="lang-btn-label">🇬🇧 EN</span><span class="caret">▼</span></button>
@@ -1322,6 +1382,18 @@ body, .card, .sel-btn, .sel-panel, .person-section,
   <img id="lightbox-img" alt="Receipt">
   <button id="lightbox-close">✕</button>
 </div>
+
+<div id="guide-overlay">
+  <div class="guide-card">
+    <button id="guide-close" aria-label="Close">✕</button>
+    <h3 data-i18n="guide_title"></h3>
+    <div class="guide-step"><span class="gnum">1</span><span data-i18n="guide_s1"></span></div>
+    <div class="guide-step"><span class="gnum">2</span><span data-i18n="guide_s2"></span></div>
+    <div class="guide-step"><span class="gnum">3</span><span data-i18n="guide_s3"></span></div>
+    <div class="guide-step"><span class="gnum">4</span><span data-i18n="guide_s4"></span></div>
+    <div class="guide-step"><span class="gnum">5</span><span data-i18n="guide_s5"></span></div>
+  </div>
+</div>
 <script>
 /* ====== LANGUAGES & TRANSLATIONS ====== */
 var LANGS = [
@@ -1413,6 +1485,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "Item name",
   price_ph: "Price",
+  
+  guide_title: "How EQUITO works",
+  guide_s1: "Add your buddies, then enter each person's items — or scan the receipt (up to 5 photos) and let AI read it for you.",
+  guide_s2: "Items that everyone shares go under Shared Items — pick who splits each one.",
+  guide_s3: "Tax, service charge and discounts are split fairly, in proportion to what each buddy spent.",
+  guide_s4: "Tap Calculate! to see what each buddy pays, then share the result as text or a picture.",
+  guide_s5: "Scanning needs access: enter your own free Gemini API key, or the family passcode from the app owner (Scan access settings).",
   lang_pick: "Language",
   cur_pick: "Currency",
   cur_search_ph: "Search currency…",
@@ -1502,6 +1581,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO 版权所有。",
   item_ph: "项目名称",
   price_ph: "价格",
+  
+  guide_title: "EQUITO 使用指南",
+  guide_s1: "添加伙伴，然后输入每个人的项目 — 或扫描收据（最多 5 张照片），让 AI 自动识别。",
+  guide_s2: "大家共享的项目放在共享项目里 — 选择由谁分摊。",
+  guide_s3: "税费、服务费和折扣会按每位伙伴的消费比例公平分摊。",
+  guide_s4: "点击开始计算！查看每人应付金额，然后以文字或图片分享结果。",
+  guide_s5: "扫描需要权限：填写你自己的免费 Gemini API 密钥，或输入应用主人提供的家庭通行码（扫描权限设置）。",
   lang_pick: "语言",
   cur_pick: "货币",
   cur_search_ph: "搜索货币…",
@@ -1589,6 +1675,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO 版權所有。",
   item_ph: "品項名稱",
   price_ph: "價格",
+  
+  guide_title: "EQUITO 使用指南",
+  guide_s1: "新增夥伴，然後輸入每個人的品項 — 或掃描收據（最多 5 張照片），讓 AI 自動辨識。",
+  guide_s2: "大家共享的品項放在共享品項裡 — 選擇由誰分攤。",
+  guide_s3: "稅金、服務費和折扣會按每位夥伴的消費比例公平分攤。",
+  guide_s4: "點擊開始計算！查看每人應付金額，然後以文字或圖片分享結果。",
+  guide_s5: "掃描需要權限：填寫你自己的免費 Gemini API 金鑰，或輸入應用主人提供的家庭通行碼（掃描權限設定）。",
   lang_pick: "語言",
   cur_pick: "貨幣",
   cur_search_ph: "搜尋貨幣…",
@@ -1676,6 +1769,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. Hak cipta terpelihara.",
   item_ph: "Nama item",
   price_ph: "Harga",
+  
+  guide_title: "Cara EQUITO berfungsi",
+  guide_s1: "Tambah rakan anda, kemudian masukkan item setiap orang — atau imbas resit (hingga 5 gambar) dan biar AI membacanya.",
+  guide_s2: "Item yang dikongsi semua diletakkan di Item Kongsi — pilih siapa yang berkongsi setiap satu.",
+  guide_s3: "Cukai, caj perkhidmatan dan diskaun dibahagi secara adil mengikut perbelanjaan setiap rakan.",
+  guide_s4: "Tekan Kira! untuk melihat bayaran setiap rakan, kemudian kongsi keputusan sebagai teks atau gambar.",
+  guide_s5: "Imbasan memerlukan akses: masukkan kunci API Gemini percuma anda sendiri, atau kod laluan keluarga daripada pemilik aplikasi (Tetapan akses imbasan).",
   lang_pick: "Bahasa",
   cur_pick: "Mata wang",
   cur_search_ph: "Cari mata wang…",
@@ -1763,6 +1863,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. Todos los derechos reservados.",
   item_ph: "Artículo",
   price_ph: "Precio",
+  
+  guide_title: "Cómo funciona EQUITO",
+  guide_s1: "Añade a tus amigos e introduce los artículos de cada uno — o escanea el recibo (hasta 5 fotos) y deja que la IA lo lea.",
+  guide_s2: "Lo que se comparte va en Artículos compartidos — elige quién divide cada uno.",
+  guide_s3: "Impuestos, servicio y descuentos se reparten en proporción a lo que gastó cada amigo.",
+  guide_s4: "Pulsa ¡Calcular! para ver cuánto paga cada uno y comparte el resultado como texto o imagen.",
+  guide_s5: "Escanear requiere acceso: tu propia clave API gratuita de Gemini o el código familiar del dueño de la app (Ajustes de acceso al escaneo).",
   lang_pick: "Idioma",
   cur_pick: "Moneda",
   cur_search_ph: "Buscar moneda…",
@@ -1850,6 +1957,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. Tous droits réservés.",
   item_ph: "Article",
   price_ph: "Prix",
+  
+  guide_title: "Comment fonctionne EQUITO",
+  guide_s1: "Ajoutez vos amis puis saisissez les articles de chacun — ou scannez le reçu (jusqu'à 5 photos) et laissez l'IA le lire.",
+  guide_s2: "Les articles partagés vont dans Articles partagés — choisissez qui partage chacun.",
+  guide_s3: "Taxes, service et remises sont répartis équitablement, au prorata des dépenses de chacun.",
+  guide_s4: "Touchez Calculer ! pour voir la part de chacun, puis partagez le résultat en texte ou en image.",
+  guide_s5: "Le scan nécessite un accès : votre propre clé API Gemini gratuite, ou le code famille du propriétaire de l'appli (Paramètres d'accès au scan).",
   lang_pick: "Langue",
   cur_pick: "Devise",
   cur_search_ph: "Rechercher une devise…",
@@ -1937,6 +2051,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. Alle Rechte vorbehalten.",
   item_ph: "Posten",
   price_ph: "Preis",
+  
+  guide_title: "So funktioniert EQUITO",
+  guide_s1: "Füge deine Freunde hinzu und trage die Posten jeder Person ein — oder scanne den Beleg (bis zu 5 Fotos) und lass die KI ihn lesen.",
+  guide_s2: "Gemeinsame Posten kommen unter Geteilte Posten — wähle, wer sich was teilt.",
+  guide_s3: "Steuern, Service und Rabatte werden fair im Verhältnis der Ausgaben aufgeteilt.",
+  guide_s4: "Tippe auf Berechnen!, um jeden Anteil zu sehen, und teile das Ergebnis als Text oder Bild.",
+  guide_s5: "Zum Scannen brauchst du Zugang: deinen eigenen kostenlosen Gemini-API-Schlüssel oder den Familien-Zugangscode vom App-Besitzer (Scan-Zugriffseinstellungen).",
   lang_pick: "Sprache",
   cur_pick: "Währung",
   cur_search_ph: "Währung suchen…",
@@ -2024,6 +2145,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. Todos os direitos reservados.",
   item_ph: "Item",
   price_ph: "Preço",
+  
+  guide_title: "Como o EQUITO funciona",
+  guide_s1: "Adicione seus amigos e digite os itens de cada um — ou escaneie o recibo (até 5 fotos) e deixe a IA ler.",
+  guide_s2: "Itens de todos vão em Itens compartilhados — escolha quem divide cada um.",
+  guide_s3: "Impostos, serviço e descontos são divididos de forma justa, proporcional ao gasto de cada amigo.",
+  guide_s4: "Toque em Calcular! para ver quanto cada um paga e compartilhe o resultado como texto ou imagem.",
+  guide_s5: "Escanear exige acesso: sua própria chave API gratuita do Gemini ou o código da família do dono do app (Configurações de acesso).",
   lang_pick: "Idioma",
   cur_pick: "Moeda",
   cur_search_ph: "Buscar moeda…",
@@ -2111,6 +2239,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "品目名",
   price_ph: "価格",
+  
+  guide_title: "EQUITO の使い方",
+  guide_s1: "仲間を追加して、それぞれの品目を入力 — またはレシートをスキャン（最大5枚）してAIに読み取らせましょう。",
+  guide_s2: "みんなでシェアする品目はシェア品目へ — 誰で分けるかを選べます。",
+  guide_s3: "税金・サービス料・割引は、各自の利用額に応じて公平に分配されます。",
+  guide_s4: "計算する！をタップして各自の支払額を確認し、テキストや画像で結果をシェアしましょう。",
+  guide_s5: "スキャンにはアクセスが必要です：自分の無料 Gemini API キー、または管理者からのファミリーパスコード（スキャンアクセス設定）。",
   lang_pick: "言語",
   cur_pick: "通貨",
   cur_search_ph: "通貨を検索…",
@@ -2198,6 +2333,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "항목명",
   price_ph: "가격",
+  
+  guide_title: "EQUITO 사용법",
+  guide_s1: "친구를 추가하고 각자의 항목을 입력하세요 — 또는 영수증을 스캔(최대 5장)해 AI가 읽게 하세요.",
+  guide_s2: "함께 나누는 항목은 공유 항목에 넣고, 누구와 나눌지 선택하세요.",
+  guide_s3: "세금·봉사료·할인은 각자 쓴 금액에 비례해 공정하게 나눠집니다.",
+  guide_s4: "계산하기!를 눌러 각자 낼 금액을 확인하고, 결과를 텍스트나 이미지로 공유하세요.",
+  guide_s5: "스캔에는 접근 권한이 필요합니다: 본인의 무료 Gemini API 키 또는 앱 관리자의 가족 패스코드(스캔 접근 설정).",
   lang_pick: "언어",
   cur_pick: "통화",
   cur_search_ph: "통화 검색…",
@@ -2285,6 +2427,13 @@ var I18N = {
   footer_rights: "© 2026 EQUITO. सर्वाधिकार सुरक्षित।",
   item_ph: "आइटम का नाम",
   price_ph: "कीमत",
+  
+  guide_title: "EQUITO कैसे काम करता है",
+  guide_s1: "अपने दोस्त जोड़ें और हर व्यक्ति के आइटम डालें — या रसीद स्कैन करें (5 फोटो तक) और AI को पढ़ने दें।",
+  guide_s2: "सबके साझा आइटम साझा आइटम में रखें — चुनें कि कौन-कौन बाँटेगा।",
+  guide_s3: "कर, सेवा शुल्क और छूट हर दोस्त के खर्च के अनुपात में बाँटे जाते हैं।",
+  guide_s4: "गणना करें! दबाकर देखें कि कौन कितना देगा, फिर नतीजा टेक्स्ट या इमेज में साझा करें।",
+  guide_s5: "स्कैन के लिए एक्सेस चाहिए: अपनी मुफ़्त Gemini API कुंजी या ऐप मालिक से मिला फ़ैमिली पासकोड (स्कैन एक्सेस सेटिंग)।",
   lang_pick: "भाषा",
   cur_pick: "मुद्रा",
   cur_search_ph: "मुद्रा खोजें…",
@@ -3434,11 +3583,6 @@ var RECEIPT_CUR_MAP = {
     return html + '</div>';
   }
 
-  function ocrAddPhotosHtml() {
-    if (ocrImages.length >= MAX_RECEIPTS) return '';
-    return '<button class="btn-outline btn-add-photos" id="ocr-add-btn">' +
-      escHtml(t('add_photos')) + ' (' + ocrImages.length + '/' + MAX_RECEIPTS + ')</button>';
-  }
 
   function ocrBillSummaryHtml() {
     var cur = ocrData.currency;
@@ -3492,7 +3636,6 @@ var RECEIPT_CUR_MAP = {
     var html = '<div class="ocr-review">' +
       ocrBillSummaryHtml() +
       ocrThumbsHtml(true) +
-      ocrAddPhotosHtml() +
       '<div class="ocr-review-title">' + escHtml(t('found_items', { n: ocrData.items.length })) + '</div>';
 
     for (var i = 0; i < ocrData.items.length; i++) {
@@ -3704,12 +3847,16 @@ var RECEIPT_CUR_MAP = {
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
       return;
     }
-    if (target.id === 'ocr-add-btn' || target.closest('#ocr-add-btn')) {
-      addMoreMode = true;
-      document.getElementById('receipt-file').click();
+    if (target.id === 'reset-btn' || target.closest('#reset-btn')) { resetBill(); return; }
+    if (target.id === 'guide-btn' || target.closest('#guide-btn')) {
+      document.getElementById('guide-overlay').classList.add('open');
       return;
     }
-    if (target.id === 'reset-btn' || target.closest('#reset-btn')) { resetBill(); return; }
+    if (target.id === 'guide-close' || target.closest('#guide-close') || target.id === 'guide-overlay') {
+      document.getElementById('guide-overlay').classList.remove('open');
+      return;
+    }
+    if (target.closest('.guide-card')) return;
     if (target.id === 'ocr-import-btn' || target.closest('#ocr-import-btn')) { importOcr(); return; }
     if (target.id === 'ocr-cancel-btn' || target.closest('#ocr-cancel-btn')) { cancelOcr(); return; }
 
@@ -3812,7 +3959,7 @@ var RECEIPT_CUR_MAP = {
   CUR = (savedCur && CURRENCIES.indexOf(savedCur) !== -1) ? savedCur : 'MYR';
   roundTo = defaultRound();
   applyTheme(currentTheme());
-  setMode('essential');
+  setMode('pro');
   document.getElementById('cur-btn-label').textContent = CUR;
   applyI18n();
   addPerson();

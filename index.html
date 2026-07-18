@@ -1179,9 +1179,15 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div id="receipt-thumbs"></div>
     <button class="api-toggle" id="api-toggle">⚙️ <span data-i18n="api_toggle"></span></button>
     <div class="api-panel" id="api-panel" style="display:none">
-      <label>Gemini API Key</label>
-      <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
-      <p class="api-hint" data-i18n="api_hint_html"></p>
+      <label data-i18n="pass_label"></label>
+      <input type="password" id="family-pass" placeholder="••••••" autocomplete="off">
+      <p class="api-hint" data-i18n="pass_hint"></p>
+      <button class="api-toggle" id="ownkey-toggle">🔑 <span data-i18n="own_key_label"></span></button>
+      <div id="ownkey-panel" style="display:none">
+        <label>Gemini API Key</label>
+        <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
+        <p class="api-hint" data-i18n="api_hint_html"></p>
+      </div>
     </div>
     <div id="ocr-review"></div>
   </div>
@@ -1283,12 +1289,19 @@ var I18N = {
   tagline: "Your Trusted Bill Splitting Buddy",
   subtitle: "Hassle-free bill splitting for every happy moment together",
   scan_title: "Scan Receipt",
-  scan_hint: "Snap or upload receipt photos — items are read automatically by AI",
+  scan_hint: "Snap or upload up to 5 receipt photos — items are read automatically by AI",
   scan_btn: "📷 Upload / Take Photo",
   scan_loading: "Reading receipt…",
-  api_toggle: "Gemini API key settings",
+  api_toggle: "Scan access settings",
   api_hint_html: "Get a <b>free</b> key at <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (no credit card needed). The key is saved only in this browser. Note: receipt photos are sent to Google for reading.",
   need_key: "Please add your free Gemini API key first (settings below).",
+  pass_label: "Family passcode",
+  pass_hint: "Enter it once — it's remembered on this device. Ask the app owner if you don't have it.",
+  own_key_label: "Advanced: use your own Gemini API key",
+  need_access: "To scan, enter the family passcode below — or your own API key under Advanced.",
+  err_pass: "Passcode incorrect — please check with the app owner.",
+  err_cap: "Today's shared scan limit is used up — try again tomorrow, or use your own API key under Advanced.",
+  err_toomany: "Please choose up to 5 photos per scan.",
   thumb_label: "Receipt — tap to enlarge",
   receipt_total: "Receipt total",
   found_items: "Found {n} item(s) — check & assign to people:",
@@ -1360,12 +1373,19 @@ var I18N = {
   tagline: "你的分账好帮手",
   subtitle: "轻松无忧的分账，陪你走过每个欢乐时刻",
   scan_title: "扫描收据",
-  scan_hint: "拍摄或上传收据照片 — AI 自动识别项目",
+  scan_hint: "拍摄或上传最多 5 张收据照片 — AI 自动识别项目",
   scan_btn: "📷 上传 / 拍摄收据",
   scan_loading: "正在识别收据…",
-  api_toggle: "Gemini API 密钥设置",
+  api_toggle: "扫描权限设置",
   api_hint_html: "前往 <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> 免费获取密钥（无需信用卡）。密钥仅保存在本浏览器中。注意：收据照片将发送给 Google 进行识别。",
   need_key: "请先在下方设置中填写免费的 Gemini API 密钥。",
+  pass_label: "家庭通行码",
+  pass_hint: "只需输入一次，本设备会记住。没有通行码请向应用主人索取。",
+  own_key_label: "高级：使用自己的 Gemini API 密钥",
+  need_access: "要使用扫描，请在下方输入家庭通行码 — 或在高级设置中填写自己的 API 密钥。",
+  err_pass: "通行码不正确 — 请与应用主人确认。",
+  err_cap: "今日共享扫描额度已用完 — 请明天再试，或在高级设置中使用自己的 API 密钥。",
+  err_toomany: "每次最多选择 5 张照片。",
   thumb_label: "收据 — 点击放大",
   receipt_total: "收据总额",
   found_items: "识别到 {n} 个项目 — 请核对并分配给伙伴：",
@@ -1435,12 +1455,19 @@ var I18N = {
   tagline: "你的分帳好幫手",
   subtitle: "輕鬆無憂的分帳，陪你走過每個歡樂時刻",
   scan_title: "掃描收據",
-  scan_hint: "拍攝或上傳收據照片 — AI 自動辨識品項",
+  scan_hint: "拍攝或上傳最多 5 張收據照片 — AI 自動辨識品項",
   scan_btn: "📷 上傳 / 拍攝收據",
   scan_loading: "正在辨識收據…",
-  api_toggle: "Gemini API 金鑰設定",
+  api_toggle: "掃描權限設定",
   api_hint_html: "前往 <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> 免費取得金鑰（無需信用卡）。金鑰僅儲存在本瀏覽器中。注意：收據照片將傳送給 Google 進行辨識。",
   need_key: "請先在下方設定中填寫免費的 Gemini API 金鑰。",
+  pass_label: "家庭通行碼",
+  pass_hint: "只需輸入一次，本裝置會記住。沒有通行碼請向應用主人索取。",
+  own_key_label: "進階：使用自己的 Gemini API 金鑰",
+  need_access: "要使用掃描，請在下方輸入家庭通行碼 — 或在進階設定中填寫自己的 API 金鑰。",
+  err_pass: "通行碼不正確 — 請與應用主人確認。",
+  err_cap: "今日共享掃描額度已用完 — 請明天再試，或在進階設定中使用自己的 API 金鑰。",
+  err_toomany: "每次最多選擇 5 張照片。",
   thumb_label: "收據 — 點擊放大",
   receipt_total: "收據總額",
   found_items: "辨識到 {n} 個品項 — 請核對並分配給夥伴：",
@@ -1510,12 +1537,19 @@ var I18N = {
   tagline: "Rakan Setia Anda untuk Membahagi Bil",
   subtitle: "Pembahagian bil tanpa kerumitan, menemani setiap detik gembira anda",
   scan_title: "Imbas Resit",
-  scan_hint: "Ambil atau muat naik gambar resit — item dibaca secara automatik oleh AI",
+  scan_hint: "Ambil atau muat naik hingga 5 gambar resit — item dibaca secara automatik oleh AI",
   scan_btn: "📷 Muat Naik / Ambil Gambar",
   scan_loading: "Membaca resit…",
-  api_toggle: "Tetapan kunci API Gemini",
+  api_toggle: "Tetapan akses imbasan",
   api_hint_html: "Dapatkan kunci <b>percuma</b> di <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (tiada kad kredit diperlukan). Kunci disimpan hanya dalam pelayar ini. Nota: gambar resit dihantar kepada Google untuk dibaca.",
   need_key: "Sila masukkan kunci API Gemini percuma anda dahulu (tetapan di bawah).",
+  pass_label: "Kod laluan keluarga",
+  pass_hint: "Masukkan sekali sahaja — peranti ini akan mengingatinya. Minta daripada pemilik aplikasi jika anda tiada.",
+  own_key_label: "Lanjutan: guna kunci API Gemini sendiri",
+  need_access: "Untuk mengimbas, masukkan kod laluan keluarga di bawah — atau kunci API anda sendiri di bahagian Lanjutan.",
+  err_pass: "Kod laluan salah — sila semak dengan pemilik aplikasi.",
+  err_cap: "Had imbasan kongsi hari ini telah habis — cuba esok, atau guna kunci API sendiri di Lanjutan.",
+  err_toomany: "Sila pilih maksimum 5 gambar setiap imbasan.",
   thumb_label: "Resit — ketik untuk besarkan",
   receipt_total: "Jumlah resit",
   found_items: "Dijumpai {n} item — semak & tetapkan kepada rakan:",
@@ -1585,12 +1619,19 @@ var I18N = {
   tagline: "Tu compañero de confianza para dividir la cuenta",
   subtitle: "Divide cuentas sin complicaciones, en cada momento feliz juntos",
   scan_title: "Escanear recibo",
-  scan_hint: "Haz o sube fotos del recibo — la IA lee los artículos automáticamente",
+  scan_hint: "Haz o sube hasta 5 fotos de recibos — la IA lee los artículos automáticamente",
   scan_btn: "📷 Subir / Tomar foto",
   scan_loading: "Leyendo el recibo…",
-  api_toggle: "Ajustes de la clave API de Gemini",
+  api_toggle: "Ajustes de acceso al escaneo",
   api_hint_html: "Consigue una clave <b>gratis</b> en <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sin tarjeta de crédito). La clave solo se guarda en este navegador. Nota: las fotos del recibo se envían a Google para su lectura.",
   need_key: "Primero añade tu clave API gratuita de Gemini (ajustes abajo).",
+  pass_label: "Código familiar",
+  pass_hint: "Introdúcelo una vez: este dispositivo lo recordará. Pídeselo al dueño de la app si no lo tienes.",
+  own_key_label: "Avanzado: usa tu propia clave API de Gemini",
+  need_access: "Para escanear, introduce el código familiar abajo, o tu propia clave API en Avanzado.",
+  err_pass: "Código incorrecto — consulta con el dueño de la app.",
+  err_cap: "El límite compartido de hoy se agotó — inténtalo mañana o usa tu propia clave API en Avanzado.",
+  err_toomany: "Elige un máximo de 5 fotos por escaneo.",
   thumb_label: "Recibo — toca para ampliar",
   receipt_total: "Total del recibo",
   found_items: "Se encontraron {n} artículo(s) — revisa y asígnalos:",
@@ -1660,12 +1701,19 @@ var I18N = {
   tagline: "Votre compagnon de confiance pour partager l'addition",
   subtitle: "Le partage d'addition sans tracas, pour tous vos moments heureux",
   scan_title: "Scanner le reçu",
-  scan_hint: "Photographiez ou importez le reçu — l'IA lit les articles automatiquement",
+  scan_hint: "Photographiez ou importez jusqu'à 5 reçus — l'IA lit les articles automatiquement",
   scan_btn: "📷 Importer / Prendre une photo",
   scan_loading: "Lecture du reçu…",
-  api_toggle: "Paramètres de la clé API Gemini",
+  api_toggle: "Paramètres d'accès au scan",
   api_hint_html: "Obtenez une clé <b>gratuite</b> sur <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sans carte bancaire). La clé n'est enregistrée que dans ce navigateur. Remarque : les photos du reçu sont envoyées à Google pour lecture.",
   need_key: "Ajoutez d'abord votre clé API Gemini gratuite (paramètres ci-dessous).",
+  pass_label: "Code d'accès famille",
+  pass_hint: "Saisissez-le une fois — cet appareil s'en souviendra. Demandez-le au propriétaire de l'appli.",
+  own_key_label: "Avancé : utiliser votre propre clé API Gemini",
+  need_access: "Pour scanner, saisissez le code famille ci-dessous — ou votre propre clé API dans Avancé.",
+  err_pass: "Code incorrect — vérifiez auprès du propriétaire de l'appli.",
+  err_cap: "La limite partagée du jour est atteinte — réessayez demain ou utilisez votre propre clé API dans Avancé.",
+  err_toomany: "Choisissez au maximum 5 photos par scan.",
   thumb_label: "Reçu — touchez pour agrandir",
   receipt_total: "Total du reçu",
   found_items: "{n} article(s) trouvé(s) — vérifiez et attribuez-les :",
@@ -1735,12 +1783,19 @@ var I18N = {
   tagline: "Dein zuverlässiger Begleiter beim Rechnungsteilen",
   subtitle: "Müheloses Rechnungsteilen für all eure schönsten gemeinsamen Momente",
   scan_title: "Beleg scannen",
-  scan_hint: "Beleg fotografieren oder hochladen — die KI liest die Posten automatisch",
+  scan_hint: "Bis zu 5 Belegfotos aufnehmen oder hochladen — die KI liest die Posten automatisch",
   scan_btn: "📷 Hochladen / Foto aufnehmen",
   scan_loading: "Beleg wird gelesen…",
-  api_toggle: "Gemini-API-Schlüssel-Einstellungen",
+  api_toggle: "Scan-Zugriffseinstellungen",
   api_hint_html: "Hol dir einen <b>kostenlosen</b> Schlüssel auf <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (keine Kreditkarte nötig). Der Schlüssel wird nur in diesem Browser gespeichert. Hinweis: Belegfotos werden zum Lesen an Google gesendet.",
   need_key: "Bitte zuerst deinen kostenlosen Gemini-API-Schlüssel eintragen (Einstellungen unten).",
+  pass_label: "Familien-Zugangscode",
+  pass_hint: "Einmal eingeben — dieses Gerät merkt es sich. Frag den App-Besitzer, wenn du ihn nicht hast.",
+  own_key_label: "Erweitert: eigenen Gemini-API-Schlüssel verwenden",
+  need_access: "Zum Scannen unten den Familien-Zugangscode eingeben — oder unter Erweitert den eigenen API-Schlüssel.",
+  err_pass: "Zugangscode falsch — bitte beim App-Besitzer nachfragen.",
+  err_cap: "Das geteilte Tageslimit ist aufgebraucht — versuche es morgen erneut oder nutze unter Erweitert deinen eigenen Schlüssel.",
+  err_toomany: "Bitte höchstens 5 Fotos pro Scan auswählen.",
   thumb_label: "Beleg — zum Vergrößern antippen",
   receipt_total: "Belegsumme",
   found_items: "{n} Posten gefunden — prüfen und zuweisen:",
@@ -1810,12 +1865,19 @@ var I18N = {
   tagline: "Seu parceiro de confiança para dividir a conta",
   subtitle: "Divisão de contas sem complicação para cada momento feliz juntos",
   scan_title: "Escanear recibo",
-  scan_hint: "Tire ou envie fotos do recibo — a IA lê os itens automaticamente",
+  scan_hint: "Tire ou envie até 5 fotos de recibos — a IA lê os itens automaticamente",
   scan_btn: "📷 Enviar / Tirar foto",
   scan_loading: "Lendo o recibo…",
-  api_toggle: "Configurações da chave API Gemini",
+  api_toggle: "Configurações de acesso ao escaneamento",
   api_hint_html: "Obtenha uma chave <b>gratuita</b> em <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sem cartão de crédito). A chave fica salva apenas neste navegador. Obs.: as fotos do recibo são enviadas ao Google para leitura.",
   need_key: "Adicione primeiro sua chave API gratuita do Gemini (configurações abaixo).",
+  pass_label: "Código da família",
+  pass_hint: "Digite uma vez — este dispositivo vai lembrar. Peça ao dono do app se não tiver.",
+  own_key_label: "Avançado: usar sua própria chave API Gemini",
+  need_access: "Para escanear, digite o código da família abaixo — ou sua própria chave API em Avançado.",
+  err_pass: "Código incorreto — confirme com o dono do app.",
+  err_cap: "O limite compartilhado de hoje acabou — tente amanhã ou use sua própria chave API em Avançado.",
+  err_toomany: "Escolha no máximo 5 fotos por escaneamento.",
   thumb_label: "Recibo — toque para ampliar",
   receipt_total: "Total do recibo",
   found_items: "{n} item(ns) encontrado(s) — confira e atribua:",
@@ -1885,12 +1947,19 @@ var I18N = {
   tagline: "あなたの頼れる割り勘パートナー",
   subtitle: "手間いらずの割り勘で、楽しいひとときをいつも一緒に",
   scan_title: "レシートをスキャン",
-  scan_hint: "レシートを撮影またはアップロード — AIが品目を自動で読み取ります",
+  scan_hint: "レシート写真を最大5枚まで撮影またはアップロード — AIが品目を自動で読み取ります",
   scan_btn: "📷 アップロード / 撮影",
   scan_loading: "レシートを読み取り中…",
-  api_toggle: "Gemini APIキー設定",
+  api_toggle: "スキャンアクセス設定",
   api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> で<b>無料</b>のキーを取得できます（クレジットカード不要）。キーはこのブラウザにのみ保存されます。注意：レシート写真は読み取りのためGoogleに送信されます。",
   need_key: "まず無料のGemini APIキーを入力してください（下の設定）。",
+  pass_label: "ファミリーパスコード",
+  pass_hint: "一度入力すれば、この端末に記憶されます。お持ちでない場合はアプリの管理者にご確認ください。",
+  own_key_label: "上級：自分の Gemini API キーを使う",
+  need_access: "スキャンするには、下にファミリーパスコードを入力してください（または上級設定で自分の API キーを設定）。",
+  err_pass: "パスコードが正しくありません — アプリの管理者にご確認ください。",
+  err_cap: "本日の共有スキャン上限に達しました — 明日再試行するか、上級設定で自分の API キーをご利用ください。",
+  err_toomany: "1回のスキャンで選べる写真は5枚までです。",
   thumb_label: "レシート — タップで拡大",
   receipt_total: "レシート合計",
   found_items: "{n} 件の品目を検出 — 確認して割り当ててください：",
@@ -1960,12 +2029,19 @@ var I18N = {
   tagline: "믿을 수 있는 더치페이 도우미",
   subtitle: "번거로움 없는 정산, 행복한 순간마다 함께합니다",
   scan_title: "영수증 스캔",
-  scan_hint: "영수증을 촬영하거나 업로드하세요 — AI가 항목을 자동으로 읽습니다",
+  scan_hint: "영수증 사진을 최대 5장까지 촬영하거나 업로드하세요 — AI가 항목을 자동으로 읽습니다",
   scan_btn: "📷 업로드 / 촬영",
   scan_loading: "영수증 읽는 중…",
-  api_toggle: "Gemini API 키 설정",
+  api_toggle: "스캔 접근 설정",
   api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a>에서 <b>무료</b> 키를 받으세요(신용카드 불필요). 키는 이 브라우저에만 저장됩니다. 참고: 영수증 사진은 판독을 위해 Google로 전송됩니다.",
   need_key: "먼저 무료 Gemini API 키를 입력해 주세요(아래 설정).",
+  pass_label: "가족 패스코드",
+  pass_hint: "한 번만 입력하면 이 기기에 저장됩니다. 없다면 앱 관리자에게 문의하세요.",
+  own_key_label: "고급: 내 Gemini API 키 사용",
+  need_access: "스캔하려면 아래에 가족 패스코드를 입력하세요 — 또는 고급 설정에서 내 API 키를 사용하세요.",
+  err_pass: "패스코드가 올바르지 않습니다 — 앱 관리자에게 확인하세요.",
+  err_cap: "오늘의 공유 스캔 한도를 모두 사용했습니다 — 내일 다시 시도하거나 고급 설정에서 내 API 키를 사용하세요.",
+  err_toomany: "한 번에 최대 5장의 사진만 선택할 수 있습니다.",
   thumb_label: "영수증 — 탭하여 확대",
   receipt_total: "영수증 합계",
   found_items: "{n}개 항목 발견 — 확인 후 배정하세요:",
@@ -2035,12 +2111,19 @@ var I18N = {
   tagline: "बिल बाँटने का आपका भरोसेमंद साथी",
   subtitle: "हर खुशी के पल में आपके साथ — बिना झंझट बिल बँटवारा",
   scan_title: "रसीद स्कैन करें",
-  scan_hint: "रसीद की फोटो लें या अपलोड करें — AI आइटम अपने आप पढ़ लेगा",
+  scan_hint: "अधिकतम 5 रसीद फोटो लें या अपलोड करें — AI आइटम अपने आप पढ़ लेगा",
   scan_btn: "📷 अपलोड / फोटो लें",
   scan_loading: "रसीद पढ़ी जा रही है…",
-  api_toggle: "Gemini API कुंजी सेटिंग",
+  api_toggle: "स्कैन एक्सेस सेटिंग",
   api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> पर <b>मुफ़्त</b> कुंजी पाएँ (क्रेडिट कार्ड की ज़रूरत नहीं)। कुंजी केवल इसी ब्राउज़र में सहेजी जाती है। नोट: रसीद की फोटो पढ़ने के लिए Google को भेजी जाती हैं।",
   need_key: "पहले अपनी मुफ़्त Gemini API कुंजी डालें (नीचे सेटिंग)।",
+  pass_label: "फ़ैमिली पासकोड",
+  pass_hint: "एक बार डालें — यह डिवाइस याद रखेगा। न होने पर ऐप मालिक से माँगें।",
+  own_key_label: "उन्नत: अपनी Gemini API कुंजी उपयोग करें",
+  need_access: "स्कैन के लिए नीचे फ़ैमिली पासकोड डालें — या उन्नत में अपनी API कुंजी।",
+  err_pass: "पासकोड गलत है — ऐप मालिक से जाँच करें।",
+  err_cap: "आज की साझा स्कैन सीमा समाप्त — कल फिर आज़माएँ, या उन्नत में अपनी API कुंजी उपयोग करें।",
+  err_toomany: "प्रति स्कैन अधिकतम 5 फोटो चुनें।",
   thumb_label: "रसीद — बड़ा करने के लिए टैप करें",
   receipt_total: "रसीद कुल",
   found_items: "{n} आइटम मिले — जाँचें और बाँटें:",
@@ -2920,8 +3003,11 @@ var RECEIPT_CUR_MAP = {
 
 
   /* ====== RECEIPT OCR (Gemini vision) ====== */
-  var GEMINI_MODELS = ['gemini-3-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
+  var GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-3-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
   var API_KEY_STORAGE = 'equito_gemini_key';
+  var PASS_STORAGE = 'equito_pass';
+  var WORKER_URL = 'https://equito-scan.equito-my.workers.dev';
+  var MAX_RECEIPTS = 5;
   var ocrData = null;
   var ocrImages = [];
 
@@ -2970,6 +3056,12 @@ var RECEIPT_CUR_MAP = {
   function saveApiKey(val) {
     try { localStorage.setItem(API_KEY_STORAGE, val.trim()); } catch (e) {}
   }
+  function getPass() {
+    try { return localStorage.getItem(PASS_STORAGE) || ''; } catch (e) { return ''; }
+  }
+  function savePass(val) {
+    try { localStorage.setItem(PASS_STORAGE, val.trim()); } catch (e) {}
+  }
 
   function showScanStatus(html, kind) {
     var el = document.getElementById('scan-status');
@@ -3016,7 +3108,7 @@ var RECEIPT_CUR_MAP = {
     });
   }
 
-  function callGemini(key, images) {
+  function callGemini(auth, images) {
     var parts = [{ text: OCR_PROMPT }];
     for (var i = 0; i < images.length; i++) {
       parts.push({ inline_data: { mime_type: 'image/jpeg', data: images[i] } });
@@ -3031,15 +3123,23 @@ var RECEIPT_CUR_MAP = {
 
     function tryModel(idx) {
       if (idx >= GEMINI_MODELS.length) return Promise.reject({ type: 'model' });
-      var url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
-        GEMINI_MODELS[idx] + ':generateContent?key=' + encodeURIComponent(key);
+      var url, headers = { 'Content-Type': 'application/json' };
+      if (auth.key) {
+        url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
+          GEMINI_MODELS[idx] + ':generateContent?key=' + encodeURIComponent(auth.key);
+      } else {
+        url = WORKER_URL + '/?model=' + encodeURIComponent(GEMINI_MODELS[idx]);
+        headers['X-Equito-Pass'] = auth.pass;
+      }
       return fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: body
       }).catch(function() { throw { type: 'network' }; })
         .then(function(resp) {
           if (resp.status === 404) return tryModel(idx + 1);
+          if (resp.status === 401 && !auth.key) throw { type: 'pass' };
+          if (resp.status === 402 && !auth.key) throw { type: 'cap' };
           if (resp.status === 429) throw { type: 'quota' };
           if (resp.status === 400 || resp.status === 401 || resp.status === 403) throw { type: 'key' };
           if (!resp.ok) throw { type: 'http', status: resp.status };
@@ -3059,7 +3159,8 @@ var RECEIPT_CUR_MAP = {
     var type = (err && err.type) || 'http';
     var map = {
       network: 'err_network', quota: 'err_quota', key: 'err_key',
-      unclear: 'err_unclear', unreadable: 'err_unreadable', model: 'err_model'
+      unclear: 'err_unclear', unreadable: 'err_unreadable', model: 'err_model',
+      pass: 'err_pass', cap: 'err_cap', toomany: 'err_toomany'
     };
     if (map[type]) return escHtml(t(map[type]));
     return escHtml(t('err_http', { status: (err && err.status) || '?' }));
@@ -3098,10 +3199,16 @@ var RECEIPT_CUR_MAP = {
 
   function handleReceiptFiles(files) {
     if (!files || files.length === 0) return;
+    if (files.length > MAX_RECEIPTS) {
+      showScanStatus(escHtml(t('err_toomany')), 'error');
+      return;
+    }
     var key = getApiKey();
-    if (!key) {
+    var pass = getPass();
+    var auth = key ? { key: key } : (pass ? { pass: pass } : null);
+    if (!auth) {
       document.getElementById('api-panel').style.display = 'block';
-      showScanStatus(escHtml(t('need_key')), 'error');
+      showScanStatus(escHtml(t('need_access')), 'error');
       return;
     }
     setScanLoading(true);
@@ -3115,7 +3222,7 @@ var RECEIPT_CUR_MAP = {
         for (var m = 0; m < images.length; m++) {
           ocrImages.push('data:image/jpeg;base64,' + images[m]);
         }
-        return callGemini(key, images);
+        return callGemini(auth, images);
       })
       .then(function(raw) {
         ocrData = normalizeOcr(raw);
@@ -3130,8 +3237,9 @@ var RECEIPT_CUR_MAP = {
       .catch(function(err) {
         setScanLoading(false);
         showScanStatus(ocrErrorMessage(err), 'error');
-        if (err && err.type === 'key') {
+        if (err && (err.type === 'key' || err.type === 'pass')) {
           document.getElementById('api-panel').style.display = 'block';
+          if (err.type === 'key') document.getElementById('ownkey-panel').style.display = 'block';
         }
       });
   }
@@ -3343,6 +3451,9 @@ var RECEIPT_CUR_MAP = {
   function initScan() {
     var keyInput = document.getElementById('api-key');
     if (keyInput) keyInput.value = getApiKey();
+    var passInput = document.getElementById('family-pass');
+    if (passInput) passInput.value = getPass();
+    if (getApiKey()) document.getElementById('ownkey-panel').style.display = 'block';
     document.getElementById('receipt-file').addEventListener('change', function(e) {
       handleReceiptFiles(e.target.files);
       e.target.value = '';
@@ -3400,6 +3511,11 @@ var RECEIPT_CUR_MAP = {
     if (target.id === 'api-toggle' || target.closest('#api-toggle')) {
       var panel = document.getElementById('api-panel');
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      return;
+    }
+    if (target.id === 'ownkey-toggle' || target.closest('#ownkey-toggle')) {
+      var okPanel = document.getElementById('ownkey-panel');
+      okPanel.style.display = okPanel.style.display === 'none' ? 'block' : 'none';
       return;
     }
     if (target.id === 'ocr-import-btn' || target.closest('#ocr-import-btn')) { importOcr(); return; }
@@ -3480,6 +3596,7 @@ var RECEIPT_CUR_MAP = {
     if (el.id === 'cur-search') { buildCurList(el.value); return; }
     if (el.getAttribute && el.getAttribute('data-ocr-field')) { updateOcrField(el); return; }
     if (el.id === 'api-key') { saveApiKey(el.value); return; }
+    if (el.id === 'family-pass') { savePass(el.value); return; }
     if (el.classList.contains('person-name-input')) {
       el.removeAttribute('data-auto');
       refreshSharedItemChips();

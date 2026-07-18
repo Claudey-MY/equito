@@ -1063,9 +1063,28 @@ footer .brand {
   border-radius: 8px;
   border: 1.5px solid var(--g200);
   cursor: pointer;
+  display: block;
   -webkit-tap-highlight-color: rgba(200,144,46,0.2);
 }
 .ocr-thumb:active { border-color: var(--amber); transform: scale(0.96); }
+.thumb-wrap { position: relative; display: inline-block; }
+.thumb-x {
+  position: absolute;
+  top: -7px; right: -7px;
+  width: 22px; height: 22px;
+  min-width: 22px; min-height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--card);
+  background: var(--ember);
+  color: #FFF;
+  font-size: 12px; line-height: 1;
+  padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.thumb-x:active { transform: scale(0.9); }
 
 #photo-lightbox {
   position: fixed; inset: 0;
@@ -1217,7 +1236,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div id="receipt-thumbs"></div>
     <button class="api-toggle" id="api-toggle">⚙️ <span data-i18n="api_toggle"></span></button>
     <div class="api-panel" id="api-panel" style="display:none">
-      <label>Gemini API Key</label>
+      <label data-i18n="key_label"></label>
       <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
       <p class="api-hint" data-i18n="api_hint_html"></p>
       <div class="or-divider" data-i18n="or_word"></div>
@@ -1376,7 +1395,8 @@ var I18N = {
   discount_label: "Discount ({sym})",
   tax_on_service: "Tax applies on service charge",
   calc_btn: "Calculate!",
-  reset_btn: "↺ Start New Bill",
+  reset_btn: "↺ Reset",
+  key_label: "Gemini API Key (absolutely free & private option)",
   reset_confirm: "Clear the whole bill and start fresh?",
   add_photos: "➕ Add more photos",
   or_word: "— or —",
@@ -1464,7 +1484,8 @@ var I18N = {
   discount_label: "折扣（{sym}）",
   tax_on_service: "服务费需缴税",
   calc_btn: "开始计算！",
-  reset_btn: "↺ 开始新账单",
+  reset_btn: "↺ 重置",
+  key_label: "Gemini API 密钥（完全免费且私密的选项）",
   reset_confirm: "清空整个账单并重新开始？",
   add_photos: "➕ 添加更多照片",
   or_word: "— 或 —",
@@ -1550,7 +1571,8 @@ var I18N = {
   discount_label: "折扣（{sym}）",
   tax_on_service: "服務費需課稅",
   calc_btn: "開始計算！",
-  reset_btn: "↺ 開始新帳單",
+  reset_btn: "↺ 重置",
+  key_label: "Gemini API 金鑰（完全免費且私密的選項）",
   reset_confirm: "清空整個帳單並重新開始？",
   add_photos: "➕ 新增更多照片",
   or_word: "— 或 —",
@@ -1636,7 +1658,8 @@ var I18N = {
   discount_label: "Diskaun ({sym})",
   tax_on_service: "Cukai dikenakan atas caj perkhidmatan",
   calc_btn: "Kira!",
-  reset_btn: "↺ Mula Bil Baru",
+  reset_btn: "↺ Set Semula",
+  key_label: "Kunci API Gemini (pilihan percuma & peribadi sepenuhnya)",
   reset_confirm: "Kosongkan seluruh bil dan mula semula?",
   add_photos: "➕ Tambah gambar lagi",
   or_word: "— atau —",
@@ -1722,7 +1745,8 @@ var I18N = {
   discount_label: "Descuento ({sym})",
   tax_on_service: "El impuesto se aplica al cargo por servicio",
   calc_btn: "¡Calcular!",
-  reset_btn: "↺ Nueva cuenta",
+  reset_btn: "↺ Restablecer",
+  key_label: "Clave API de Gemini (opción totalmente gratuita y privada)",
   reset_confirm: "¿Borrar toda la cuenta y empezar de nuevo?",
   add_photos: "➕ Añadir más fotos",
   or_word: "— o —",
@@ -1808,7 +1832,8 @@ var I18N = {
   discount_label: "Remise ({sym})",
   tax_on_service: "La taxe s'applique aux frais de service",
   calc_btn: "Calculer !",
-  reset_btn: "↺ Nouvelle addition",
+  reset_btn: "↺ Réinitialiser",
+  key_label: "Clé API Gemini (option totalement gratuite et privée)",
   reset_confirm: "Effacer toute l'addition et recommencer ?",
   add_photos: "➕ Ajouter des photos",
   or_word: "— ou —",
@@ -1894,7 +1919,8 @@ var I18N = {
   discount_label: "Rabatt ({sym})",
   tax_on_service: "Steuer gilt auch für die Servicegebühr",
   calc_btn: "Berechnen!",
-  reset_btn: "↺ Neue Rechnung",
+  reset_btn: "↺ Zurücksetzen",
+  key_label: "Gemini-API-Schlüssel (völlig kostenlose & private Option)",
   reset_confirm: "Die ganze Rechnung löschen und neu beginnen?",
   add_photos: "➕ Weitere Fotos hinzufügen",
   or_word: "— oder —",
@@ -1980,7 +2006,8 @@ var I18N = {
   discount_label: "Desconto ({sym})",
   tax_on_service: "O imposto incide sobre a taxa de serviço",
   calc_btn: "Calcular!",
-  reset_btn: "↺ Nova conta",
+  reset_btn: "↺ Redefinir",
+  key_label: "Chave API Gemini (opção totalmente gratuita e privada)",
   reset_confirm: "Apagar toda a conta e começar de novo?",
   add_photos: "➕ Adicionar mais fotos",
   or_word: "— ou —",
@@ -2066,7 +2093,8 @@ var I18N = {
   discount_label: "割引（{sym}）",
   tax_on_service: "サービス料にも税金がかかる",
   calc_btn: "計算する！",
-  reset_btn: "↺ 新しい会計を開始",
+  reset_btn: "↺ リセット",
+  key_label: "Gemini API キー（完全無料でプライベートなオプション）",
   reset_confirm: "会計をすべてクリアして最初からやり直しますか？",
   add_photos: "➕ 写真を追加",
   or_word: "— または —",
@@ -2152,7 +2180,8 @@ var I18N = {
   discount_label: "할인 ({sym})",
   tax_on_service: "봉사료에도 세금 부과",
   calc_btn: "계산하기!",
-  reset_btn: "↺ 새 계산 시작",
+  reset_btn: "↺ 초기화",
+  key_label: "Gemini API 키 (완전 무료·프라이빗 옵션)",
   reset_confirm: "전체 계산을 지우고 새로 시작할까요?",
   add_photos: "➕ 사진 추가",
   or_word: "— 또는 —",
@@ -2238,7 +2267,8 @@ var I18N = {
   discount_label: "छूट ({sym})",
   tax_on_service: "सेवा शुल्क पर भी कर लगेगा",
   calc_btn: "गणना करें!",
-  reset_btn: "↺ नया बिल शुरू करें",
+  reset_btn: "↺ रीसेट",
+  key_label: "Gemini API कुंजी (बिल्कुल मुफ़्त और निजी विकल्प)",
   reset_confirm: "पूरा बिल साफ़ कर नए सिरे से शुरू करें?",
   add_photos: "➕ और फोटो जोड़ें",
   or_word: "— या —",
@@ -3279,42 +3309,23 @@ var RECEIPT_CUR_MAP = {
     };
   }
 
-  function handleReceiptFiles(files) {
-    var appending = addMoreMode && ocrImages.length > 0;
-    addMoreMode = false;
-    if (!files || files.length === 0) return;
-    var existing = appending ? ocrImages.slice() : [];
-    if (existing.length + files.length > MAX_RECEIPTS) {
-      showScanStatus(escHtml(t('err_toomany')), 'error');
-      return;
-    }
+  function getAuth() {
     var key = getApiKey();
     var pass = getPass();
-    var auth = key ? { key: key } : (pass ? { pass: pass } : null);
-    if (!auth) {
-      document.getElementById('api-panel').style.display = 'block';
-      showScanStatus(escHtml(t('need_access')), 'error');
-      return;
-    }
+    return key ? { key: key } : (pass ? { pass: pass } : null);
+  }
+
+  /* Scans allBase64 (the full photo set) and, on success, replaces the current review */
+  function runScan(auth, allBase64) {
     setScanLoading(true);
     showScanStatus('');
-    if (!appending) document.getElementById('receipt-thumbs').innerHTML = '';
-    var jobs = [];
-    for (var i = 0; i < files.length; i++) jobs.push(preprocessImage(files[i]));
-    Promise.all(jobs)
-      .then(function(newImages) {
-        var allBase64 = existing.map(function(u) { return u.split(',')[1]; }).concat(newImages);
-        ocrImages = allBase64.map(function(b) { return 'data:image/jpeg;base64,' + b; });
-        return callGemini(auth, allBase64);
-      })
+    return callGemini(auth, allBase64)
       .then(function(raw) {
-        ocrData = normalizeOcr(raw);
-        if (ocrData.items.length === 0) {
-          ocrData = null;
-          showScanStatus(ocrErrorMessage({ type: 'unclear' }), 'error');
-        } else {
-          renderOcrReview();
-        }
+        var data = normalizeOcr(raw);
+        if (data.items.length === 0) throw { type: 'unclear' };
+        ocrImages = allBase64.map(function(b) { return 'data:image/jpeg;base64,' + b; });
+        ocrData = data;
+        renderOcrReview();
         setScanLoading(false);
       })
       .catch(function(err) {
@@ -3324,6 +3335,47 @@ var RECEIPT_CUR_MAP = {
           document.getElementById('api-panel').style.display = 'block';
         }
       });
+  }
+
+  function handleReceiptFiles(files) {
+    var appending = addMoreMode && ocrImages.length > 0;
+    addMoreMode = false;
+    if (!files || files.length === 0) return;
+    var existing = appending ? ocrImages.slice() : [];
+    if (existing.length + files.length > MAX_RECEIPTS) {
+      showScanStatus(escHtml(t('err_toomany')), 'error');
+      return;
+    }
+    var auth = getAuth();
+    if (!auth) {
+      document.getElementById('api-panel').style.display = 'block';
+      showScanStatus(escHtml(t('need_access')), 'error');
+      return;
+    }
+    if (!appending) document.getElementById('receipt-thumbs').innerHTML = '';
+    setScanLoading(true);
+    showScanStatus('');
+    var jobs = [];
+    for (var i = 0; i < files.length; i++) jobs.push(preprocessImage(files[i]));
+    Promise.all(jobs)
+      .then(function(newImages) {
+        var allBase64 = existing.map(function(u) { return u.split(',')[1]; }).concat(newImages);
+        return runScan(auth, allBase64);
+      })
+      .catch(function(err) {
+        setScanLoading(false);
+        showScanStatus(ocrErrorMessage(err), 'error');
+      });
+  }
+
+  function removeReceiptPhoto(idx) {
+    if (!ocrData || !ocrImages[idx]) return;
+    var remaining = ocrImages.slice();
+    remaining.splice(idx, 1);
+    if (remaining.length === 0) { cancelOcr(); return; }
+    var auth = getAuth();
+    if (!auth) return;
+    runScan(auth, remaining.map(function(u) { return u.split(',')[1]; }));
   }
 
   function ocrItemsSum() {
@@ -3355,12 +3407,15 @@ var RECEIPT_CUR_MAP = {
       escHtml(t('sum_mismatch', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel, refval: cur + ' ' + ref.toFixed(2) })) + '</div>';
   }
 
-  function ocrThumbsHtml() {
+  function ocrThumbsHtml(removable) {
     if (ocrImages.length === 0) return '';
     var html = '<div class="ocr-thumbs">' +
       '<span class="thumb-label">' + escHtml(t('thumb_label')) + '</span>';
     for (var i = 0; i < ocrImages.length; i++) {
-      html += '<img class="ocr-thumb" src="' + ocrImages[i] + '" data-thumb="' + i + '" alt="Receipt ' + (i + 1) + '">';
+      html += '<span class="thumb-wrap">' +
+        '<img class="ocr-thumb" src="' + ocrImages[i] + '" data-thumb="' + i + '" alt="Receipt ' + (i + 1) + '">' +
+        (removable ? '<button class="thumb-x" data-thumb-remove="' + i + '" aria-label="Remove">✕</button>' : '') +
+        '</span>';
     }
     return html + '</div>';
   }
@@ -3410,7 +3465,7 @@ var RECEIPT_CUR_MAP = {
 
     var html = '<div class="ocr-review">' +
       ocrBillSummaryHtml() +
-      ocrThumbsHtml() +
+      ocrThumbsHtml(true) +
       ocrAddPhotosHtml() +
       '<div class="ocr-review-title">' + escHtml(t('found_items', { n: ocrData.items.length })) + '</div>';
 
@@ -3607,6 +3662,8 @@ var RECEIPT_CUR_MAP = {
     if (shareBtn) { handleShare(shareBtn); return; }
 
     /* lightbox & scan */
+    var thumbX = target.closest('[data-thumb-remove]');
+    if (thumbX) { removeReceiptPhoto(parseInt(thumbX.getAttribute('data-thumb-remove'), 10)); return; }
     var thumb = target.closest('[data-thumb]');
     if (thumb) { openLightbox(parseInt(thumb.getAttribute('data-thumb'), 10)); return; }
     if (target.closest('#photo-lightbox')) { closeLightbox(); return; }

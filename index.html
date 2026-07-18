@@ -38,7 +38,14 @@
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
+
+/* Inputs must follow the theme ink colour (browser default is near-black, unreadable in dark mode) */
+input[type="text"], input[type="number"], input[type="password"], input[type="search"] {
+  color: var(--g800);
+}
+input::placeholder { color: var(--g400); opacity: 1; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -85,65 +92,165 @@ body {
   to { transform: translate(-25px, 18px) scale(1.08); }
 }
 
-/* ===== PURE CSS LANGUAGE TOGGLE ===== */
-.lang-radio { position: absolute; opacity: 0; pointer-events: none; }
-
-/* Default: show English, hide Chinese */
-.zh { display: none !important; }
-.en { display: inline !important; }
-
-/* When Chinese radio is checked: flip visibility */
-#lang-zh:checked ~ .hero-header .en,
-#lang-zh:checked ~ .page-body .en { display: none !important; }
-#lang-zh:checked ~ .hero-header .zh,
-#lang-zh:checked ~ .page-body .zh { display: inline !important; }
-
-/* Block-level variants */
-.zh-block { display: none !important; }
-.en-block { display: block !important; }
-#lang-zh:checked ~ .hero-header .en-block,
-#lang-zh:checked ~ .page-body .en-block { display: none !important; }
-#lang-zh:checked ~ .hero-header .zh-block,
-#lang-zh:checked ~ .page-body .zh-block { display: block !important; }
-
-/* Language button active states */
-.lang-label {
+/* ===== ESSENTIAL / PRO MODE TOGGLE ===== */
+.mode-toggle {
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 100;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 24px;
-  min-height: 44px;
-  border: 2px solid var(--g200);
-  border-radius: 24px;
   background: var(--card);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
+  border: 1.5px solid var(--g200);
+  border-radius: 19px;
+  padding: 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.mode-btn {
+  border: none;
+  background: none;
+  padding: 6px 12px;
+  min-height: 30px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--g500);
-  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(200,144,46,0.15);
   user-select: none;
+  white-space: nowrap;
+}
+.mode-btn.active {
+  background: linear-gradient(135deg, var(--amber-deep), var(--amber));
+  color: #FFF;
+  box-shadow: 0 2px 6px rgba(200,144,46,0.3);
+}
+body.mode-essential #scan-card { display: none; }
+
+.pro-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: var(--amber-deep);
+  background: var(--amber-light);
+  border: 1px solid rgba(200,144,46,0.35);
+  padding: 3px 8px;
+  border-radius: 9px;
+  flex-shrink: 0;
 }
 
-#lang-en:checked ~ .page-body .lang-label-en {
-  border-color: var(--amber);
-  background: var(--amber-light);
-  color: var(--amber-deep);
-  box-shadow: 0 2px 8px rgba(200,144,46,0.15);
+/* ===== TOP BAR: LANGUAGE + CURRENCY SELECTORS ===== */
+.topbar {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 100;
+  display: flex;
+  gap: 6px;
 }
-#lang-zh:checked ~ .page-body .lang-label-zh {
-  border-color: var(--amber);
-  background: var(--amber-light);
-  color: var(--amber-deep);
-  box-shadow: 0 2px 8px rgba(200,144,46,0.15);
+.sel-wrap { position: relative; }
+.sel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  min-height: 38px;
+  border: 1.5px solid var(--g200);
+  border-radius: 19px;
+  background: var(--card);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--g600);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.15);
+  user-select: none;
+  white-space: nowrap;
 }
+.sel-btn:active { border-color: var(--amber); background: var(--amber-light); }
+.sel-btn .caret { font-size: 8px; color: var(--g400); }
+.sel-panel {
+  position: absolute;
+  top: 44px; right: 0;
+  width: min(300px, 90vw);
+  background: var(--card);
+  border: 1px solid var(--g200);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.16);
+  display: none;
+  overflow: hidden;
+  text-align: left;
+}
+.sel-panel.open { display: block; }
+.sel-head {
+  padding: 12px 14px 9px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--g400);
+  border-bottom: 1px solid var(--g100);
+}
+.sel-list {
+  max-height: 52vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px;
+}
+.sel-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 10px;
+  min-height: 44px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--g700);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.12);
+  user-select: none;
+}
+.sel-opt:active { background: var(--g100); }
+.sel-opt.active { background: var(--amber-light); color: var(--amber-deep); }
+.sel-opt .flag { font-size: 17px; flex-shrink: 0; }
+.sel-opt .cur-code { font-weight: 800; min-width: 44px; flex-shrink: 0; }
+.sel-opt .cur-name {
+  flex: 1; min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--g500);
+  font-size: 12.5px;
+}
+.sel-opt.active .cur-name { color: var(--amber-deep); }
+.cur-search { padding: 8px 10px 4px; }
+.cur-search input {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1.5px solid var(--g200);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  background: var(--g100);
+  -webkit-appearance: none;
+}
+.cur-search input:focus { border-color: var(--amber); background: var(--card); }
 
 /* ===== HEADER ===== */
 .hero-header {
   position: relative;
   text-align: center;
-  padding: 36px 20px 28px;
+  padding: 52px 20px 28px;
 }
 .hero-header::after {
   content: '';
@@ -189,16 +296,9 @@ body {
 .page-body {
   max-width: 600px;
   margin: 0 auto;
-  padding: 0 14px 20px;
+  padding: 18px 14px 20px;
   position: relative;
   z-index: 1;
-}
-
-.lang-toggle {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 18px;
 }
 
 /* ===== CARDS ===== */
@@ -497,6 +597,7 @@ body {
   display: flex;
   gap: 6px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 .preset-btn {
   padding: 6px 12px;
@@ -557,7 +658,7 @@ body {
 
 /* ===== RESULTS ===== */
 .result-card {
-  background: var(--ink);
+  background: #1C1917;
   color: #FFF;
   border-radius: var(--radius);
   padding: 24px 18px;
@@ -606,8 +707,33 @@ body {
   white-space: nowrap; flex-shrink: 0;
 }
 .result-detail {
-  font-size: 12px; opacity: 0.5;
-  line-height: 1.7; word-break: break-word;
+  font-size: 12px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+}
+.rd-line {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 10px;
+}
+.rd-line .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rd-line .amt { white-space: nowrap; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.rd-head {
+  font-weight: 700;
+  color: rgba(255,255,255,0.78);
+  margin-top: 6px;
+}
+.rd-group:first-child .rd-head { margin-top: 0; }
+.rd-sub {
+  padding-left: 13px; margin-left: 3px;
+  border-left: 2px solid rgba(232,169,64,0.3);
+  color: rgba(255,255,255,0.42);
+  font-size: 11.5px;
+}
+.rd-total {
+  border-top: 1px dashed rgba(255,255,255,0.18);
+  margin-top: 8px; padding-top: 6px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.72);
 }
 .result-grand-total {
   text-align: center;
@@ -652,6 +778,52 @@ body {
   font-size: 10px; opacity: 0.3;
 }
 
+/* ===== SHARE ===== */
+.share-sec {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(200,144,46,0.2);
+}
+.share-heading {
+  font-size: 11px; opacity: 0.5;
+  font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #FFF;
+}
+.share-row {
+  display: flex; flex-wrap: wrap;
+  gap: 8px; justify-content: center;
+}
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 15px;
+  min-height: 38px;
+  border-radius: 19px;
+  border: none;
+  font-size: 13px; font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255,255,255,0.2);
+  user-select: none;
+  color: #FFF;
+}
+.share-btn:active { transform: scale(0.96); }
+.share-img { background: #3A8F7C; }
+.share-copy { background: linear-gradient(135deg, #8B5E1A, #C8902E); }
+.person-share-row {
+  display: flex; flex-wrap: wrap;
+  gap: 6px; margin-top: 9px;
+}
+.person-share-row .share-btn {
+  padding: 6px 11px;
+  min-height: 30px;
+  font-size: 11.5px;
+  border-radius: 15px;
+}
+
 /* ===== FOOTER ===== */
 footer {
   text-align: center; padding: 28px 0 20px;
@@ -660,6 +832,21 @@ footer {
 footer .brand {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 700; color: var(--amber); letter-spacing: 2px;
+}
+.footer-privacy {
+  display: inline-block;
+  max-width: 460px;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--g400);
+  line-height: 1.7;
+  padding: 0 16px;
+}
+.footer-rights {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--g400);
 }
 
 /* ===== RECEIPT SCANNER ===== */
@@ -867,15 +1054,67 @@ footer .brand {
   user-select: none;
 }
 
+/* ===== DARK THEME ===== */
+[data-theme="dark"] {
+  --parchment: #171412;
+  --card: #211D19;
+  --ink: #F5F0E8;
+  --amber-light: #3A2E17;
+  --amber-deep: #E3B15C;
+  --ember-light: #3A231D;
+  --ember: #E8836A;
+  --jade-light: #1D332D;
+  --jade: #5FBFA8;
+  --g100: #2A2521;
+  --g200: #38322C;
+  --g300: #4A423A;
+  --g400: #857C70;
+  --g500: #A69C8E;
+  --g600: #C4BAAB;
+  --g700: #DED5C7;
+  --g800: #EDE7DC;
+}
+[data-theme="dark"] .shared-section { background: #26201A; }
+[data-theme="dark"] .ocr-bill-summary {
+  background: linear-gradient(135deg, #26201A, #2E2415);
+}
+[data-theme="dark"] .logo { color: #E8A940; }
+[data-theme="dark"] .card {
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+}
+[data-theme="dark"] .bg-atmosphere .orb-1 {
+  background: radial-gradient(circle, rgba(232, 169, 64, 0.08) 0%, transparent 70%);
+}
+[data-theme="dark"] .bg-atmosphere .orb-2 {
+  background: radial-gradient(circle, rgba(212, 101, 74, 0.05) 0%, transparent 70%);
+}
+[data-theme="dark"] .bg-atmosphere .orb-3 {
+  background: radial-gradient(circle, rgba(58, 143, 124, 0.04) 0%, transparent 70%);
+}
+[data-theme="dark"] .sel-btn,
+[data-theme="dark"] .sel-panel {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+body, .card, .sel-btn, .sel-panel, .person-section,
+.item-name, .item-qty, .item-price, .shared-item-block,
+.tax-field input, .discount-field input, .checkbox-row,
+.api-panel, .api-panel input, .ocr-charges, .scan-msg,
+.btn-outline, .btn-cancel, .preset-btn, .person-chip, .person-subtotal {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
 /* ===== MOBILE ===== */
 @media (max-width: 480px) {
-  .hero-header { padding: 28px 16px 22px; }
+  .hero-header { padding: 50px 16px 22px; }
   .logo { font-size: 32px; }
-  .page-body { padding: 0 10px 16px; }
+  .page-body { padding: 14px 10px 16px; }
   .card { padding: 16px; }
   .person-section { padding: 12px; }
   .item-row .item-price,
   .shared-item-inputs .item-price { width: 64px; }
+  .sel-btn { padding: 6px 10px; min-height: 34px; font-size: 12px; }
+  .mode-btn { padding: 5px 9px; min-height: 26px; font-size: 11px; }
 }
 @media (max-width: 360px) {
   .tax-service { grid-template-columns: 1fr; }
@@ -895,54 +1134,54 @@ footer .brand {
   <div class="orb orb-3"></div>
 </div>
 
-<!-- PURE CSS LANGUAGE RADIOS — must be siblings of .hero-header and .page-body -->
-<input type="radio" name="lang" id="lang-en" class="lang-radio" checked>
-<input type="radio" name="lang" id="lang-zh" class="lang-radio">
+<div class="mode-toggle" id="mode-toggle">
+  <button class="mode-btn" data-mode="essential">Essential</button>
+  <button class="mode-btn" data-mode="pro">Pro</button>
+</div>
+
+<div class="topbar" id="topbar">
+  <button class="sel-btn" id="theme-btn" aria-label="Theme">🌙</button>
+  <div class="sel-wrap">
+    <button class="sel-btn" id="lang-btn"><span id="lang-btn-label">🇬🇧 EN</span><span class="caret">▼</span></button>
+    <div class="sel-panel" id="lang-panel">
+      <div class="sel-head" data-i18n="lang_pick"></div>
+      <div class="sel-list" id="lang-list"></div>
+    </div>
+  </div>
+  <div class="sel-wrap">
+    <button class="sel-btn" id="cur-btn"><span id="cur-btn-label">MYR</span><span class="caret">▼</span></button>
+    <div class="sel-panel" id="cur-panel">
+      <div class="sel-head" data-i18n="cur_pick"></div>
+      <div class="cur-search"><input id="cur-search" data-i18n-ph="cur_search_ph" autocomplete="off"></div>
+      <div class="sel-list" id="cur-list"></div>
+    </div>
+  </div>
+</div>
 
 <div class="hero-header">
   <div class="logo">EQUITO</div>
-  <div class="tagline">
-    <span class="en">Your Trusted Bill Splitting Buddy</span>
-    <span class="zh">你的分账好帮手</span>
-  </div>
-  <p class="subtitle">
-    <span class="en">Fair & easy bill splitting to make everyone happy before and after meal</span>
-    <span class="zh">公平轻松的分账，让饭前饭后都开心</span>
-  </p>
+  <div class="tagline" data-i18n="tagline"></div>
+  <p class="subtitle" data-i18n="subtitle"></p>
 </div>
 
 <div class="page-body" id="app">
 
-  <div class="lang-toggle">
-    <label for="lang-en" class="lang-label lang-label-en">English</label>
-    <label for="lang-zh" class="lang-label lang-label-zh">中文</label>
-  </div>
-
-  <div class="card">
+  <div class="card" id="scan-card">
     <div class="card-title">
       <span class="icon icon-scan">📷</span>
-      <span class="en">Scan Receipt</span><span class="zh">扫描小票</span>
+      <span data-i18n="scan_title"></span>
+      <span class="pro-badge">PRO</span>
     </div>
-    <p class="scan-hint">
-      <span class="en">Snap or upload receipt photos — items are read automatically by AI</span>
-      <span class="zh">拍摄或上传小票照片 — AI 自动识别菜品</span>
-    </p>
-    <button class="btn-outline" id="scan-btn">
-      <span class="en">📷 Upload / Take Photo</span><span class="zh">📷 上传 / 拍摄小票</span>
-    </button>
+    <p class="scan-hint" data-i18n="scan_hint"></p>
+    <button class="btn-outline" id="scan-btn"></button>
     <input type="file" id="receipt-file" accept="image/*" multiple style="display:none">
     <div id="scan-status"></div>
     <div id="receipt-thumbs"></div>
-    <button class="api-toggle" id="api-toggle">
-      ⚙️ <span class="en">Gemini API key settings</span><span class="zh">Gemini API 密钥设置</span>
-    </button>
+    <button class="api-toggle" id="api-toggle">⚙️ <span data-i18n="api_toggle"></span></button>
     <div class="api-panel" id="api-panel" style="display:none">
       <label>Gemini API Key</label>
       <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
-      <p class="api-hint">
-        <span class="en-block">Get a <b>free</b> key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (no credit card needed). The key is saved only in this browser. Note: receipt photos are sent to Google for reading.</span>
-        <span class="zh-block">前往 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> 免费获取密钥（无需信用卡）。密钥仅保存在本浏览器中。注意：小票照片将发送给 Google 进行识别。</span>
-      </p>
+      <p class="api-hint" data-i18n="api_hint_html"></p>
     </div>
     <div id="ocr-review"></div>
   </div>
@@ -950,78 +1189,70 @@ footer .brand {
   <div class="card">
     <div class="card-title">
       <span class="icon icon-people">👥</span>
-      <span class="en">People</span><span class="zh">参与者</span>
+      <span data-i18n="people_title"></span>
     </div>
     <div id="people-list"></div>
-    <button class="btn-outline" id="add-person-btn">
-      <span class="en">+ Add Person</span><span class="zh">+ 添加人员</span>
-    </button>
+    <button class="btn-outline" id="add-person-btn" data-i18n="add_person"></button>
   </div>
 
   <div class="card">
     <div class="card-title">
       <span class="icon icon-shared">🍲</span>
-      <span class="en">Shared Items</span><span class="zh">共享菜品</span>
+      <span data-i18n="shared_title"></span>
     </div>
-    <p style="font-size:12px;color:var(--g400);margin:-6px 0 12px">
-      <span class="en">Select who shares each item — defaults to everyone</span>
-      <span class="zh">选择每道共享菜品的分摊人 — 默认为所有人</span>
-    </p>
+    <p style="font-size:12px;color:var(--g400);margin:-6px 0 12px" data-i18n="shared_hint"></p>
     <div class="person-section shared-section">
       <div id="shared-items"></div>
-      <button class="add-item-btn" id="add-shared-btn">
-        <span class="en">+ Add item</span><span class="zh">+ 添加菜品</span>
-      </button>
+      <button class="add-item-btn" id="add-shared-btn" data-i18n="add_item"></button>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">
       <span class="icon icon-tax">🧾</span>
-      <span class="en">Tax & Service Charge</span><span class="zh">税费与服务费</span>
+      <span data-i18n="tax_title"></span>
     </div>
     <div class="tax-service">
       <div class="tax-field">
-        <label>SST (%)</label>
+        <label data-i18n="tax_label"></label>
         <input type="number" id="tax" value="8" min="0" step="0.1" inputmode="decimal">
         <div class="sst-presets">
           <button class="preset-btn" data-target="tax" data-val="0">0%</button>
+          <button class="preset-btn" data-target="tax" data-val="5">5%</button>
           <button class="preset-btn" data-target="tax" data-val="6">6%</button>
           <button class="preset-btn" data-target="tax" data-val="8">8%</button>
+          <button class="preset-btn" data-target="tax" data-val="10">10%</button>
         </div>
       </div>
       <div class="tax-field">
-        <label><span class="en">Service (%)</span><span class="zh">服务费 (%)</span></label>
+        <label data-i18n="service_label"></label>
         <input type="number" id="service" value="10" min="0" step="0.1" inputmode="decimal">
         <div class="sst-presets">
           <button class="preset-btn" data-target="service" data-val="0">0%</button>
+          <button class="preset-btn" data-target="service" data-val="5">5%</button>
           <button class="preset-btn" data-target="service" data-val="10">10%</button>
         </div>
       </div>
     </div>
     <div class="discount-field">
-      <label><span class="en">Discount (RM)</span><span class="zh">折扣 (RM)</span></label>
+      <label id="discount-label"></label>
       <input type="number" id="discount" value="0" min="0" step="0.01" inputmode="decimal">
     </div>
     <label class="checkbox-row">
       <input type="checkbox" id="tax-on-service" checked>
-      <span>
-        <span class="en">SST applies on service charge</span>
-        <span class="zh">服务费需征收 SST</span>
-      </span>
+      <span data-i18n="tax_on_service"></span>
     </label>
   </div>
 
-  <button class="btn-calculate" id="calc-btn">
-    <span class="en">Calculate!</span><span class="zh">开始计算！</span>
-  </button>
+  <button class="btn-calculate" id="calc-btn" data-i18n="calc_btn"></button>
 
   <div id="results"></div>
 
   <footer>
-    <span class="brand">EQUITO</span> &copy; 2026<br>
-    <span class="en">Made for happy dining, everywhere</span>
-    <span class="zh">为快乐聚餐而生</span>
+    <span class="brand">EQUITO</span><br>
+    <span data-i18n="footer_line"></span><br>
+    <span class="footer-privacy" data-i18n="footer_privacy"></span><br>
+    <span class="footer-rights" data-i18n="footer_rights"></span>
   </footer>
 </div>
 
@@ -1029,56 +1260,1131 @@ footer .brand {
   <img id="lightbox-img" alt="Receipt">
   <button id="lightbox-close">✕</button>
 </div>
+<script>
+/* ====== LANGUAGES & TRANSLATIONS ====== */
+var LANGS = [
+  { id: 'en-GB', flag: '🇬🇧', short: 'EN', name: 'English (UK)', locale: 'en-GB' },
+  { id: 'en-US', flag: '🇺🇸', short: 'EN', name: 'English (US)', locale: 'en-US' },
+  { id: 'zh-CN', flag: '🇨🇳', short: '中文', name: '简体中文（中国）', locale: 'zh-CN' },
+  { id: 'zh-TW', flag: '🇹🇼', short: '中文', name: '繁體中文（台灣）', locale: 'zh-TW' },
+  { id: 'ms', flag: '🇲🇾', short: 'BM', name: 'Bahasa Melayu', locale: 'ms-MY' },
+  { id: 'es', flag: '🇪🇸', short: 'ES', name: 'Español', locale: 'es-ES' },
+  { id: 'fr', flag: '🇫🇷', short: 'FR', name: 'Français', locale: 'fr-FR' },
+  { id: 'de', flag: '🇩🇪', short: 'DE', name: 'Deutsch', locale: 'de-DE' },
+  { id: 'pt', flag: '🇧🇷', short: 'PT', name: 'Português', locale: 'pt-BR' },
+  { id: 'ja', flag: '🇯🇵', short: 'JA', name: '日本語', locale: 'ja-JP' },
+  { id: 'ko', flag: '🇰🇷', short: 'KO', name: '한국어', locale: 'ko-KR' },
+  { id: 'hi', flag: '🇮🇳', short: 'HI', name: 'हिन्दी', locale: 'hi-IN' }
+];
 
+var I18N = {
+
+'en-GB': {
+  tagline: "Your Trusted Bill Splitting Buddy",
+  subtitle: "Hassle-free bill splitting for every happy moment together",
+  scan_title: "Scan Receipt",
+  scan_hint: "Snap or upload receipt photos — items are read automatically by AI",
+  scan_btn: "📷 Upload / Take Photo",
+  scan_loading: "Reading receipt…",
+  api_toggle: "Gemini API key settings",
+  api_hint_html: "Get a <b>free</b> key at <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (no credit card needed). The key is saved only in this browser. Note: receipt photos are sent to Google for reading.",
+  need_key: "Please add your free Gemini API key first (settings below).",
+  thumb_label: "Receipt — tap to enlarge",
+  receipt_total: "Receipt total",
+  found_items: "Found {n} item(s) — check & assign to people:",
+  assign_to: "Assign to",
+  shared_chip: "Shared",
+  items_total: "Items total: {sum}",
+  sum_match: "✓ Items total {sum} matches the {ref}",
+  sum_mismatch: "⚠️ Items total {sum} ≠ {ref} {refval} — please check the items below",
+  ref_subtotal: "receipt subtotal",
+  ref_total: "receipt total",
+  apply_charges: "Apply charges from receipt: ",
+  service_word: "Service",
+  discount_word: "Discount",
+  rounding_word: "Rounding",
+  import_btn: "Import to Bill ↓",
+  cancel_btn: "Cancel",
+  imported: "✓ Imported {n} item(s){ref} — scroll down to review the split.",
+  err_network: "No internet connection — scanning needs to be online.",
+  err_quota: "Free-tier limit reached — please wait a minute and try again.",
+  err_key: "API key was rejected — please check your Gemini API key in the settings below.",
+  err_unclear: "Could not read the receipt — try a sharper, well-lit photo.",
+  err_unreadable: "That file is not a readable image — please choose a photo.",
+  err_model: "Gemini model unavailable — please try again later.",
+  err_http: "Something went wrong (HTTP {status}) — please try again.",
+  people_title: "Buddies",
+  add_person: "+ Add Buddy",
+  person_default: "Buddy {n}",
+  add_item: "+ Add item",
+  shared_title: "Shared Items",
+  shared_hint: "Select who shares each item — defaults to everyone",
+  split_among: "Split among",
+  tax_title: "Tax & Service Charge",
+  tax_label: "Tax / GST / VAT (%)",
+  service_label: "Service (%)",
+  discount_label: "Discount ({sym})",
+  tax_on_service: "Tax applies on service charge",
+  calc_btn: "Calculate!",
+  result_title: "Each Person Pays",
+  own_items: "Own items",
+  shared_part: "Shared",
+  subtotal: "Subtotal",
+  tax_service: "Tax & service",
+  grand_total: "Grand Total",
+  round_label: "Round to",
+  rounding_note: "Individual amounts may not add up exactly due to rounding",
+  footer_line: "Made for happy moments together, everywhere",
+  footer_privacy: "Your privacy matters — everything runs in your browser. Bills, names and amounts are never uploaded or stored. Receipt photos are sent to Google Gemini only when you scan, and are never kept by EQUITO.",
+  footer_rights: "© 2026 EQUITO. All rights reserved.",
+  item_ph: "Item name",
+  price_ph: "Price",
+  lang_pick: "Language",
+  cur_pick: "Currency",
+  cur_search_ph: "Search currency…",
+  share_title: "Share the split",
+  share_native: "Share…",
+  copy_btn: "Copy Text",
+  copied: "Copied ✓",
+  email_btn: "Email",
+  image_btn: "Share Image",
+  sh_full_title: "🧾 EQUITO Bill Split",
+  sh_person: "Hi {name}! 👋 Your share for {bill} is {amount}.",
+  sh_thebill: "the bill",
+  sh_via: "Split fairly with EQUITO →"
+},
+
+'en-US': {},
+
+'zh-CN': {
+  tagline: "你的分账好帮手",
+  subtitle: "轻松无忧的分账，陪你走过每个欢乐时刻",
+  scan_title: "扫描收据",
+  scan_hint: "拍摄或上传收据照片 — AI 自动识别项目",
+  scan_btn: "📷 上传 / 拍摄收据",
+  scan_loading: "正在识别收据…",
+  api_toggle: "Gemini API 密钥设置",
+  api_hint_html: "前往 <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> 免费获取密钥（无需信用卡）。密钥仅保存在本浏览器中。注意：收据照片将发送给 Google 进行识别。",
+  need_key: "请先在下方设置中填写免费的 Gemini API 密钥。",
+  thumb_label: "收据 — 点击放大",
+  receipt_total: "收据总额",
+  found_items: "识别到 {n} 个项目 — 请核对并分配给伙伴：",
+  assign_to: "分配给",
+  shared_chip: "共享",
+  items_total: "项目合计：{sum}",
+  sum_match: "✓ 项目合计 {sum} 与{ref}相符",
+  sum_mismatch: "⚠️ 项目合计 {sum} 与{ref} {refval} 不符 — 请检查以下项目",
+  ref_subtotal: "收据小计",
+  ref_total: "收据总额",
+  apply_charges: "套用收据上的费用：",
+  service_word: "服务费",
+  discount_word: "折扣",
+  rounding_word: "取整",
+  import_btn: "导入账单 ↓",
+  cancel_btn: "取消",
+  imported: "✓ 已导入 {n} 个项目{ref} — 请往下核对分账。",
+  err_network: "无法连接网络 — 识别功能需要联网。",
+  err_quota: "已达免费额度上限 — 请稍等一分钟后重试。",
+  err_key: "API 密钥无效 — 请检查下方设置中的 Gemini 密钥。",
+  err_unclear: "无法识别收据 — 请尝试更清晰、光线更好的照片。",
+  err_unreadable: "无法读取该文件 — 请选择图片文件。",
+  err_model: "Gemini 模型暂不可用 — 请稍后重试。",
+  err_http: "出错了（HTTP {status}）— 请重试。",
+  people_title: "伙伴",
+  add_person: "+ 添加伙伴",
+  person_default: "伙伴{n}",
+  add_item: "+ 添加项目",
+  shared_title: "共享项目",
+  shared_hint: "选择每个共享项目的分摊人 — 默认为所有人",
+  split_among: "分摊人",
+  tax_title: "税费与服务费",
+  tax_label: "税率 (%)",
+  service_label: "服务费 (%)",
+  discount_label: "折扣（{sym}）",
+  tax_on_service: "服务费需缴税",
+  calc_btn: "开始计算！",
+  result_title: "每人应付",
+  own_items: "个人项目",
+  shared_part: "共享部分",
+  subtotal: "小计",
+  tax_service: "税费与服务费",
+  grand_total: "总计",
+  round_label: "取整到",
+  rounding_note: "由于取整，个人金额总和可能与总计略有出入",
+  footer_line: "为快乐相聚而生",
+  footer_privacy: "隐私无忧 — 所有计算都在你的浏览器中完成，账单、姓名和金额不会被上传或存储。收据照片仅在使用扫描时发送给 Google Gemini，EQUITO 不会保存。",
+  footer_rights: "© 2026 EQUITO 版权所有。",
+  item_ph: "项目名称",
+  price_ph: "价格",
+  lang_pick: "语言",
+  cur_pick: "货币",
+  cur_search_ph: "搜索货币…",
+  share_title: "分享账单",
+  share_native: "分享…",
+  copy_btn: "复制文字",
+  copied: "已复制 ✓",
+  email_btn: "邮件",
+  image_btn: "分享图片",
+  sh_full_title: "🧾 EQUITO 分账结果",
+  sh_person: "{name}，你好！👋 你在{bill}的应付金额是 {amount}。",
+  sh_thebill: "本次账单",
+  sh_via: "用 EQUITO 公平分账 →"
+},
+
+'zh-TW': {
+  tagline: "你的分帳好幫手",
+  subtitle: "輕鬆無憂的分帳，陪你走過每個歡樂時刻",
+  scan_title: "掃描收據",
+  scan_hint: "拍攝或上傳收據照片 — AI 自動辨識品項",
+  scan_btn: "📷 上傳 / 拍攝收據",
+  scan_loading: "正在辨識收據…",
+  api_toggle: "Gemini API 金鑰設定",
+  api_hint_html: "前往 <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> 免費取得金鑰（無需信用卡）。金鑰僅儲存在本瀏覽器中。注意：收據照片將傳送給 Google 進行辨識。",
+  need_key: "請先在下方設定中填寫免費的 Gemini API 金鑰。",
+  thumb_label: "收據 — 點擊放大",
+  receipt_total: "收據總額",
+  found_items: "辨識到 {n} 個品項 — 請核對並分配給夥伴：",
+  assign_to: "分配給",
+  shared_chip: "共享",
+  items_total: "品項合計：{sum}",
+  sum_match: "✓ 品項合計 {sum} 與{ref}相符",
+  sum_mismatch: "⚠️ 品項合計 {sum} 與{ref} {refval} 不符 — 請檢查以下品項",
+  ref_subtotal: "收據小計",
+  ref_total: "收據總額",
+  apply_charges: "套用收據上的費用：",
+  service_word: "服務費",
+  discount_word: "折扣",
+  rounding_word: "進位",
+  import_btn: "匯入帳單 ↓",
+  cancel_btn: "取消",
+  imported: "✓ 已匯入 {n} 個品項{ref} — 請往下核對分帳。",
+  err_network: "無法連上網路 — 辨識功能需要連線。",
+  err_quota: "已達免費額度上限 — 請稍候一分鐘後再試。",
+  err_key: "API 金鑰無效 — 請檢查下方設定中的 Gemini 金鑰。",
+  err_unclear: "無法辨識收據 — 請改用更清晰、光線更好的照片。",
+  err_unreadable: "無法讀取該檔案 — 請選擇圖片檔。",
+  err_model: "Gemini 模型暫時無法使用 — 請稍後再試。",
+  err_http: "發生錯誤（HTTP {status}）— 請再試一次。",
+  people_title: "夥伴",
+  add_person: "+ 新增夥伴",
+  person_default: "夥伴{n}",
+  add_item: "+ 新增品項",
+  shared_title: "共享品項",
+  shared_hint: "選擇每個共享品項的分攤人 — 預設為所有人",
+  split_among: "分攤人",
+  tax_title: "稅金與服務費",
+  tax_label: "稅率 (%)",
+  service_label: "服務費 (%)",
+  discount_label: "折扣（{sym}）",
+  tax_on_service: "服務費需課稅",
+  calc_btn: "開始計算！",
+  result_title: "每人應付",
+  own_items: "個人品項",
+  shared_part: "共享部分",
+  subtotal: "小計",
+  tax_service: "稅金與服務費",
+  grand_total: "總計",
+  round_label: "進位到",
+  rounding_note: "由於進位，個人金額總和可能與總計略有出入",
+  footer_line: "為快樂相聚而生",
+  footer_privacy: "隱私無憂 — 所有計算都在你的瀏覽器中完成，帳單、姓名和金額不會被上傳或儲存。收據照片僅在使用掃描時傳送給 Google Gemini，EQUITO 不會保存。",
+  footer_rights: "© 2026 EQUITO 版權所有。",
+  item_ph: "品項名稱",
+  price_ph: "價格",
+  lang_pick: "語言",
+  cur_pick: "貨幣",
+  cur_search_ph: "搜尋貨幣…",
+  share_title: "分享帳單",
+  share_native: "分享…",
+  copy_btn: "複製文字",
+  copied: "已複製 ✓",
+  email_btn: "電子郵件",
+  image_btn: "分享圖片",
+  sh_full_title: "🧾 EQUITO 分帳結果",
+  sh_person: "{name}，你好！👋 你在{bill}的應付金額是 {amount}。",
+  sh_thebill: "本次帳單",
+  sh_via: "用 EQUITO 公平分帳 →"
+},
+
+'ms': {
+  tagline: "Rakan Setia Anda untuk Membahagi Bil",
+  subtitle: "Pembahagian bil tanpa kerumitan, menemani setiap detik gembira anda",
+  scan_title: "Imbas Resit",
+  scan_hint: "Ambil atau muat naik gambar resit — item dibaca secara automatik oleh AI",
+  scan_btn: "📷 Muat Naik / Ambil Gambar",
+  scan_loading: "Membaca resit…",
+  api_toggle: "Tetapan kunci API Gemini",
+  api_hint_html: "Dapatkan kunci <b>percuma</b> di <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (tiada kad kredit diperlukan). Kunci disimpan hanya dalam pelayar ini. Nota: gambar resit dihantar kepada Google untuk dibaca.",
+  need_key: "Sila masukkan kunci API Gemini percuma anda dahulu (tetapan di bawah).",
+  thumb_label: "Resit — ketik untuk besarkan",
+  receipt_total: "Jumlah resit",
+  found_items: "Dijumpai {n} item — semak & tetapkan kepada rakan:",
+  assign_to: "Tetapkan kepada",
+  shared_chip: "Kongsi",
+  items_total: "Jumlah item: {sum}",
+  sum_match: "✓ Jumlah item {sum} sepadan dengan {ref}",
+  sum_mismatch: "⚠️ Jumlah item {sum} ≠ {ref} {refval} — sila semak item di bawah",
+  ref_subtotal: "jumlah kecil resit",
+  ref_total: "jumlah resit",
+  apply_charges: "Guna caj daripada resit: ",
+  service_word: "Perkhidmatan",
+  discount_word: "Diskaun",
+  rounding_word: "Pembundaran",
+  import_btn: "Import ke Bil ↓",
+  cancel_btn: "Batal",
+  imported: "✓ {n} item diimport{ref} — skrol ke bawah untuk semak.",
+  err_network: "Tiada sambungan internet — pengimbasan memerlukan talian.",
+  err_quota: "Had percuma dicapai — sila tunggu seminit dan cuba lagi.",
+  err_key: "Kunci API ditolak — sila semak kunci Gemini anda dalam tetapan di bawah.",
+  err_unclear: "Tidak dapat membaca resit — cuba gambar yang lebih jelas dan terang.",
+  err_unreadable: "Fail itu bukan imej yang boleh dibaca — sila pilih gambar.",
+  err_model: "Model Gemini tidak tersedia — sila cuba sebentar lagi.",
+  err_http: "Berlaku ralat (HTTP {status}) — sila cuba lagi.",
+  people_title: "Rakan",
+  add_person: "+ Tambah Rakan",
+  person_default: "Rakan {n}",
+  add_item: "+ Tambah item",
+  shared_title: "Item Kongsi",
+  shared_hint: "Pilih siapa berkongsi setiap item — lalai untuk semua",
+  split_among: "Kongsi antara",
+  tax_title: "Cukai & Caj Perkhidmatan",
+  tax_label: "Cukai / SST (%)",
+  service_label: "Perkhidmatan (%)",
+  discount_label: "Diskaun ({sym})",
+  tax_on_service: "Cukai dikenakan atas caj perkhidmatan",
+  calc_btn: "Kira!",
+  result_title: "Bayaran Setiap Orang",
+  own_items: "Item sendiri",
+  shared_part: "Kongsi",
+  subtotal: "Jumlah kecil",
+  tax_service: "Cukai & perkhidmatan",
+  grand_total: "Jumlah Besar",
+  round_label: "Bundarkan ke",
+  rounding_note: "Jumlah individu mungkin tidak tepat kerana pembundaran",
+  footer_line: "Dicipta untuk detik gembira bersama, di mana jua",
+  footer_privacy: "Privasi anda terjamin — semuanya berjalan dalam pelayar anda. Bil, nama dan jumlah tidak pernah dimuat naik atau disimpan. Gambar resit hanya dihantar ke Google Gemini semasa anda mengimbas, dan tidak disimpan oleh EQUITO.",
+  footer_rights: "© 2026 EQUITO. Hak cipta terpelihara.",
+  item_ph: "Nama item",
+  price_ph: "Harga",
+  lang_pick: "Bahasa",
+  cur_pick: "Mata wang",
+  cur_search_ph: "Cari mata wang…",
+  share_title: "Kongsi keputusan",
+  share_native: "Kongsi…",
+  copy_btn: "Salin Teks",
+  copied: "Disalin ✓",
+  email_btn: "E-mel",
+  image_btn: "Kongsi Imej",
+  sh_full_title: "🧾 Pembahagian Bil EQUITO",
+  sh_person: "Hai {name}! 👋 Bahagian anda untuk {bill} ialah {amount}.",
+  sh_thebill: "bil ini",
+  sh_via: "Bahagi bil dengan adil bersama EQUITO →"
+},
+
+'es': {
+  tagline: "Tu compañero de confianza para dividir la cuenta",
+  subtitle: "Divide cuentas sin complicaciones, en cada momento feliz juntos",
+  scan_title: "Escanear recibo",
+  scan_hint: "Haz o sube fotos del recibo — la IA lee los artículos automáticamente",
+  scan_btn: "📷 Subir / Tomar foto",
+  scan_loading: "Leyendo el recibo…",
+  api_toggle: "Ajustes de la clave API de Gemini",
+  api_hint_html: "Consigue una clave <b>gratis</b> en <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sin tarjeta de crédito). La clave solo se guarda en este navegador. Nota: las fotos del recibo se envían a Google para su lectura.",
+  need_key: "Primero añade tu clave API gratuita de Gemini (ajustes abajo).",
+  thumb_label: "Recibo — toca para ampliar",
+  receipt_total: "Total del recibo",
+  found_items: "Se encontraron {n} artículo(s) — revisa y asígnalos:",
+  assign_to: "Asignar a",
+  shared_chip: "Compartido",
+  items_total: "Total de artículos: {sum}",
+  sum_match: "✓ El total {sum} coincide con el {ref}",
+  sum_mismatch: "⚠️ El total {sum} ≠ {ref} {refval} — revisa los artículos abajo",
+  ref_subtotal: "subtotal del recibo",
+  ref_total: "total del recibo",
+  apply_charges: "Aplicar cargos del recibo: ",
+  service_word: "Servicio",
+  discount_word: "Descuento",
+  rounding_word: "Redondeo",
+  import_btn: "Importar a la cuenta ↓",
+  cancel_btn: "Cancelar",
+  imported: "✓ {n} artículo(s) importado(s){ref} — desplázate para revisar.",
+  err_network: "Sin conexión a internet — el escaneo necesita conexión.",
+  err_quota: "Límite gratuito alcanzado — espera un minuto e inténtalo de nuevo.",
+  err_key: "Clave API rechazada — revisa tu clave de Gemini en los ajustes de abajo.",
+  err_unclear: "No se pudo leer el recibo — prueba con una foto más nítida y bien iluminada.",
+  err_unreadable: "Ese archivo no es una imagen legible — elige una foto.",
+  err_model: "Modelo Gemini no disponible — inténtalo más tarde.",
+  err_http: "Algo salió mal (HTTP {status}) — inténtalo de nuevo.",
+  people_title: "Amigos",
+  add_person: "+ Añadir amigo",
+  person_default: "Amigo {n}",
+  add_item: "+ Añadir artículo",
+  shared_title: "Artículos compartidos",
+  shared_hint: "Elige quién comparte cada artículo — por defecto, todos",
+  split_among: "Dividir entre",
+  tax_title: "Impuestos y servicio",
+  tax_label: "Impuesto / IVA (%)",
+  service_label: "Servicio (%)",
+  discount_label: "Descuento ({sym})",
+  tax_on_service: "El impuesto se aplica al cargo por servicio",
+  calc_btn: "¡Calcular!",
+  result_title: "Cada uno paga",
+  own_items: "Artículos propios",
+  shared_part: "Compartido",
+  subtotal: "Subtotal",
+  tax_service: "Impuestos y servicio",
+  grand_total: "Total",
+  round_label: "Redondear a",
+  rounding_note: "Las cantidades individuales pueden no cuadrar exactamente por el redondeo",
+  footer_line: "Hecho para momentos felices, en todas partes",
+  footer_privacy: "Tu privacidad importa — todo funciona en tu navegador. Las cuentas, nombres e importes nunca se suben ni se guardan. Las fotos de recibos se envían a Google Gemini solo al escanear, y EQUITO nunca las conserva.",
+  footer_rights: "© 2026 EQUITO. Todos los derechos reservados.",
+  item_ph: "Artículo",
+  price_ph: "Precio",
+  lang_pick: "Idioma",
+  cur_pick: "Moneda",
+  cur_search_ph: "Buscar moneda…",
+  share_title: "Compartir el resultado",
+  share_native: "Compartir…",
+  copy_btn: "Copiar texto",
+  copied: "Copiado ✓",
+  email_btn: "Correo",
+  image_btn: "Compartir imagen",
+  sh_full_title: "🧾 División de cuenta EQUITO",
+  sh_person: "¡Hola {name}! 👋 Tu parte de {bill} es {amount}.",
+  sh_thebill: "la cuenta",
+  sh_via: "Divide la cuenta con EQUITO →"
+},
+
+'fr': {
+  tagline: "Votre compagnon de confiance pour partager l'addition",
+  subtitle: "Le partage d'addition sans tracas, pour tous vos moments heureux",
+  scan_title: "Scanner le reçu",
+  scan_hint: "Photographiez ou importez le reçu — l'IA lit les articles automatiquement",
+  scan_btn: "📷 Importer / Prendre une photo",
+  scan_loading: "Lecture du reçu…",
+  api_toggle: "Paramètres de la clé API Gemini",
+  api_hint_html: "Obtenez une clé <b>gratuite</b> sur <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sans carte bancaire). La clé n'est enregistrée que dans ce navigateur. Remarque : les photos du reçu sont envoyées à Google pour lecture.",
+  need_key: "Ajoutez d'abord votre clé API Gemini gratuite (paramètres ci-dessous).",
+  thumb_label: "Reçu — touchez pour agrandir",
+  receipt_total: "Total du reçu",
+  found_items: "{n} article(s) trouvé(s) — vérifiez et attribuez-les :",
+  assign_to: "Attribuer à",
+  shared_chip: "Partagé",
+  items_total: "Total des articles : {sum}",
+  sum_match: "✓ Le total {sum} correspond au {ref}",
+  sum_mismatch: "⚠️ Le total {sum} ≠ {ref} {refval} — vérifiez les articles ci-dessous",
+  ref_subtotal: "sous-total du reçu",
+  ref_total: "total du reçu",
+  apply_charges: "Appliquer les frais du reçu : ",
+  service_word: "Service",
+  discount_word: "Remise",
+  rounding_word: "Arrondi",
+  import_btn: "Importer dans l'addition ↓",
+  cancel_btn: "Annuler",
+  imported: "✓ {n} article(s) importé(s){ref} — faites défiler pour vérifier.",
+  err_network: "Pas de connexion internet — le scan nécessite d'être en ligne.",
+  err_quota: "Limite gratuite atteinte — patientez une minute puis réessayez.",
+  err_key: "Clé API refusée — vérifiez votre clé Gemini dans les paramètres ci-dessous.",
+  err_unclear: "Impossible de lire le reçu — essayez une photo plus nette et mieux éclairée.",
+  err_unreadable: "Ce fichier n'est pas une image lisible — choisissez une photo.",
+  err_model: "Modèle Gemini indisponible — réessayez plus tard.",
+  err_http: "Une erreur est survenue (HTTP {status}) — réessayez.",
+  people_title: "Amis",
+  add_person: "+ Ajouter un ami",
+  person_default: "Ami {n}",
+  add_item: "+ Ajouter un article",
+  shared_title: "Articles partagés",
+  shared_hint: "Choisissez qui partage chaque article — tout le monde par défaut",
+  split_among: "Partager entre",
+  tax_title: "Taxes et service",
+  tax_label: "Taxe / TVA (%)",
+  service_label: "Service (%)",
+  discount_label: "Remise ({sym})",
+  tax_on_service: "La taxe s'applique aux frais de service",
+  calc_btn: "Calculer !",
+  result_title: "Chacun paie",
+  own_items: "Articles personnels",
+  shared_part: "Partagé",
+  subtotal: "Sous-total",
+  tax_service: "Taxes et service",
+  grand_total: "Total général",
+  round_label: "Arrondir à",
+  rounding_note: "Les montants individuels peuvent différer légèrement à cause des arrondis",
+  footer_line: "Conçu pour des moments heureux, partout",
+  footer_privacy: "Votre vie privée compte — tout fonctionne dans votre navigateur. Additions, noms et montants ne sont jamais téléversés ni conservés. Les photos de reçus ne sont envoyées à Google Gemini que lors du scan, et EQUITO ne les conserve jamais.",
+  footer_rights: "© 2026 EQUITO. Tous droits réservés.",
+  item_ph: "Article",
+  price_ph: "Prix",
+  lang_pick: "Langue",
+  cur_pick: "Devise",
+  cur_search_ph: "Rechercher une devise…",
+  share_title: "Partager le résultat",
+  share_native: "Partager…",
+  copy_btn: "Copier le texte",
+  copied: "Copié ✓",
+  email_btn: "E-mail",
+  image_btn: "Partager l'image",
+  sh_full_title: "🧾 Partage d'addition EQUITO",
+  sh_person: "Bonjour {name} ! 👋 Ta part pour {bill} est de {amount}.",
+  sh_thebill: "l'addition",
+  sh_via: "Partagez l'addition avec EQUITO →"
+},
+
+'de': {
+  tagline: "Dein zuverlässiger Begleiter beim Rechnungsteilen",
+  subtitle: "Müheloses Rechnungsteilen für all eure schönsten gemeinsamen Momente",
+  scan_title: "Beleg scannen",
+  scan_hint: "Beleg fotografieren oder hochladen — die KI liest die Posten automatisch",
+  scan_btn: "📷 Hochladen / Foto aufnehmen",
+  scan_loading: "Beleg wird gelesen…",
+  api_toggle: "Gemini-API-Schlüssel-Einstellungen",
+  api_hint_html: "Hol dir einen <b>kostenlosen</b> Schlüssel auf <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (keine Kreditkarte nötig). Der Schlüssel wird nur in diesem Browser gespeichert. Hinweis: Belegfotos werden zum Lesen an Google gesendet.",
+  need_key: "Bitte zuerst deinen kostenlosen Gemini-API-Schlüssel eintragen (Einstellungen unten).",
+  thumb_label: "Beleg — zum Vergrößern antippen",
+  receipt_total: "Belegsumme",
+  found_items: "{n} Posten gefunden — prüfen und zuweisen:",
+  assign_to: "Zuweisen an",
+  shared_chip: "Geteilt",
+  items_total: "Postensumme: {sum}",
+  sum_match: "✓ Postensumme {sum} stimmt mit der {ref} überein",
+  sum_mismatch: "⚠️ Postensumme {sum} ≠ {ref} {refval} — bitte Posten unten prüfen",
+  ref_subtotal: "Zwischensumme des Belegs",
+  ref_total: "Belegsumme",
+  apply_charges: "Gebühren vom Beleg übernehmen: ",
+  service_word: "Service",
+  discount_word: "Rabatt",
+  rounding_word: "Rundung",
+  import_btn: "In Rechnung übernehmen ↓",
+  cancel_btn: "Abbrechen",
+  imported: "✓ {n} Posten übernommen{ref} — bitte unten prüfen.",
+  err_network: "Keine Internetverbindung — das Scannen benötigt Internet.",
+  err_quota: "Kostenloses Limit erreicht — bitte eine Minute warten und erneut versuchen.",
+  err_key: "API-Schlüssel abgelehnt — bitte den Gemini-Schlüssel unten prüfen.",
+  err_unclear: "Beleg konnte nicht gelesen werden — bitte ein schärferes, gut beleuchtetes Foto versuchen.",
+  err_unreadable: "Diese Datei ist kein lesbares Bild — bitte ein Foto wählen.",
+  err_model: "Gemini-Modell nicht verfügbar — bitte später erneut versuchen.",
+  err_http: "Etwas ist schiefgelaufen (HTTP {status}) — bitte erneut versuchen.",
+  people_title: "Freunde",
+  add_person: "+ Freund hinzufügen",
+  person_default: "Freund {n}",
+  add_item: "+ Posten hinzufügen",
+  shared_title: "Geteilte Posten",
+  shared_hint: "Wähle, wer sich jeden Posten teilt — standardmäßig alle",
+  split_among: "Teilen unter",
+  tax_title: "Steuern & Servicegebühr",
+  tax_label: "Steuer / MwSt. (%)",
+  service_label: "Service (%)",
+  discount_label: "Rabatt ({sym})",
+  tax_on_service: "Steuer gilt auch für die Servicegebühr",
+  calc_btn: "Berechnen!",
+  result_title: "Jeder zahlt",
+  own_items: "Eigene Posten",
+  shared_part: "Geteilt",
+  subtotal: "Zwischensumme",
+  tax_service: "Steuern & Service",
+  grand_total: "Gesamtsumme",
+  round_label: "Runden auf",
+  rounding_note: "Einzelbeträge können wegen Rundung leicht abweichen",
+  footer_line: "Für fröhliche Momente, überall",
+  footer_privacy: "Deine Privatsphäre zählt — alles läuft in deinem Browser. Rechnungen, Namen und Beträge werden nie hochgeladen oder gespeichert. Belegfotos werden nur beim Scannen an Google Gemini gesendet und von EQUITO nie aufbewahrt.",
+  footer_rights: "© 2026 EQUITO. Alle Rechte vorbehalten.",
+  item_ph: "Posten",
+  price_ph: "Preis",
+  lang_pick: "Sprache",
+  cur_pick: "Währung",
+  cur_search_ph: "Währung suchen…",
+  share_title: "Ergebnis teilen",
+  share_native: "Teilen…",
+  copy_btn: "Text kopieren",
+  copied: "Kopiert ✓",
+  email_btn: "E-Mail",
+  image_btn: "Bild teilen",
+  sh_full_title: "🧾 EQUITO Rechnungsteilung",
+  sh_person: "Hallo {name}! 👋 Dein Anteil für {bill} beträgt {amount}.",
+  sh_thebill: "die Rechnung",
+  sh_via: "Rechnung fair teilen mit EQUITO →"
+},
+
+'pt': {
+  tagline: "Seu parceiro de confiança para dividir a conta",
+  subtitle: "Divisão de contas sem complicação para cada momento feliz juntos",
+  scan_title: "Escanear recibo",
+  scan_hint: "Tire ou envie fotos do recibo — a IA lê os itens automaticamente",
+  scan_btn: "📷 Enviar / Tirar foto",
+  scan_loading: "Lendo o recibo…",
+  api_toggle: "Configurações da chave API Gemini",
+  api_hint_html: "Obtenha uma chave <b>gratuita</b> em <a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> (sem cartão de crédito). A chave fica salva apenas neste navegador. Obs.: as fotos do recibo são enviadas ao Google para leitura.",
+  need_key: "Adicione primeiro sua chave API gratuita do Gemini (configurações abaixo).",
+  thumb_label: "Recibo — toque para ampliar",
+  receipt_total: "Total do recibo",
+  found_items: "{n} item(ns) encontrado(s) — confira e atribua:",
+  assign_to: "Atribuir a",
+  shared_chip: "Compartilhado",
+  items_total: "Total dos itens: {sum}",
+  sum_match: "✓ O total {sum} confere com o {ref}",
+  sum_mismatch: "⚠️ O total {sum} ≠ {ref} {refval} — confira os itens abaixo",
+  ref_subtotal: "subtotal do recibo",
+  ref_total: "total do recibo",
+  apply_charges: "Aplicar taxas do recibo: ",
+  service_word: "Serviço",
+  discount_word: "Desconto",
+  rounding_word: "Arredondamento",
+  import_btn: "Importar para a conta ↓",
+  cancel_btn: "Cancelar",
+  imported: "✓ {n} item(ns) importado(s){ref} — role para conferir.",
+  err_network: "Sem conexão com a internet — o escaneamento precisa estar online.",
+  err_quota: "Limite gratuito atingido — aguarde um minuto e tente de novo.",
+  err_key: "Chave API rejeitada — confira sua chave Gemini nas configurações abaixo.",
+  err_unclear: "Não foi possível ler o recibo — tente uma foto mais nítida e bem iluminada.",
+  err_unreadable: "Esse arquivo não é uma imagem legível — escolha uma foto.",
+  err_model: "Modelo Gemini indisponível — tente mais tarde.",
+  err_http: "Algo deu errado (HTTP {status}) — tente de novo.",
+  people_title: "Amigos",
+  add_person: "+ Adicionar amigo",
+  person_default: "Amigo {n}",
+  add_item: "+ Adicionar item",
+  shared_title: "Itens compartilhados",
+  shared_hint: "Escolha quem divide cada item — todos por padrão",
+  split_among: "Dividir entre",
+  tax_title: "Impostos e serviço",
+  tax_label: "Imposto / IVA (%)",
+  service_label: "Serviço (%)",
+  discount_label: "Desconto ({sym})",
+  tax_on_service: "O imposto incide sobre a taxa de serviço",
+  calc_btn: "Calcular!",
+  result_title: "Cada um paga",
+  own_items: "Itens próprios",
+  shared_part: "Compartilhado",
+  subtotal: "Subtotal",
+  tax_service: "Impostos e serviço",
+  grand_total: "Total geral",
+  round_label: "Arredondar para",
+  rounding_note: "Os valores individuais podem não fechar exatamente por causa do arredondamento",
+  footer_line: "Feito para momentos felizes, em qualquer lugar",
+  footer_privacy: "Sua privacidade importa — tudo roda no seu navegador. Contas, nomes e valores nunca são enviados nem armazenados. As fotos de recibos vão ao Google Gemini apenas ao escanear, e o EQUITO nunca as guarda.",
+  footer_rights: "© 2026 EQUITO. Todos os direitos reservados.",
+  item_ph: "Item",
+  price_ph: "Preço",
+  lang_pick: "Idioma",
+  cur_pick: "Moeda",
+  cur_search_ph: "Buscar moeda…",
+  share_title: "Compartilhar resultado",
+  share_native: "Compartilhar…",
+  copy_btn: "Copiar texto",
+  copied: "Copiado ✓",
+  email_btn: "E-mail",
+  image_btn: "Compartilhar imagem",
+  sh_full_title: "🧾 Divisão de conta EQUITO",
+  sh_person: "Oi {name}! 👋 Sua parte de {bill} é {amount}.",
+  sh_thebill: "a conta",
+  sh_via: "Divida a conta com o EQUITO →"
+},
+
+'ja': {
+  tagline: "あなたの頼れる割り勘パートナー",
+  subtitle: "手間いらずの割り勘で、楽しいひとときをいつも一緒に",
+  scan_title: "レシートをスキャン",
+  scan_hint: "レシートを撮影またはアップロード — AIが品目を自動で読み取ります",
+  scan_btn: "📷 アップロード / 撮影",
+  scan_loading: "レシートを読み取り中…",
+  api_toggle: "Gemini APIキー設定",
+  api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> で<b>無料</b>のキーを取得できます（クレジットカード不要）。キーはこのブラウザにのみ保存されます。注意：レシート写真は読み取りのためGoogleに送信されます。",
+  need_key: "まず無料のGemini APIキーを入力してください（下の設定）。",
+  thumb_label: "レシート — タップで拡大",
+  receipt_total: "レシート合計",
+  found_items: "{n} 件の品目を検出 — 確認して割り当ててください：",
+  assign_to: "割り当て",
+  shared_chip: "シェア",
+  items_total: "品目合計：{sum}",
+  sum_match: "✓ 品目合計 {sum} は{ref}と一致しています",
+  sum_mismatch: "⚠️ 品目合計 {sum} が{ref} {refval} と一致しません — 以下の品目を確認してください",
+  ref_subtotal: "レシート小計",
+  ref_total: "レシート合計",
+  apply_charges: "レシートの料金を適用：",
+  service_word: "サービス料",
+  discount_word: "割引",
+  rounding_word: "端数調整",
+  import_btn: "会計に取り込む ↓",
+  cancel_btn: "キャンセル",
+  imported: "✓ {n} 件の品目を取り込みました{ref} — 下で割り勘を確認してください。",
+  err_network: "インターネットに接続できません — 読み取りにはオンラインが必要です。",
+  err_quota: "無料枠の上限に達しました — 1分ほど待ってから再試行してください。",
+  err_key: "APIキーが拒否されました — 下の設定でGeminiキーを確認してください。",
+  err_unclear: "レシートを読み取れませんでした — より鮮明で明るい写真をお試しください。",
+  err_unreadable: "このファイルは読み取れる画像ではありません — 写真を選んでください。",
+  err_model: "Geminiモデルが利用できません — 後でもう一度お試しください。",
+  err_http: "エラーが発生しました（HTTP {status}）— もう一度お試しください。",
+  people_title: "仲間",
+  add_person: "+ 仲間を追加",
+  person_default: "仲間{n}",
+  add_item: "+ 品目を追加",
+  shared_title: "シェア品目",
+  shared_hint: "各品目を誰でシェアするか選択 — 初期設定は全員",
+  split_among: "分担する仲間",
+  tax_title: "税金とサービス料",
+  tax_label: "税率 (%)",
+  service_label: "サービス料 (%)",
+  discount_label: "割引（{sym}）",
+  tax_on_service: "サービス料にも税金がかかる",
+  calc_btn: "計算する！",
+  result_title: "一人あたりの支払い",
+  own_items: "個人の品目",
+  shared_part: "シェア分",
+  subtotal: "小計",
+  tax_service: "税・サービス料",
+  grand_total: "合計",
+  round_label: "丸め単位",
+  rounding_note: "端数処理のため、個人の合計が総額と一致しない場合があります",
+  footer_line: "楽しいひとときのために、どこでも",
+  footer_privacy: "プライバシーも安心 — すべてブラウザ内で動作します。会計・名前・金額がアップロードや保存されることはありません。レシート写真はスキャン時のみ Google Gemini に送信され、EQUITO が保存することはありません。",
+  footer_rights: "© 2026 EQUITO. All rights reserved.",
+  item_ph: "品目名",
+  price_ph: "価格",
+  lang_pick: "言語",
+  cur_pick: "通貨",
+  cur_search_ph: "通貨を検索…",
+  share_title: "結果をシェア",
+  share_native: "共有…",
+  copy_btn: "テキストをコピー",
+  copied: "コピーしました ✓",
+  email_btn: "メール",
+  image_btn: "画像を共有",
+  sh_full_title: "🧾 EQUITO 割り勘結果",
+  sh_person: "{name}さん、こんにちは！👋 {bill}のあなたの負担額は {amount} です。",
+  sh_thebill: "今回のお会計",
+  sh_via: "EQUITOで公平に割り勘 →"
+},
+
+'ko': {
+  tagline: "믿을 수 있는 더치페이 도우미",
+  subtitle: "번거로움 없는 정산, 행복한 순간마다 함께합니다",
+  scan_title: "영수증 스캔",
+  scan_hint: "영수증을 촬영하거나 업로드하세요 — AI가 항목을 자동으로 읽습니다",
+  scan_btn: "📷 업로드 / 촬영",
+  scan_loading: "영수증 읽는 중…",
+  api_toggle: "Gemini API 키 설정",
+  api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a>에서 <b>무료</b> 키를 받으세요(신용카드 불필요). 키는 이 브라우저에만 저장됩니다. 참고: 영수증 사진은 판독을 위해 Google로 전송됩니다.",
+  need_key: "먼저 무료 Gemini API 키를 입력해 주세요(아래 설정).",
+  thumb_label: "영수증 — 탭하여 확대",
+  receipt_total: "영수증 합계",
+  found_items: "{n}개 항목 발견 — 확인 후 배정하세요:",
+  assign_to: "배정",
+  shared_chip: "공유",
+  items_total: "항목 합계: {sum}",
+  sum_match: "✓ 항목 합계 {sum}이(가) {ref}와 일치합니다",
+  sum_mismatch: "⚠️ 항목 합계 {sum} ≠ {ref} {refval} — 아래 항목을 확인하세요",
+  ref_subtotal: "영수증 소계",
+  ref_total: "영수증 합계",
+  apply_charges: "영수증의 요금 적용: ",
+  service_word: "봉사료",
+  discount_word: "할인",
+  rounding_word: "반올림",
+  import_btn: "계산서로 가져오기 ↓",
+  cancel_btn: "취소",
+  imported: "✓ {n}개 항목을 가져왔습니다{ref} — 아래에서 정산을 확인하세요.",
+  err_network: "인터넷 연결이 없습니다 — 스캔은 온라인 상태가 필요합니다.",
+  err_quota: "무료 한도에 도달했습니다 — 잠시 후 다시 시도해 주세요.",
+  err_key: "API 키가 거부되었습니다 — 아래 설정에서 Gemini 키를 확인해 주세요.",
+  err_unclear: "영수증을 읽을 수 없습니다 — 더 선명하고 밝은 사진으로 시도해 보세요.",
+  err_unreadable: "읽을 수 있는 이미지 파일이 아닙니다 — 사진을 선택해 주세요.",
+  err_model: "Gemini 모델을 사용할 수 없습니다 — 나중에 다시 시도해 주세요.",
+  err_http: "오류가 발생했습니다 (HTTP {status}) — 다시 시도해 주세요.",
+  people_title: "친구",
+  add_person: "+ 친구 추가",
+  person_default: "친구 {n}",
+  add_item: "+ 항목 추가",
+  shared_title: "공유 항목",
+  shared_hint: "각 항목을 나눌 사람 선택 — 기본은 전원",
+  split_among: "나눌 사람",
+  tax_title: "세금 및 봉사료",
+  tax_label: "세율 (%)",
+  service_label: "봉사료 (%)",
+  discount_label: "할인 ({sym})",
+  tax_on_service: "봉사료에도 세금 부과",
+  calc_btn: "계산하기!",
+  result_title: "1인당 결제 금액",
+  own_items: "개인 항목",
+  shared_part: "공유 몫",
+  subtotal: "소계",
+  tax_service: "세금·봉사료",
+  grand_total: "총계",
+  round_label: "반올림 단위",
+  rounding_note: "반올림으로 인해 개인 금액의 합이 총계와 다를 수 있습니다",
+  footer_line: "즐거운 시간을 위해, 어디서나",
+  footer_privacy: "개인정보 걱정 없이 — 모든 계산은 브라우저 안에서 이루어집니다. 계산서, 이름, 금액은 업로드되거나 저장되지 않습니다. 영수증 사진은 스캔할 때만 Google Gemini로 전송되며 EQUITO는 보관하지 않습니다.",
+  footer_rights: "© 2026 EQUITO. All rights reserved.",
+  item_ph: "항목명",
+  price_ph: "가격",
+  lang_pick: "언어",
+  cur_pick: "통화",
+  cur_search_ph: "통화 검색…",
+  share_title: "결과 공유",
+  share_native: "공유…",
+  copy_btn: "텍스트 복사",
+  copied: "복사됨 ✓",
+  email_btn: "이메일",
+  image_btn: "이미지 공유",
+  sh_full_title: "🧾 EQUITO 더치페이 결과",
+  sh_person: "{name}님, 안녕하세요! 👋 {bill}에서 부담하실 금액은 {amount}입니다.",
+  sh_thebill: "이번 계산서",
+  sh_via: "EQUITO로 공정하게 정산 →"
+},
+
+'hi': {
+  tagline: "बिल बाँटने का आपका भरोसेमंद साथी",
+  subtitle: "हर खुशी के पल में आपके साथ — बिना झंझट बिल बँटवारा",
+  scan_title: "रसीद स्कैन करें",
+  scan_hint: "रसीद की फोटो लें या अपलोड करें — AI आइटम अपने आप पढ़ लेगा",
+  scan_btn: "📷 अपलोड / फोटो लें",
+  scan_loading: "रसीद पढ़ी जा रही है…",
+  api_toggle: "Gemini API कुंजी सेटिंग",
+  api_hint_html: "<a href='https://aistudio.google.com/apikey' target='_blank' rel='noopener'>aistudio.google.com/apikey</a> पर <b>मुफ़्त</b> कुंजी पाएँ (क्रेडिट कार्ड की ज़रूरत नहीं)। कुंजी केवल इसी ब्राउज़र में सहेजी जाती है। नोट: रसीद की फोटो पढ़ने के लिए Google को भेजी जाती हैं।",
+  need_key: "पहले अपनी मुफ़्त Gemini API कुंजी डालें (नीचे सेटिंग)।",
+  thumb_label: "रसीद — बड़ा करने के लिए टैप करें",
+  receipt_total: "रसीद कुल",
+  found_items: "{n} आइटम मिले — जाँचें और बाँटें:",
+  assign_to: "किसे दें",
+  shared_chip: "साझा",
+  items_total: "आइटम कुल: {sum}",
+  sum_match: "✓ आइटम कुल {sum}, {ref} से मेल खाता है",
+  sum_mismatch: "⚠️ आइटम कुल {sum} ≠ {ref} {refval} — नीचे आइटम जाँचें",
+  ref_subtotal: "रसीद उप-योग",
+  ref_total: "रसीद कुल",
+  apply_charges: "रसीद के शुल्क लागू करें: ",
+  service_word: "सेवा शुल्क",
+  discount_word: "छूट",
+  rounding_word: "पूर्णांकन",
+  import_btn: "बिल में जोड़ें ↓",
+  cancel_btn: "रद्द करें",
+  imported: "✓ {n} आइटम जोड़े गए{ref} — नीचे जाकर जाँचें।",
+  err_network: "इंटरनेट कनेक्शन नहीं है — स्कैनिंग के लिए ऑनलाइन होना ज़रूरी है।",
+  err_quota: "मुफ़्त सीमा पूरी हो गई — एक मिनट रुककर फिर कोशिश करें।",
+  err_key: "API कुंजी अस्वीकृत हुई — नीचे सेटिंग में अपनी Gemini कुंजी जाँचें।",
+  err_unclear: "रसीद पढ़ी नहीं जा सकी — ज़्यादा साफ़ और रोशनी वाली फोटो आज़माएँ।",
+  err_unreadable: "यह फ़ाइल पढ़ने योग्य इमेज नहीं है — कृपया फोटो चुनें।",
+  err_model: "Gemini मॉडल उपलब्ध नहीं है — बाद में फिर कोशिश करें।",
+  err_http: "कुछ गड़बड़ हुई (HTTP {status}) — फिर कोशिश करें।",
+  people_title: "दोस्त",
+  add_person: "+ दोस्त जोड़ें",
+  person_default: "दोस्त {n}",
+  add_item: "+ आइटम जोड़ें",
+  shared_title: "साझा आइटम",
+  shared_hint: "चुनें कि हर आइटम कौन-कौन बाँटेगा — डिफ़ॉल्ट: सभी",
+  split_among: "इनमें बाँटें",
+  tax_title: "कर और सेवा शुल्क",
+  tax_label: "कर / GST (%)",
+  service_label: "सेवा (%)",
+  discount_label: "छूट ({sym})",
+  tax_on_service: "सेवा शुल्क पर भी कर लगेगा",
+  calc_btn: "गणना करें!",
+  result_title: "हर व्यक्ति का भुगतान",
+  own_items: "अपने आइटम",
+  shared_part: "साझा हिस्सा",
+  subtotal: "उप-योग",
+  tax_service: "कर व सेवा",
+  grand_total: "कुल योग",
+  round_label: "पूर्णांकन इकाई",
+  rounding_note: "पूर्णांकन के कारण व्यक्तिगत राशियों का योग थोड़ा अलग हो सकता है",
+  footer_line: "खुशियों भरे पलों के लिए, हर जगह",
+  footer_privacy: "आपकी निजता सुरक्षित है — सब कुछ आपके ब्राउज़र में चलता है। बिल, नाम और राशियाँ कभी अपलोड या संग्रहीत नहीं होतीं। रसीद की फोटो केवल स्कैन करते समय Google Gemini को भेजी जाती हैं, EQUITO उन्हें कभी सहेजता नहीं।",
+  footer_rights: "© 2026 EQUITO. सर्वाधिकार सुरक्षित।",
+  item_ph: "आइटम का नाम",
+  price_ph: "कीमत",
+  lang_pick: "भाषा",
+  cur_pick: "मुद्रा",
+  cur_search_ph: "मुद्रा खोजें…",
+  share_title: "नतीजा साझा करें",
+  share_native: "साझा करें…",
+  copy_btn: "टेक्स्ट कॉपी करें",
+  copied: "कॉपी हो गया ✓",
+  email_btn: "ईमेल",
+  image_btn: "इमेज साझा करें",
+  sh_full_title: "🧾 EQUITO बिल बँटवारा",
+  sh_person: "नमस्ते {name}! 👋 {bill} में आपका हिस्सा {amount} है।",
+  sh_thebill: "इस बिल",
+  sh_via: "EQUITO से बिल बाँटें →"
+}
+
+};
+
+/* ====== CURRENCIES (ISO 4217) — names & symbols come from the browser's Intl data ====== */
+var CURRENCIES = [
+  'MYR','SGD','USD','EUR','GBP','CNY','TWD','HKD','JPY','KRW','THB','IDR','VND','PHP','INR','AUD','NZD','CAD','CHF','BND','KHR','LAK','MMK',
+  'AED','AFN','ALL','AMD','ANG','AOA','ARS','AWG','AZN','BAM','BBD','BDT','BGN','BHD','BIF','BMD','BOB','BRL','BSD','BWP','BZD',
+  'CDF','CLP','COP','CRC','CUP','CVE','CZK','DJF','DKK','DOP','DZD','EGP','ERN','ETB','FJD','GEL','GHS','GMD','GNF','GTQ','GYD',
+  'HNL','HTG','HUF','ILS','IQD','IRR','ISK','JMD','JOD','KES','KGS','KMF','KWD','KYD','KZT','LBP','LKR','LRD','LSL','LYD',
+  'MAD','MDL','MGA','MKD','MNT','MOP','MUR','MVR','MWK','MXN','MZN','NAD','NGN','NIO','NOK','NPR','OMR','PAB','PEN','PGK','PKR',
+  'PLN','PYG','QAR','RON','RSD','RUB','RWF','SAR','SCR','SDG','SEK','SLL','SOS','SRD','SSP','STN','SYP','SZL','TJS','TMT','TND',
+  'TOP','TRY','TTD','TZS','UAH','UGX','UYU','UZS','VES','WST','XAF','XCD','XOF','XPF','YER','ZAR','ZMW'
+];
+
+/* Maps a currency string printed on a receipt to an ISO code (ambiguous symbols like $ and ¥ are skipped) */
+var RECEIPT_CUR_MAP = {
+  'RM': 'MYR', 'S$': 'SGD', 'NT$': 'TWD', 'HK$': 'HKD', 'RMB': 'CNY', '元': 'CNY',
+  '€': 'EUR', '£': 'GBP', '₩': 'KRW', '฿': 'THB', 'RP': 'IDR', '₹': 'INR', 'RS': 'INR',
+  '₱': 'PHP', '₫': 'VND', 'A$': 'AUD', 'NZ$': 'NZD', 'C$': 'CAD', 'R$': 'BRL', '₺': 'TRY', '₪': 'ILS'
+};
+</script>
 <script>
 (function() {
+  var APP_URL = 'https://claudey-my.github.io/equito/';
+  var LANG_STORAGE = 'equito_lang';
+  var CUR_STORAGE = 'equito_cur';
+  var THEME_STORAGE = 'equito_theme';
+
   var personCount = 0;
   var roundTo = 0.05;
+  var LANG = 'en-GB';
+  var CUR = 'MYR';
+  var lastCalc = null;   /* snapshot of the latest results, used by the share buttons */
+  var billMeta = null;   /* { merchant, date } remembered from the last receipt import */
 
-  function getLang() {
-    var zh = document.getElementById('lang-zh');
-    return (zh && zh.checked) ? 'zh' : 'en';
+  function store(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+  function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+
+  /* ====== I18N ====== */
+  function t(key, vars) {
+    var base = I18N['en-GB'];
+    var dict = I18N[LANG] || {};
+    var s = dict[key] !== undefined ? dict[key] : base[key];
+    if (s === undefined) s = key;
+    if (vars) {
+      for (var k in vars) s = s.split('{' + k + '}').join(vars[k]);
+    }
+    return s;
   }
 
+  function langDef() {
+    for (var i = 0; i < LANGS.length; i++) if (LANGS[i].id === LANG) return LANGS[i];
+    return LANGS[0];
+  }
+  function locale() { return langDef().locale; }
+
+  function detectLang() {
+    var saved = stored(LANG_STORAGE);
+    if (saved) { for (var i = 0; i < LANGS.length; i++) if (LANGS[i].id === saved) return saved; }
+    var nav = (navigator.language || 'en').toLowerCase();
+    if (nav.indexOf('zh') === 0) {
+      return (nav.indexOf('tw') >= 0 || nav.indexOf('hk') >= 0 || nav.indexOf('hant') >= 0) ? 'zh-TW' : 'zh-CN';
+    }
+    if (nav.indexOf('en-us') === 0) return 'en-US';
+    if (nav.indexOf('en') === 0) return 'en-GB';
+    for (var j = 0; j < LANGS.length; j++) {
+      if (nav.indexOf(LANGS[j].id.toLowerCase().split('-')[0]) === 0) return LANGS[j].id;
+    }
+    return 'en-GB';
+  }
+
+  /* ====== CURRENCY ====== */
+  function curDigits(code) {
+    try {
+      return new Intl.NumberFormat('en', { style: 'currency', currency: code }).resolvedOptions().maximumFractionDigits;
+    } catch (e) { return 2; }
+  }
+  function moneyFormatter() {
+    try {
+      return new Intl.NumberFormat(locale(), { style: 'currency', currency: CUR, currencyDisplay: 'narrowSymbol' });
+    } catch (e) {
+      try {
+        return new Intl.NumberFormat(locale(), { style: 'currency', currency: CUR });
+      } catch (e2) { return null; }
+    }
+  }
+  function fmtMoney(v) {
+    var f = moneyFormatter();
+    if (f) return f.format(v);
+    return CUR + ' ' + v.toFixed(curDigits(CUR));
+  }
+  function curSymbol(code) {
+    code = code || CUR;
+    try {
+      var parts = new Intl.NumberFormat(locale(), { style: 'currency', currency: code, currencyDisplay: 'narrowSymbol' }).formatToParts(1);
+      for (var i = 0; i < parts.length; i++) if (parts[i].type === 'currency') return parts[i].value;
+    } catch (e) {}
+    return code;
+  }
+  /* Colloquial currency names that read better than the browser's formal ones */
+  var CUR_NAME_OVERRIDES = {
+    'zh-CN': { MYR: '令吉', SGD: '新币' },
+    'zh-TW': { MYR: '令吉', SGD: '新幣' }
+  };
+  function curName(code) {
+    var o = CUR_NAME_OVERRIDES[LANG];
+    if (o && o[code]) return o[code];
+    try {
+      var dn = new Intl.DisplayNames([locale()], { type: 'currency' });
+      return dn.of(code) || code;
+    } catch (e) { return code; }
+  }
+  function defaultRound() {
+    if (CUR === 'MYR') return 0.05;
+    return Math.pow(10, -curDigits(CUR));
+  }
+  function roundOptions() {
+    var base = Math.pow(10, -curDigits(CUR));
+    return [base, base * 5, base * 10, base * 100];
+  }
+  function fmtRound(v) {
+    var d = curDigits(CUR);
+    return d > 0 ? v.toFixed(d) : String(Math.round(v));
+  }
+
+  function setCurrency(code, opts) {
+    CUR = code;
+    store(CUR_STORAGE, code);
+    roundTo = defaultRound();
+    document.getElementById('cur-btn-label').textContent = code;
+    var dl = document.getElementById('discount-label');
+    if (dl) dl.textContent = t('discount_label', { sym: curSymbol() });
+    if (!opts || !opts.skipLists) buildCurList('');
+    calculate();
+  }
+
+  /* ====== THEME ====== */
+  function currentTheme() {
+    var saved = stored(THEME_STORAGE);
+    if (saved === 'dark' || saved === 'light') return saved;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#171412' : '#FAF7F2');
+  }
+  function toggleTheme() {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    store(THEME_STORAGE, next);
+    applyTheme(next);
+  }
+
+  /* ====== ESSENTIAL / PRO MODE ====== */
+  /* Mode is deliberately NOT persisted — every visit starts on Essential */
+  function setMode(mode) {
+    if (mode !== 'pro') mode = 'essential';
+    document.body.classList.toggle('mode-essential', mode === 'essential');
+    var btns = document.querySelectorAll('.mode-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === mode);
+    }
+  }
+
+  /* ====== TOP BAR DROPDOWNS ====== */
+  function buildLangList() {
+    var html = '';
+    for (var i = 0; i < LANGS.length; i++) {
+      var L = LANGS[i];
+      html += '<button class="sel-opt' + (L.id === LANG ? ' active' : '') + '" data-lang="' + L.id + '">' +
+        '<span class="flag">' + L.flag + '</span><span>' + L.name + '</span></button>';
+    }
+    document.getElementById('lang-list').innerHTML = html;
+    var d = langDef();
+    document.getElementById('lang-btn-label').textContent = d.flag + ' ' + d.short;
+  }
+
+  function buildCurList(filter) {
+    filter = (filter || '').toLowerCase();
+    var html = '';
+    for (var i = 0; i < CURRENCIES.length; i++) {
+      var code = CURRENCIES[i];
+      var name = curName(code);
+      var sym = curSymbol(code);
+      if (filter && (code + ' ' + name).toLowerCase().indexOf(filter) === -1) continue;
+      html += '<button class="sel-opt' + (code === CUR ? ' active' : '') + '" data-cur="' + code + '">' +
+        '<span class="cur-code">' + code + '</span>' +
+        '<span class="cur-name">' + escHtml(name + (sym && sym !== code ? ' · ' + sym : '')) + '</span></button>';
+    }
+    document.getElementById('cur-list').innerHTML = html;
+  }
+
+  function closePanels() {
+    document.getElementById('lang-panel').classList.remove('open');
+    document.getElementById('cur-panel').classList.remove('open');
+  }
+
+  function setLanguage(id) {
+    LANG = id;
+    store(LANG_STORAGE, id);
+    applyI18n();
+  }
+
+  function applyI18n() {
+    document.documentElement.lang = locale();
+    var els = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < els.length; i++) {
+      var key = els[i].getAttribute('data-i18n');
+      if (key.slice(-5) === '_html') els[i].innerHTML = t(key);
+      else els[i].textContent = t(key);
+    }
+    var phs = document.querySelectorAll('[data-i18n-ph]');
+    for (var p = 0; p < phs.length; p++) {
+      phs[p].placeholder = t(phs[p].getAttribute('data-i18n-ph'));
+    }
+    var dl = document.getElementById('discount-label');
+    if (dl) dl.textContent = t('discount_label', { sym: curSymbol() });
+    var scanBtn = document.getElementById('scan-btn');
+    if (scanBtn && !scanBtn.classList.contains('loading')) scanBtn.textContent = t('scan_btn');
+    /* rename people that still carry an auto-generated name */
+    var autoNames = document.querySelectorAll('.person-name-input[data-auto="1"]');
+    for (var a = 0; a < autoNames.length; a++) {
+      autoNames[a].value = t('person_default', { n: autoNames[a].getAttribute('data-person-id') });
+    }
+    /* dynamic per-person "+ Add item" buttons */
+    var addBtns = document.querySelectorAll('.add-item-btn[data-add-item]');
+    for (var ab = 0; ab < addBtns.length; ab++) addBtns[ab].textContent = t('add_item');
+    /* placeholders inside dynamic rows */
+    var itemNames = document.querySelectorAll('input.item-name');
+    for (var n = 0; n < itemNames.length; n++) itemNames[n].placeholder = t('item_ph');
+    var prices = document.querySelectorAll('input.item-price');
+    for (var pr = 0; pr < prices.length; pr++) prices[pr].placeholder = t('price_ph');
+    buildLangList();
+    buildCurList(document.getElementById('cur-search').value);
+    refreshSharedItemChips();
+    if (ocrData) renderOcrReview();
+    calculate();
+  }
+
+  /* ====== HELPERS ====== */
   function escHtml(str) {
     var d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
   }
+  function escAttr(str) { return escHtml(str).replace(/"/g, '&quot;'); }
 
   function getActivePeople() {
     var people = [];
-    var sections = document.querySelectorAll('[id^="person-"]');
+    var sections = document.querySelectorAll('.person-section[id^="person-"]');
     for (var i = 0; i < sections.length; i++) {
       var section = sections[i];
       var id = section.id.replace('person-', '');
       var nameInput = section.querySelector('.person-name-input');
-      var name = nameInput ? nameInput.value : 'Person ' + id;
+      var name = nameInput ? nameInput.value : t('person_default', { n: id });
       people.push({ id: id, name: name });
     }
     return people;
   }
 
+  /* ====== PEOPLE & ITEMS ====== */
   function addPerson() {
     personCount++;
     var div = document.createElement('div');
     div.className = 'person-section';
     div.id = 'person-' + personCount;
     var num = personCount;
-    var lang = getLang();
-    var defaultName = lang === 'zh' ? '第' + num + '位' : 'Person ' + num;
+    var defaultName = t('person_default', { n: num });
     div.innerHTML =
       '<div class="person-header">' +
-        '<input class="person-name-input" value="' + defaultName + '" data-person-id="' + num + '">' +
+        '<input class="person-name-input" value="' + escAttr(defaultName) + '" data-person-id="' + num + '" data-auto="1">' +
         '<div style="display:flex;align-items:center;gap:6px">' +
-          '<span class="person-subtotal" id="subtotal-' + num + '">RM 0.00</span>' +
+          '<span class="person-subtotal" id="subtotal-' + num + '">' + fmtMoney(0) + '</span>' +
           '<button class="btn-remove" data-remove-person="' + num + '">&times;</button>' +
         '</div>' +
       '</div>' +
       '<div id="items-' + num + '"></div>' +
-      '<button class="add-item-btn" data-add-item="' + num + '">' +
-        '<span class="en">+ Add item</span><span class="zh">+ 添加菜品</span>' +
-      '</button>';
+      '<button class="add-item-btn" data-add-item="' + num + '">' + escHtml(t('add_item')) + '</button>';
     document.getElementById('people-list').appendChild(div);
     addItem(num);
     refreshSharedItemChips();
@@ -1097,10 +2403,10 @@ footer .brand {
     var div = document.createElement('div');
     div.className = 'item-row';
     div.innerHTML =
-      '<input type="text" class="item-name" placeholder="Item name">' +
+      '<input type="text" class="item-name" placeholder="' + escAttr(t('item_ph')) + '">' +
       '<input type="number" class="item-qty" value="1" min="1" step="1" inputmode="numeric">' +
       '<span class="multiply-sign">×</span>' +
-      '<input type="number" class="item-price" placeholder="Price" min="0" step="0.01" inputmode="decimal">' +
+      '<input type="number" class="item-price" placeholder="' + escAttr(t('price_ph')) + '" min="0" step="0.01" inputmode="decimal">' +
       '<button class="btn-remove" data-remove-row="1">×</button>';
     container.appendChild(div);
   }
@@ -1115,18 +2421,16 @@ footer .brand {
     for (var i = 0; i < people.length; i++) {
       chipsHtml += '<span class="person-chip active" data-person-id="' + people[i].id + '">' + escHtml(people[i].name) + '</span>';
     }
-    var lang = getLang();
-    var splitLabel = lang === 'zh' ? '分摊人' : 'Split among';
     div.innerHTML =
       '<div class="shared-item-inputs">' +
-        '<input type="text" class="item-name" placeholder="Item name">' +
+        '<input type="text" class="item-name" placeholder="' + escAttr(t('item_ph')) + '">' +
         '<input type="number" class="item-qty" value="1" min="1" step="1" inputmode="numeric">' +
         '<span class="multiply-sign">×</span>' +
-        '<input type="number" class="item-price" placeholder="Price" min="0" step="0.01" inputmode="decimal">' +
+        '<input type="number" class="item-price" placeholder="' + escAttr(t('price_ph')) + '" min="0" step="0.01" inputmode="decimal">' +
         '<button class="btn-remove" data-remove-shared="1">×</button>' +
       '</div>' +
       '<div class="shared-people-row">' +
-        '<span class="shared-people-label">' + splitLabel + ':</span>' +
+        '<span class="shared-people-label">' + escHtml(t('split_among')) + ':</span>' +
         chipsHtml +
       '</div>';
     container.appendChild(div);
@@ -1135,8 +2439,6 @@ footer .brand {
   function refreshSharedItemChips() {
     var people = getActivePeople();
     var blocks = document.querySelectorAll('.shared-item-block');
-    var lang = getLang();
-    var splitLabel = lang === 'zh' ? '分摊人' : 'Split among';
     for (var b = 0; b < blocks.length; b++) {
       var row = blocks[b].querySelector('.shared-people-row');
       if (!row) continue;
@@ -1148,7 +2450,7 @@ footer .brand {
         }
       }
       var hasAny = Object.keys(activeIds).length > 0;
-      var chipsHtml = '<span class="shared-people-label">' + splitLabel + ':</span>';
+      var chipsHtml = '<span class="shared-people-label">' + escHtml(t('split_among')) + ':</span>';
       for (var p = 0; p < people.length; p++) {
         var isActive = !hasAny || activeIds[people[p].id];
         chipsHtml += '<span class="person-chip ' + (isActive ? 'active' : '') + '" data-person-id="' + people[p].id + '">' + escHtml(people[p].name) + '</span>';
@@ -1200,36 +2502,36 @@ footer .brand {
     return Math.round(val / precision) * precision;
   }
 
-  function calculate() {
-    var lang = getLang();
-    var labels = {
-      en: { result_title:'Each Person Pays', own_items:'Own items', shared_part:'Shared', subtotal:'Subtotal', tax_service_share:'Tax & service', discount_share:'Discount', grand_total:'Grand Total', round_label:'Round to', rounding_note:'Individual amounts may not add up exactly due to rounding' },
-      zh: { result_title:'每人应付', own_items:'个人点单', shared_part:'共享部分', subtotal:'小计', tax_service_share:'税费与服务费', discount_share:'折扣', grand_total:'总计', round_label:'取整到', rounding_note:'由于取整，个人金额总和可能与总计略有出入' }
-    };
-    var t = labels[lang];
+  /* ====== CALCULATE ====== */
+  function shareButtonsHtml(scope, idx, small) {
+    return '<button class="share-btn share-copy" data-share-via="copy" data-share-scope="' + scope + '" data-share-idx="' + idx + '">📋 ' + escHtml(t('copy_btn')) + '</button>' +
+      '<button class="share-btn share-img" data-share-via="img" data-share-scope="' + scope + '" data-share-idx="' + idx + '">🖼 ' + escHtml(t('image_btn')) + '</button>';
+  }
 
+  function calculate() {
     var taxPct = parseFloat(document.getElementById('tax').value) || 0;
     var servicePct = parseFloat(document.getElementById('service').value) || 0;
     var discount = parseFloat(document.getElementById('discount').value) || 0;
     var taxOnService = document.getElementById('tax-on-service').checked;
-    var personSections = document.querySelectorAll('[id^="person-"]');
+    var personSections = document.querySelectorAll('.person-section[id^="person-"]');
     var people = [];
 
     for (var i = 0; i < personSections.length; i++) {
       var section = personSections[i];
       var id = section.id.replace('person-', '');
       var nameInput = section.querySelector('.person-name-input');
-      var name = nameInput ? nameInput.value : 'Person ' + id;
+      var name = nameInput ? nameInput.value : t('person_default', { n: id });
       var items = getItems('items-' + id);
       var ownTotal = 0;
       for (var j = 0; j < items.length; j++) ownTotal += items[j].price;
-      people.push({ id: id, name: name, items: items, ownTotal: ownTotal, sharedTotal: 0 });
+      people.push({ id: id, name: name, items: items, ownTotal: ownTotal, sharedTotal: 0, sharedItems: [] });
       var subtotalEl = document.getElementById('subtotal-' + id);
-      if (subtotalEl) subtotalEl.textContent = 'RM ' + ownTotal.toFixed(2);
+      if (subtotalEl) subtotalEl.textContent = fmtMoney(ownTotal);
     }
 
     if (people.length === 0) {
       document.getElementById('results').innerHTML = '';
+      lastCalc = null;
       return;
     }
 
@@ -1242,6 +2544,7 @@ footer .brand {
         for (var pp = 0; pp < people.length; pp++) {
           if (people[pp].id === recipients[r]) {
             people[pp].sharedTotal += perPerson;
+            people[pp].sharedItems.push({ name: item.name, n: recipients.length, share: perPerson });
             break;
           }
         }
@@ -1254,54 +2557,367 @@ footer .brand {
     var taxBase = taxOnService ? (grandSubtotal + serviceAmount) : grandSubtotal;
     var taxAmount = taxBase * (taxPct / 100);
     var multiplier = grandSubtotal > 0 ? (serviceAmount + taxAmount) / grandSubtotal : 0;
-    var discountPerRM = grandSubtotal > 0 ? discount / grandSubtotal : 0;
+    var discountPerUnit = grandSubtotal > 0 ? discount / grandSubtotal : 0;
 
-    var html = '<div class="result-card"><h3>' + t.result_title + '</h3>';
+    var html = '<div class="result-card"><h3>' + escHtml(t('result_title')) + '</h3>';
     var runningTotal = 0;
+    var calcPeople = [];
 
     for (var k = 0; k < people.length; k++) {
       var p = people[k];
       var sub = p.ownTotal + p.sharedTotal;
       var taxServiceShare = sub * multiplier;
-      var discountShare = sub * discountPerRM;
+      var discountShare = sub * discountPerUnit;
       var total = sub + taxServiceShare - discountShare;
       total = roundAmount(total, roundTo);
       runningTotal += total;
+      calcPeople.push({
+        name: p.name, total: total, own: p.ownTotal, shared: p.sharedTotal,
+        taxService: taxServiceShare, discount: discountShare,
+        ownItems: p.items, sharedItems: p.sharedItems
+      });
 
-      var detailLines = '';
-      for (var d = 0; d < p.items.length; d++) {
-        detailLines += escHtml(p.items[d].name) + ': RM ' + p.items[d].price.toFixed(2) + '<br>';
+      function rdLine(cls, lbl, amt) {
+        return '<div class="rd-line' + (cls ? ' ' + cls : '') + '"><span class="lbl">' + lbl + '</span><span class="amt">' + amt + '</span></div>';
       }
-      if (p.items.length > 0) detailLines += t.own_items + ': RM ' + p.ownTotal.toFixed(2) + '<br>';
-      if (p.sharedTotal > 0) detailLines += t.shared_part + ': RM ' + p.sharedTotal.toFixed(2) + '<br>';
-      detailLines += t.subtotal + ': RM ' + sub.toFixed(2);
-      if (taxServiceShare > 0) detailLines += '<br>' + t.tax_service_share + ': RM ' + taxServiceShare.toFixed(2);
-      if (discountShare > 0) detailLines += '<br>' + t.discount_share + ': -RM ' + discountShare.toFixed(2);
+      var detailLines = '';
+      if (p.items.length > 0) {
+        detailLines += '<div class="rd-group">' + rdLine('rd-head', escHtml(t('own_items')), fmtMoney(p.ownTotal));
+        for (var d = 0; d < p.items.length; d++) {
+          detailLines += rdLine('rd-sub', escHtml(p.items[d].name), fmtMoney(p.items[d].price));
+        }
+        detailLines += '</div>';
+      }
+      if (p.sharedItems.length > 0) {
+        detailLines += '<div class="rd-group">' + rdLine('rd-head', escHtml(t('shared_part')), fmtMoney(p.sharedTotal));
+        for (var sd = 0; sd < p.sharedItems.length; sd++) {
+          detailLines += rdLine('rd-sub', escHtml(p.sharedItems[sd].name) + ' ÷' + p.sharedItems[sd].n, fmtMoney(p.sharedItems[sd].share));
+        }
+        detailLines += '</div>';
+      }
+      detailLines += rdLine('rd-total', escHtml(t('subtotal')), fmtMoney(sub));
+      if (taxServiceShare > 0) detailLines += rdLine('', escHtml(t('tax_service')), fmtMoney(taxServiceShare));
+      if (discountShare > 0) detailLines += rdLine('', escHtml(t('discount_word')), '-' + fmtMoney(discountShare));
 
       html += '<div class="result-person">' +
         '<div class="result-person-header">' +
           '<span class="result-person-name">' + escHtml(p.name) + '</span>' +
-          '<span class="result-person-total">RM ' + total.toFixed(2) + '</span>' +
+          '<span class="result-person-total">' + fmtMoney(total) + '</span>' +
         '</div>' +
-        '<div class="result-detail">' + detailLines + '</div></div>';
+        '<div class="result-detail">' + detailLines + '</div>' +
+        '<div class="person-share-row">' + shareButtonsHtml('person', k, true) + '</div>' +
+        '</div>';
+    }
+
+    var opts = roundOptions();
+    var roundBtns = '';
+    for (var ro = 0; ro < opts.length; ro++) {
+      var isActive = Math.abs(opts[ro] - roundTo) < 1e-9;
+      roundBtns += '<button class="round-btn ' + (isActive ? 'active' : '') + '" data-round="' + opts[ro] + '">' + fmtRound(opts[ro]) + '</button>';
     }
 
     html += '<div class="result-grand-total">' +
-        '<div class="label">' + t.grand_total + '</div>' +
-        '<div class="amount">RM ' + runningTotal.toFixed(2) + '</div>' +
+        '<div class="label">' + escHtml(t('grand_total')) + '</div>' +
+        '<div class="amount">' + fmtMoney(runningTotal) + '</div>' +
       '</div>' +
       '<div class="round-toggle">' +
-        '<span class="round-label-text">' + t.round_label + ':</span>' +
-        '<button class="round-btn ' + (roundTo===0.01?'active':'') + '" data-round="0.01">0.01</button>' +
-        '<button class="round-btn ' + (roundTo===0.05?'active':'') + '" data-round="0.05">0.05</button>' +
-        '<button class="round-btn ' + (roundTo===0.10?'active':'') + '" data-round="0.10">0.10</button>' +
-        '<button class="round-btn ' + (roundTo===1.00?'active':'') + '" data-round="1">1.00</button>' +
+        '<span class="round-label-text">' + escHtml(t('round_label')) + ':</span>' + roundBtns +
       '</div>' +
-      '<div class="rounding-note">' + t.rounding_note + '</div>' +
+      '<div class="rounding-note">' + escHtml(t('rounding_note')) + '</div>' +
+      '<div class="share-sec">' +
+        '<div class="share-heading">' + escHtml(t('share_title')) + '</div>' +
+        '<div class="share-row">' + shareButtonsHtml('full', 0, false) + '</div>' +
+      '</div>' +
     '</div>';
 
+    lastCalc = { people: calcPeople, grand: runningTotal };
     document.getElementById('results').innerHTML = html;
   }
+
+  /* ====== SHARE ====== */
+  function billLabel() {
+    if (!billMeta || !billMeta.merchant) return null;
+    return billMeta.merchant + (billMeta.date ? ' (' + billMeta.date + ')' : '');
+  }
+
+  function buildFullText() {
+    if (!lastCalc) return '';
+    var lines = [t('sh_full_title')];
+    var bl = billLabel();
+    if (bl) lines.push('📍 ' + bl);
+    lines.push('');
+    for (var i = 0; i < lastCalc.people.length; i++) {
+      var p = lastCalc.people[i];
+      lines.push(p.name + ': ' + fmtMoney(p.total));
+    }
+    lines.push('');
+    lines.push(t('grand_total') + ': ' + fmtMoney(lastCalc.grand));
+    lines.push('');
+    lines.push(t('sh_via') + ' ' + APP_URL);
+    return lines.join('\n');
+  }
+
+  function buildPersonText(idx) {
+    if (!lastCalc || !lastCalc.people[idx]) return '';
+    var p = lastCalc.people[idx];
+    var bill = billLabel() || t('sh_thebill');
+    var lines = [t('sh_person', { name: p.name, bill: bill, amount: fmtMoney(p.total) })];
+    var parts = [];
+    if (p.own > 0) parts.push(t('own_items') + ' ' + fmtMoney(p.own));
+    if (p.shared > 0) parts.push(t('shared_part') + ' ' + fmtMoney(p.shared));
+    if (p.taxService > 0) parts.push(t('tax_service') + ' ' + fmtMoney(p.taxService));
+    if (p.discount > 0) parts.push(t('discount_word') + ' -' + fmtMoney(p.discount));
+    if (parts.length > 0) lines.push(parts.join(' · '));
+    lines.push(t('sh_via') + ' ' + APP_URL);
+    return lines.join('\n');
+  }
+
+  function copyText(text, btn) {
+    function done() {
+      if (!btn) return;
+      var original = btn.innerHTML;
+      btn.textContent = t('copied');
+      setTimeout(function() { btn.innerHTML = original; }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function() { legacyCopy(text); done(); });
+    } else {
+      legacyCopy(text);
+      done();
+    }
+  }
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  /* ---- share as image (canvas, with EQUITO watermark) ---- */
+  var IMG_SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif";
+  var IMG_SERIF = "'Playfair Display', Georgia, serif";
+
+  function loadCardFonts() {
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load('900 40px "Playfair Display"');
+      document.fonts.load('800 40px "Playfair Display"');
+      document.fonts.load('700 40px "Playfair Display"');
+    }
+  }
+
+  function ellipText(ctx, text, maxW) {
+    text = String(text);
+    if (ctx.measureText(text).width <= maxW) return text;
+    while (text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+    return text + '…';
+  }
+
+  function cardRowsForPerson(p) {
+    var rows = [];
+    var i;
+    if (p.ownItems && p.ownItems.length) {
+      rows.push({ t: 'head', l: t('own_items'), r: fmtMoney(p.own) });
+      for (i = 0; i < p.ownItems.length; i++) rows.push({ t: 'sub', l: p.ownItems[i].name, r: fmtMoney(p.ownItems[i].price) });
+    }
+    if (p.sharedItems && p.sharedItems.length) {
+      rows.push({ t: 'head', l: t('shared_part'), r: fmtMoney(p.shared) });
+      for (i = 0; i < p.sharedItems.length; i++) rows.push({ t: 'sub', l: p.sharedItems[i].name + ' ÷' + p.sharedItems[i].n, r: fmtMoney(p.sharedItems[i].share) });
+    }
+    rows.push({ t: 'total', l: t('subtotal'), r: fmtMoney(p.own + p.shared) });
+    if (p.taxService > 0) rows.push({ t: 'row', l: t('tax_service'), r: fmtMoney(p.taxService) });
+    if (p.discount > 0) rows.push({ t: 'row', l: t('discount_word'), r: '-' + fmtMoney(p.discount) });
+    return rows;
+  }
+
+  var ROW_H = { head: 30, sub: 23, row: 24, total: 38, prow: 32, gap: 14 };
+
+  function drawShareImage(scope, idx) {
+    if (!lastCalc) return null;
+    var W = 560, pad = 40, s = 2;
+    var bl = billLabel();
+    var subLabel = bl || new Date().toLocaleDateString(locale());
+    var rows, personName = null, personTotal = null;
+    if (scope === 'person') {
+      var p = lastCalc.people[idx];
+      if (!p) return null;
+      rows = cardRowsForPerson(p);
+      personName = p.name;
+      personTotal = fmtMoney(p.total);
+    } else {
+      rows = [];
+      for (var i = 0; i < lastCalc.people.length; i++) {
+        var fp = lastCalc.people[i];
+        if (i > 0) rows.push({ t: 'gap' });
+        rows.push({ t: 'prow', l: fp.name, r: fmtMoney(fp.total) });
+        var fj;
+        if (fp.ownItems) {
+          for (fj = 0; fj < fp.ownItems.length; fj++) rows.push({ t: 'sub', l: fp.ownItems[fj].name, r: fmtMoney(fp.ownItems[fj].price) });
+        }
+        if (fp.sharedItems) {
+          for (fj = 0; fj < fp.sharedItems.length; fj++) rows.push({ t: 'sub', l: fp.sharedItems[fj].name + ' ÷' + fp.sharedItems[fj].n, r: fmtMoney(fp.sharedItems[fj].share) });
+        }
+        rows.push({ t: 'row', l: t('subtotal'), r: fmtMoney(fp.own + fp.shared) });
+        if (fp.taxService > 0) rows.push({ t: 'row', l: t('tax_service'), r: fmtMoney(fp.taxService) });
+        if (fp.discount > 0) rows.push({ t: 'row', l: t('discount_word'), r: '-' + fmtMoney(fp.discount) });
+      }
+    }
+    var H = 96;                                   /* header */
+    if (personName) H += 78;                      /* name + big amount */
+    for (var r = 0; r < rows.length; r++) H += ROW_H[rows[r].t];
+    if (scope !== 'person') H += 82;              /* grand total block */
+    H += 58;                                      /* footer */
+
+    var canvas = document.createElement('canvas');
+    canvas.width = W * s;
+    canvas.height = H * s;
+    var ctx = canvas.getContext('2d');
+    ctx.scale(s, s);
+
+    ctx.fillStyle = '#1C1917';
+    ctx.fillRect(0, 0, W, H);
+    var grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#8B5E1A'); grad.addColorStop(0.5, '#E8A940'); grad.addColorStop(1, '#C8902E');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, 5);
+
+    /* faint diagonal watermark */
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(-Math.PI / 9);
+    ctx.font = '900 92px ' + IMG_SERIF;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(232,169,64,0.055)';
+    ctx.fillText('EQUITO', 0, 0);
+    ctx.restore();
+
+    var y = 24;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = '900 28px ' + IMG_SERIF;
+    ctx.fillStyle = '#E8A940';
+    y += 30;
+    ctx.fillText('E Q U I T O', W / 2, y);
+    ctx.font = '500 13px ' + IMG_SANS;
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    y += 26;
+    ctx.fillText(ellipText(ctx, subLabel, W - pad * 2), W / 2, y);
+    y += 16;
+
+    if (personName) {
+      ctx.font = '700 20px ' + IMG_SANS;
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      y += 26;
+      ctx.fillText(ellipText(ctx, personName, W - pad * 2), W / 2, y);
+      ctx.font = '800 36px ' + IMG_SERIF;
+      ctx.fillStyle = '#E8A940';
+      y += 42;
+      ctx.fillText(personTotal, W / 2, y);
+      y += 10;
+    }
+
+    for (var k = 0; k < rows.length; k++) {
+      var row = rows[k];
+      if (row.t === 'gap') { y += ROW_H.gap; continue; }
+      if (row.t === 'total') {
+        y += 12;
+        ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+        ctx.setLineDash([]);
+        y += 26;
+        ctx.font = '600 13px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      } else if (row.t === 'head') {
+        y += ROW_H.head;
+        ctx.font = '700 13px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      } else if (row.t === 'sub') {
+        y += ROW_H.sub;
+        ctx.font = '400 12px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(255,255,255,0.42)';
+        ctx.fillStyle = 'rgba(232,169,64,0.35)';
+        ctx.fillRect(pad + 4, y - 10, 2, 13);
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      } else if (row.t === 'row') {
+        y += ROW_H.row;
+        ctx.font = '400 13px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      } else { /* prow */
+        y += ROW_H.prow;
+        ctx.font = '600 15px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      }
+      var leftX = pad + (row.t === 'sub' ? 16 : 0);
+      var amtFont = row.t === 'prow' ? ('700 16px ' + IMG_SERIF) : ctx.font;
+      var amtColor = row.t === 'prow' ? '#E8A940' : ctx.fillStyle;
+      ctx.textAlign = 'right';
+      var saveFont = ctx.font, saveFill = ctx.fillStyle;
+      ctx.font = amtFont; ctx.fillStyle = amtColor;
+      var amtW = ctx.measureText(row.r).width;
+      ctx.fillText(row.r, W - pad, y);
+      ctx.font = saveFont; ctx.fillStyle = saveFill;
+      ctx.textAlign = 'left';
+      ctx.fillText(ellipText(ctx, row.l, W - pad * 2 - amtW - 16 - (row.t === 'sub' ? 16 : 0)), leftX, y);
+    }
+
+    if (scope !== 'person') {
+      y += 14;
+      ctx.strokeStyle = 'rgba(232,169,64,0.3)';
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+      ctx.textAlign = 'center';
+      ctx.font = '600 11px ' + IMG_SANS;
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      y += 28;
+      ctx.fillText(t('grand_total').toUpperCase(), W / 2, y);
+      ctx.font = '900 32px ' + IMG_SERIF;
+      ctx.fillStyle = '#E8A940';
+      y += 40;
+      ctx.fillText(fmtMoney(lastCalc.grand), W / 2, y);
+    }
+
+    /* footer watermark — deliberately small and faint */
+    ctx.textAlign = 'center';
+    ctx.font = '400 9px ' + IMG_SANS;
+    ctx.fillStyle = 'rgba(255,255,255,0.17)';
+    ctx.fillText(t('sh_via') + ' claudey-my.github.io/equito', W / 2, H - 20);
+    return canvas;
+  }
+
+  function shareImage(scope, idx) {
+    var canvas = drawShareImage(scope, idx);
+    if (!canvas) return;
+    canvas.toBlob(function(blob) {
+      if (!blob) return;
+      var file = null;
+      try { file = new File([blob], 'equito-split.png', { type: 'image/png' }); } catch (e) {}
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+        navigator.share({ files: [file] }).catch(function() {});
+      } else {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'equito-split.png';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      }
+    }, 'image/png');
+  }
+
+  function handleShare(btn) {
+    var via = btn.getAttribute('data-share-via');
+    var scope = btn.getAttribute('data-share-scope');
+    var idx = parseInt(btn.getAttribute('data-share-idx'), 10) || 0;
+    if (via === 'img') { shareImage(scope, idx); return; }
+    var text = scope === 'person' ? buildPersonText(idx) : buildFullText();
+    if (!text) return;
+    if (via === 'copy') copyText(text, btn);
+  }
+
 
   /* ====== RECEIPT OCR (Gemini vision) ====== */
   var GEMINI_MODELS = ['gemini-3-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
@@ -1312,10 +2928,10 @@ footer .brand {
   var OCR_PROMPT =
     'You are reading photos of a restaurant or retail receipt (multiple photos may show parts of the same receipt; if they are clearly different receipts, combine all items into one bill). ' +
     'Extract every purchased line item with its quantity and UNIT price (the price of ONE unit — if only the line total is printed, divide it by the quantity). ' +
-    'Item names may be in English, Malay, or Chinese; keep them as printed (shorten very long names). ' +
-    'Do NOT include subtotal, total, tax, SST, GST, service charge, rounding, discount, voucher, cash, change, or loyalty-point lines as items. ' +
-    'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST percent), discount_amount (total discount as a positive number), ' +
-    'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), currency (e.g. "RM"), ' +
+    'Item names may be in any language; keep them as printed (shorten very long names). ' +
+    'Do NOT include subtotal, total, tax, SST, GST, VAT, service charge, rounding, discount, voucher, cash, change, or loyalty-point lines as items. ' +
+    'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST/VAT percent), discount_amount (total discount as a positive number), ' +
+    'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), currency (the currency symbol or code printed, e.g. "RM", "$", "EUR"), ' +
     'merchant (the shop/restaurant name from the receipt header), bill_date (the date printed on the receipt, e.g. "18/07/2026"), and bill_time (the time printed, e.g. "13:45"). ' +
     'If a percentage is not printed but its amount is, compute the percent from the subtotal and round to one decimal. Use null for anything not present on the receipt.';
 
@@ -1348,17 +2964,11 @@ footer .brand {
     required: ['items']
   };
 
-  function escAttr(str) { return escHtml(str).replace(/"/g, '&quot;'); }
-
   function getApiKey() {
     try { return localStorage.getItem(API_KEY_STORAGE) || ''; } catch (e) { return ''; }
   }
   function saveApiKey(val) {
     try { localStorage.setItem(API_KEY_STORAGE, val.trim()); } catch (e) {}
-  }
-
-  function biMsg(en, zh) {
-    return '<span class="en">' + en + '</span><span class="zh">' + zh + '</span>';
   }
 
   function showScanStatus(html, kind) {
@@ -1371,11 +2981,10 @@ footer .brand {
     var btn = document.getElementById('scan-btn');
     if (on) {
       btn.classList.add('loading');
-      btn.innerHTML = '<span class="scan-spinner"></span>' +
-        biMsg('Reading receipt…', '正在识别小票…');
+      btn.innerHTML = '<span class="scan-spinner"></span>' + escHtml(t('scan_loading'));
     } else {
       btn.classList.remove('loading');
-      btn.innerHTML = biMsg('📷 Upload / Take Photo', '📷 上传 / 拍摄小票');
+      btn.textContent = t('scan_btn');
     }
   }
 
@@ -1447,14 +3056,13 @@ footer .brand {
   }
 
   function ocrErrorMessage(err) {
-    var t = (err && err.type) || 'http';
-    if (t === 'network') return biMsg('No internet connection — scanning needs to be online.', '无法连接网络 — 识别功能需要联网。');
-    if (t === 'quota') return biMsg('Free-tier limit reached — please wait a minute and try again.', '已达免费额度上限 — 请稍等一分钟后重试。');
-    if (t === 'key') return biMsg('API key was rejected — please check your Gemini API key in the settings below.', 'API 密钥无效 — 请检查下方设置中的 Gemini 密钥。');
-    if (t === 'unclear') return biMsg('Could not read the receipt — try a sharper, well-lit photo.', '无法识别小票 — 请尝试更清晰、光线更好的照片。');
-    if (t === 'unreadable') return biMsg('That file is not a readable image — please choose a photo.', '无法读取该文件 — 请选择图片文件。');
-    if (t === 'model') return biMsg('Gemini model unavailable — please try again later.', 'Gemini 模型暂不可用 — 请稍后重试。');
-    return biMsg('Something went wrong (HTTP ' + (err && err.status || '?') + ') — please try again.', '出错了（HTTP ' + (err && err.status || '?') + '）— 请重试。');
+    var type = (err && err.type) || 'http';
+    var map = {
+      network: 'err_network', quota: 'err_quota', key: 'err_key',
+      unclear: 'err_unclear', unreadable: 'err_unreadable', model: 'err_model'
+    };
+    if (map[type]) return escHtml(t(map[type]));
+    return escHtml(t('err_http', { status: (err && err.status) || '?' }));
   }
 
   function normalizeOcr(raw) {
@@ -1481,7 +3089,7 @@ footer .brand {
       rounding: num(raw.rounding_adj),
       subtotal: num(raw.subtotal),
       total: num(raw.total),
-      currency: raw.currency || 'RM',
+      currency: raw.currency || curSymbol(),
       merchant: raw.merchant || null,
       billDate: raw.bill_date || null,
       billTime: raw.bill_time || null
@@ -1493,9 +3101,7 @@ footer .brand {
     var key = getApiKey();
     if (!key) {
       document.getElementById('api-panel').style.display = 'block';
-      showScanStatus(biMsg(
-        'Please add your free Gemini API key first (settings below).',
-        '请先在下方设置中填写免费的 Gemini API 密钥。'), 'error');
+      showScanStatus(escHtml(t('need_key')), 'error');
       return;
     }
     setScanLoading(true);
@@ -1541,30 +3147,28 @@ footer .brand {
   function ocrSanityHtml() {
     var cur = ocrData.currency;
     var sum = ocrItemsSum();
-    var ref = null, refLabelEn = '', refLabelZh = '';
+    var ref = null, refLabel = '';
     if (ocrData.subtotal !== null) {
-      ref = ocrData.subtotal; refLabelEn = 'receipt subtotal'; refLabelZh = '小票小计';
+      ref = ocrData.subtotal; refLabel = t('ref_subtotal');
     } else if (ocrData.total !== null && !ocrData.taxPct && !ocrData.servicePct && !ocrData.discount) {
-      ref = ocrData.total; refLabelEn = 'receipt total'; refLabelZh = '小票总额';
+      ref = ocrData.total; refLabel = t('ref_total');
     }
     if (ref === null) {
       return '<div class="ocr-sanity" id="ocr-sanity">' +
-        biMsg('Items total: ' + cur + ' ' + sum.toFixed(2), '菜品合计：' + cur + ' ' + sum.toFixed(2)) + '</div>';
+        escHtml(t('items_total', { sum: cur + ' ' + sum.toFixed(2) })) + '</div>';
     }
     if (Math.abs(sum - ref) <= 0.051) {
       return '<div class="ocr-sanity" id="ocr-sanity">' +
-        biMsg('✓ Items total ' + cur + ' ' + sum.toFixed(2) + ' matches the ' + refLabelEn,
-              '✓ 菜品合计 ' + cur + ' ' + sum.toFixed(2) + ' 与' + refLabelZh + '相符') + '</div>';
+        escHtml(t('sum_match', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel })) + '</div>';
     }
     return '<div class="ocr-sanity warn" id="ocr-sanity">' +
-      biMsg('⚠️ Items total ' + cur + ' ' + sum.toFixed(2) + ' ≠ ' + refLabelEn + ' ' + cur + ' ' + ref.toFixed(2) + ' — please check the items below',
-            '⚠️ 菜品合计 ' + cur + ' ' + sum.toFixed(2) + ' 与' + refLabelZh + ' ' + cur + ' ' + ref.toFixed(2) + ' 不符 — 请检查以下菜品') + '</div>';
+      escHtml(t('sum_mismatch', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel, refval: cur + ' ' + ref.toFixed(2) })) + '</div>';
   }
 
   function ocrThumbsHtml() {
     if (ocrImages.length === 0) return '';
     var html = '<div class="ocr-thumbs">' +
-      '<span class="thumb-label">' + biMsg('Receipt — tap to enlarge', '小票 — 点击放大') + '</span>';
+      '<span class="thumb-label">' + escHtml(t('thumb_label')) + '</span>';
     for (var i = 0; i < ocrImages.length; i++) {
       html += '<img class="ocr-thumb" src="' + ocrImages[i] + '" data-thumb="' + i + '" alt="Receipt ' + (i + 1) + '">';
     }
@@ -1585,8 +3189,8 @@ footer .brand {
       html += '<div class="ocr-bill-meta">📅 ' + meta.join(' · ') + '</div>';
     }
     html += '<div class="ocr-bill-total">' +
-      '<span class="lbl">' + biMsg('Receipt total', '小票总额') + '</span>' +
-      '<span class="amt">' + cur + ' ' + total.toFixed(2) + '</span>' +
+      '<span class="lbl">' + escHtml(t('receipt_total')) + '</span>' +
+      '<span class="amt">' + escHtml(cur) + ' ' + total.toFixed(2) + '</span>' +
       '</div></div>';
     return html;
   }
@@ -1611,14 +3215,12 @@ footer .brand {
     var html = '<div class="ocr-review">' +
       ocrBillSummaryHtml() +
       ocrThumbsHtml() +
-      '<div class="ocr-review-title">' +
-      biMsg('Found ' + ocrData.items.length + ' item(s) — check &amp; assign to people:',
-            '识别到 ' + ocrData.items.length + ' 道菜品 — 请核对并分配给参与者：') + '</div>';
+      '<div class="ocr-review-title">' + escHtml(t('found_items', { n: ocrData.items.length })) + '</div>';
 
     for (var i = 0; i < ocrData.items.length; i++) {
       var it = ocrData.items[i];
       var chips = '<span class="person-chip ' + (it.assign === 'shared' ? 'active' : '') +
-        '" data-ocr-assign="' + i + '" data-assign-val="shared">' + biMsg('Shared', '共享') + '</span>';
+        '" data-ocr-assign="' + i + '" data-assign-val="shared">' + escHtml(t('shared_chip')) + '</span>';
       for (var p = 0; p < people.length; p++) {
         chips += '<span class="person-chip ' + (it.assign === people[p].id ? 'active' : '') +
           '" data-ocr-assign="' + i + '" data-assign-val="' + people[p].id + '">' + escHtml(people[p].name) + '</span>';
@@ -1632,26 +3234,26 @@ footer .brand {
           '<button class="btn-remove" data-ocr-remove="' + i + '">×</button>' +
         '</div>' +
         '<div class="shared-people-row">' +
-          '<span class="shared-people-label">' + biMsg('Assign to', '分配给') + ':</span>' + chips +
+          '<span class="shared-people-label">' + escHtml(t('assign_to')) + ':</span>' + chips +
         '</div></div>';
     }
 
     html += ocrSanityHtml();
 
     var chargeBits = [];
-    chargeBits.push('SST ' + (ocrData.taxPct !== null ? ocrData.taxPct : 0) + '%');
-    chargeBits.push((getLang() === 'zh' ? '服务费 ' : 'Service ') + (ocrData.servicePct !== null ? ocrData.servicePct : 0) + '%');
-    if (ocrData.discount) chargeBits.push((getLang() === 'zh' ? '折扣 ' : 'Discount ') + cur + ' ' + ocrData.discount.toFixed(2));
-    if (ocrData.rounding) chargeBits.push((getLang() === 'zh' ? '取整 ' : 'Rounding ') + (ocrData.rounding > 0 ? '+' : '') + ocrData.rounding.toFixed(2));
+    chargeBits.push(escHtml(t('tax_label').replace(' (%)', '')) + ' ' + (ocrData.taxPct !== null ? ocrData.taxPct : 0) + '%');
+    chargeBits.push(escHtml(t('service_word')) + ' ' + (ocrData.servicePct !== null ? ocrData.servicePct : 0) + '%');
+    if (ocrData.discount) chargeBits.push(escHtml(t('discount_word')) + ' ' + escHtml(cur) + ' ' + ocrData.discount.toFixed(2));
+    if (ocrData.rounding) chargeBits.push(escHtml(t('rounding_word')) + ' ' + (ocrData.rounding > 0 ? '+' : '') + ocrData.rounding.toFixed(2));
     html += '<div class="ocr-charges">' +
       '<label class="checkbox-row" style="margin-top:0">' +
         '<input type="checkbox" id="ocr-apply-charges" checked>' +
-        '<span>' + biMsg('Apply charges from receipt: ', '套用小票上的费用：') + chargeBits.join(' • ') + '</span>' +
+        '<span>' + escHtml(t('apply_charges')) + chargeBits.join(' • ') + '</span>' +
       '</label></div>';
 
     html += '<div class="ocr-actions">' +
-      '<button class="btn-import" id="ocr-import-btn">' + biMsg('Import to Bill ↓', '导入账单 ↓') + '</button>' +
-      '<button class="btn-cancel" id="ocr-cancel-btn">' + biMsg('Cancel', '取消') + '</button>' +
+      '<button class="btn-import" id="ocr-import-btn">' + escHtml(t('import_btn')) + '</button>' +
+      '<button class="btn-cancel" id="ocr-cancel-btn">' + escHtml(t('cancel_btn')) + '</button>' +
       '</div></div>';
 
     container.innerHTML = html;
@@ -1670,6 +3272,14 @@ footer .brand {
     if (sanity) sanity.outerHTML = ocrSanityHtml();
   }
 
+  function detectReceiptCurrency(rawCur) {
+    if (!rawCur) return null;
+    var s = String(rawCur).trim().toUpperCase();
+    if (RECEIPT_CUR_MAP[s]) return RECEIPT_CUR_MAP[s];
+    if (/^[A-Z]{3}$/.test(s) && CURRENCIES.indexOf(s) !== -1) return s;
+    return null;
+  }
+
   function importOcr() {
     if (!ocrData) return;
     var applyCharges = document.getElementById('ocr-apply-charges');
@@ -1679,6 +3289,10 @@ footer .brand {
       var netDiscount = (ocrData.discount || 0) - (ocrData.rounding || 0);
       document.getElementById('discount').value = Math.round(netDiscount * 100) / 100;
     }
+
+    /* switch the app currency if the receipt's currency is recognisable */
+    var detected = detectReceiptCurrency(ocrData.currency);
+    if (detected && detected !== CUR) setCurrency(detected);
 
     var count = 0;
     for (var i = 0; i < ocrData.items.length; i++) {
@@ -1706,6 +3320,7 @@ footer .brand {
       count++;
     }
 
+    billMeta = { merchant: ocrData.merchant || null, date: ocrData.billDate || null };
     var billRef = '';
     if (ocrData.merchant) billRef += ' — ' + escHtml(ocrData.merchant);
     if (ocrData.billDate) billRef += (billRef ? ', ' : ' — ') + escHtml(ocrData.billDate);
@@ -1713,8 +3328,7 @@ footer .brand {
     ocrData = null;
     renderOcrReview();
     document.getElementById('receipt-thumbs').innerHTML = ocrThumbsHtml();
-    showScanStatus(biMsg('✓ Imported ' + count + ' item(s)' + billRef + ' — scroll down to review the split.',
-      '✓ 已导入 ' + count + ' 道菜品' + billRef + ' — 请往下核对分账。'), 'success');
+    showScanStatus(t('imported', { n: count, ref: billRef }), 'success');
     calculate();
   }
 
@@ -1740,6 +3354,41 @@ footer .brand {
     var target = e.target;
     var btn;
 
+    /* top bar */
+    var modeBtn = target.closest('[data-mode]');
+    if (modeBtn) { setMode(modeBtn.getAttribute('data-mode')); return; }
+    if (target.id === 'theme-btn' || target.closest('#theme-btn')) { toggleTheme(); return; }
+    if (target.id === 'lang-btn' || target.closest('#lang-btn')) {
+      var lp = document.getElementById('lang-panel');
+      var wasOpen = lp.classList.contains('open');
+      closePanels();
+      if (!wasOpen) lp.classList.add('open');
+      return;
+    }
+    if (target.id === 'cur-btn' || target.closest('#cur-btn')) {
+      var cp = document.getElementById('cur-panel');
+      var wasOpenC = cp.classList.contains('open');
+      closePanels();
+      if (!wasOpenC) {
+        cp.classList.add('open');
+        var cs = document.getElementById('cur-search');
+        cs.value = '';
+        buildCurList('');
+      }
+      return;
+    }
+    var langOpt = target.closest('[data-lang]');
+    if (langOpt) { setLanguage(langOpt.getAttribute('data-lang')); closePanels(); return; }
+    var curOpt = target.closest('[data-cur]');
+    if (curOpt) { setCurrency(curOpt.getAttribute('data-cur')); closePanels(); return; }
+    if (!target.closest('.sel-wrap')) closePanels();
+    if (target.closest('.sel-panel')) return;
+
+    /* share */
+    var shareBtn = target.closest('[data-share-via]');
+    if (shareBtn) { handleShare(shareBtn); return; }
+
+    /* lightbox & scan */
     var thumb = target.closest('[data-thumb]');
     if (thumb) { openLightbox(parseInt(thumb.getAttribute('data-thumb'), 10)); return; }
     if (target.closest('#photo-lightbox')) { closeLightbox(); return; }
@@ -1827,32 +3476,40 @@ footer .brand {
   });
 
   document.addEventListener('input', function(e) {
-    var t = e.target;
-    if (t.getAttribute && t.getAttribute('data-ocr-field')) { updateOcrField(t); return; }
-    if (t.id === 'api-key') { saveApiKey(t.value); return; }
-    if (t.classList.contains('item-name') || t.classList.contains('item-qty') || t.classList.contains('item-price') ||
-        t.id === 'tax' || t.id === 'service' || t.id === 'discount') {
-      calculate();
-    }
-    if (t.classList.contains('person-name-input')) {
+    var el = e.target;
+    if (el.id === 'cur-search') { buildCurList(el.value); return; }
+    if (el.getAttribute && el.getAttribute('data-ocr-field')) { updateOcrField(el); return; }
+    if (el.id === 'api-key') { saveApiKey(el.value); return; }
+    if (el.classList.contains('person-name-input')) {
+      el.removeAttribute('data-auto');
       refreshSharedItemChips();
+      calculate();
+      return;
+    }
+    if (el.classList.contains('item-name') || el.classList.contains('item-qty') || el.classList.contains('item-price') ||
+        el.id === 'tax' || el.id === 'service' || el.id === 'discount') {
       calculate();
     }
   });
 
   document.addEventListener('change', function(e) {
     if (e.target.id === 'tax-on-service') calculate();
-    if (e.target.name === 'lang') {
-      refreshSharedItemChips();
-      if (ocrData) renderOcrReview();
-      calculate();
-    }
   });
 
+  /* ====== INIT ====== */
+  LANG = detectLang();
+  var savedCur = stored(CUR_STORAGE);
+  CUR = (savedCur && CURRENCIES.indexOf(savedCur) !== -1) ? savedCur : 'MYR';
+  roundTo = defaultRound();
+  applyTheme(currentTheme());
+  setMode('essential');
+  document.getElementById('cur-btn-label').textContent = CUR;
+  applyI18n();
   addPerson();
   addPerson();
   addSharedItem();
   initScan();
+  loadCardFonts();
 })();
 </script>
 </body>

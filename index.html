@@ -2518,8 +2518,7 @@ var RECEIPT_CUR_MAP = {
     }
     var dl = document.getElementById('discount-label');
     if (dl) dl.textContent = t('discount_label', { sym: curSymbol() });
-    var scanBtn = document.getElementById('scan-btn');
-    if (scanBtn && !scanBtn.classList.contains('loading')) scanBtn.textContent = t('scan_btn');
+    updateScanBtn();
     /* rename people that still carry an auto-generated name */
     var autoNames = document.querySelectorAll('.person-name-input[data-auto="1"]');
     for (var a = 0; a < autoNames.length; a++) {
@@ -3183,6 +3182,19 @@ var RECEIPT_CUR_MAP = {
     el.innerHTML = '<div class="scan-msg ' + (kind || '') + '">' + html + '</div>';
   }
 
+  /* The main scan button doubles as "add more photos" while a review is open */
+  function scanBtnLabel() {
+    if (ocrData && ocrImages.length > 0) {
+      return t('add_photos') + ' (' + ocrImages.length + '/' + MAX_RECEIPTS + ')';
+    }
+    return t('scan_btn');
+  }
+
+  function updateScanBtn() {
+    var btn = document.getElementById('scan-btn');
+    if (btn && !btn.classList.contains('loading')) btn.textContent = scanBtnLabel();
+  }
+
   function setScanLoading(on) {
     var btn = document.getElementById('scan-btn');
     if (on) {
@@ -3190,7 +3202,7 @@ var RECEIPT_CUR_MAP = {
       btn.innerHTML = '<span class="scan-spinner"></span>' + escHtml(t('scan_loading'));
     } else {
       btn.classList.remove('loading');
-      btn.textContent = t('scan_btn');
+      btn.textContent = scanBtnLabel();
     }
   }
 
@@ -3461,6 +3473,7 @@ var RECEIPT_CUR_MAP = {
 
   function renderOcrReview() {
     var container = document.getElementById('ocr-review');
+    updateScanBtn();
     if (!ocrData) { container.innerHTML = ''; return; }
     var people = getActivePeople();
     var cur = ocrData.currency;
@@ -3682,6 +3695,7 @@ var RECEIPT_CUR_MAP = {
     if (target.closest('#photo-lightbox')) { closeLightbox(); return; }
 
     if (target.id === 'scan-btn' || target.closest('#scan-btn')) {
+      addMoreMode = !!ocrData;   /* while a review is open, the main button appends instead of replacing */
       document.getElementById('receipt-file').click();
       return;
     }

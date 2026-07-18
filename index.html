@@ -794,6 +794,79 @@ footer .brand {
 }
 .btn-cancel:active { background: var(--g100); }
 
+/* ===== BILL SUMMARY (from receipt) ===== */
+.ocr-bill-summary {
+  background: linear-gradient(135deg, #FFFBF3, var(--amber-light));
+  border: 1.5px solid rgba(200,144,46,0.25);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.ocr-merchant { font-weight: 800; font-size: 15px; color: var(--ink); }
+.ocr-bill-meta { font-size: 12px; color: var(--g500); margin-top: 2px; }
+.ocr-bill-total {
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed rgba(200,144,46,0.35);
+  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+}
+.ocr-bill-total .lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--amber-deep);
+}
+.ocr-bill-total .amt {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px; font-weight: 800;
+  color: var(--amber-deep);
+  white-space: nowrap;
+}
+
+/* ===== RECEIPT THUMBNAILS + LIGHTBOX ===== */
+.ocr-thumbs {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin: 10px 0;
+}
+.ocr-thumbs .thumb-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--g500);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  width: 100%;
+}
+.ocr-thumb {
+  width: 64px; height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1.5px solid var(--g200);
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.2);
+}
+.ocr-thumb:active { border-color: var(--amber); transform: scale(0.96); }
+
+#photo-lightbox {
+  position: fixed; inset: 0;
+  z-index: 1000;
+  background: rgba(22,16,10,0.9);
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+#photo-lightbox.open { display: flex; }
+#photo-lightbox img {
+  max-width: 96vw; max-height: 88vh;
+  border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+#lightbox-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 44px; height: 44px;
+  border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.16);
+  color: #FFF; font-size: 22px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+
 /* ===== MOBILE ===== */
 @media (max-width: 480px) {
   .hero-header { padding: 28px 16px 22px; }
@@ -859,6 +932,7 @@ footer .brand {
     </button>
     <input type="file" id="receipt-file" accept="image/*" multiple style="display:none">
     <div id="scan-status"></div>
+    <div id="receipt-thumbs"></div>
     <button class="api-toggle" id="api-toggle">
       ⚙️ <span class="en">Gemini API key settings</span><span class="zh">Gemini API 密钥设置</span>
     </button>
@@ -949,6 +1023,11 @@ footer .brand {
     <span class="en">Made for happy dining, everywhere</span>
     <span class="zh">为快乐聚餐而生</span>
   </footer>
+</div>
+
+<div id="photo-lightbox">
+  <img id="lightbox-img" alt="Receipt">
+  <button id="lightbox-close">✕</button>
 </div>
 
 <script>
@@ -1228,6 +1307,7 @@ footer .brand {
   var GEMINI_MODELS = ['gemini-3-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
   var API_KEY_STORAGE = 'equito_gemini_key';
   var ocrData = null;
+  var ocrImages = [];
 
   var OCR_PROMPT =
     'You are reading photos of a restaurant or retail receipt (multiple photos may show parts of the same receipt; if they are clearly different receipts, combine all items into one bill). ' +
@@ -1235,7 +1315,8 @@ footer .brand {
     'Item names may be in English, Malay, or Chinese; keep them as printed (shorten very long names). ' +
     'Do NOT include subtotal, total, tax, SST, GST, service charge, rounding, discount, voucher, cash, change, or loyalty-point lines as items. ' +
     'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST percent), discount_amount (total discount as a positive number), ' +
-    'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), and currency (e.g. "RM"). ' +
+    'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), currency (e.g. "RM"), ' +
+    'merchant (the shop/restaurant name from the receipt header), bill_date (the date printed on the receipt, e.g. "18/07/2026"), and bill_time (the time printed, e.g. "13:45"). ' +
     'If a percentage is not printed but its amount is, compute the percent from the subtotal and round to one decimal. Use null for anything not present on the receipt.';
 
   var OCR_SCHEMA = {
@@ -1259,7 +1340,10 @@ footer .brand {
       rounding_adj: { type: 'NUMBER', nullable: true },
       subtotal: { type: 'NUMBER', nullable: true },
       total: { type: 'NUMBER', nullable: true },
-      currency: { type: 'STRING', nullable: true }
+      currency: { type: 'STRING', nullable: true },
+      merchant: { type: 'STRING', nullable: true },
+      bill_date: { type: 'STRING', nullable: true },
+      bill_time: { type: 'STRING', nullable: true }
     },
     required: ['items']
   };
@@ -1397,7 +1481,10 @@ footer .brand {
       rounding: num(raw.rounding_adj),
       subtotal: num(raw.subtotal),
       total: num(raw.total),
-      currency: raw.currency || 'RM'
+      currency: raw.currency || 'RM',
+      merchant: raw.merchant || null,
+      billDate: raw.bill_date || null,
+      billTime: raw.bill_time || null
     };
   }
 
@@ -1413,10 +1500,17 @@ footer .brand {
     }
     setScanLoading(true);
     showScanStatus('');
+    ocrImages = [];
+    document.getElementById('receipt-thumbs').innerHTML = '';
     var jobs = [];
     for (var i = 0; i < files.length; i++) jobs.push(preprocessImage(files[i]));
     Promise.all(jobs)
-      .then(function(images) { return callGemini(key, images); })
+      .then(function(images) {
+        for (var m = 0; m < images.length; m++) {
+          ocrImages.push('data:image/jpeg;base64,' + images[m]);
+        }
+        return callGemini(key, images);
+      })
       .then(function(raw) {
         ocrData = normalizeOcr(raw);
         if (ocrData.items.length === 0) {
@@ -1467,6 +1561,47 @@ footer .brand {
             '⚠️ 菜品合计 ' + cur + ' ' + sum.toFixed(2) + ' 与' + refLabelZh + ' ' + cur + ' ' + ref.toFixed(2) + ' 不符 — 请检查以下菜品') + '</div>';
   }
 
+  function ocrThumbsHtml() {
+    if (ocrImages.length === 0) return '';
+    var html = '<div class="ocr-thumbs">' +
+      '<span class="thumb-label">' + biMsg('Receipt — tap to enlarge', '小票 — 点击放大') + '</span>';
+    for (var i = 0; i < ocrImages.length; i++) {
+      html += '<img class="ocr-thumb" src="' + ocrImages[i] + '" data-thumb="' + i + '" alt="Receipt ' + (i + 1) + '">';
+    }
+    return html + '</div>';
+  }
+
+  function ocrBillSummaryHtml() {
+    var cur = ocrData.currency;
+    var total = ocrData.total !== null ? ocrData.total : ocrItemsSum();
+    var html = '<div class="ocr-bill-summary">';
+    if (ocrData.merchant) {
+      html += '<div class="ocr-merchant">' + escHtml(ocrData.merchant) + '</div>';
+    }
+    if (ocrData.billDate || ocrData.billTime) {
+      var meta = [];
+      if (ocrData.billDate) meta.push(escHtml(ocrData.billDate));
+      if (ocrData.billTime) meta.push(escHtml(ocrData.billTime));
+      html += '<div class="ocr-bill-meta">📅 ' + meta.join(' · ') + '</div>';
+    }
+    html += '<div class="ocr-bill-total">' +
+      '<span class="lbl">' + biMsg('Receipt total', '小票总额') + '</span>' +
+      '<span class="amt">' + cur + ' ' + total.toFixed(2) + '</span>' +
+      '</div></div>';
+    return html;
+  }
+
+  function openLightbox(idx) {
+    var src = ocrImages[idx];
+    if (!src) return;
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('photo-lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('photo-lightbox').classList.remove('open');
+  }
+
   function renderOcrReview() {
     var container = document.getElementById('ocr-review');
     if (!ocrData) { container.innerHTML = ''; return; }
@@ -1474,6 +1609,8 @@ footer .brand {
     var cur = ocrData.currency;
 
     var html = '<div class="ocr-review">' +
+      ocrBillSummaryHtml() +
+      ocrThumbsHtml() +
       '<div class="ocr-review-title">' +
       biMsg('Found ' + ocrData.items.length + ' item(s) — check &amp; assign to people:',
             '识别到 ' + ocrData.items.length + ' 道菜品 — 请核对并分配给参与者：') + '</div>';
@@ -1569,16 +1706,23 @@ footer .brand {
       count++;
     }
 
+    var billRef = '';
+    if (ocrData.merchant) billRef += ' — ' + escHtml(ocrData.merchant);
+    if (ocrData.billDate) billRef += (billRef ? ', ' : ' — ') + escHtml(ocrData.billDate);
+
     ocrData = null;
     renderOcrReview();
-    showScanStatus(biMsg('✓ Imported ' + count + ' item(s) — scroll down to review the split.',
-      '✓ 已导入 ' + count + ' 道菜品 — 请往下核对分账。'), 'success');
+    document.getElementById('receipt-thumbs').innerHTML = ocrThumbsHtml();
+    showScanStatus(biMsg('✓ Imported ' + count + ' item(s)' + billRef + ' — scroll down to review the split.',
+      '✓ 已导入 ' + count + ' 道菜品' + billRef + ' — 请往下核对分账。'), 'success');
     calculate();
   }
 
   function cancelOcr() {
     ocrData = null;
+    ocrImages = [];
     renderOcrReview();
+    document.getElementById('receipt-thumbs').innerHTML = '';
     showScanStatus('');
   }
 
@@ -1595,6 +1739,10 @@ footer .brand {
   document.addEventListener('click', function(e) {
     var target = e.target;
     var btn;
+
+    var thumb = target.closest('[data-thumb]');
+    if (thumb) { openLightbox(parseInt(thumb.getAttribute('data-thumb'), 10)); return; }
+    if (target.closest('#photo-lightbox')) { closeLightbox(); return; }
 
     if (target.id === 'scan-btn' || target.closest('#scan-btn')) {
       document.getElementById('receipt-file').click();

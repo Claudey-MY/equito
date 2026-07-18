@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQUITO - Your Trusted Bill Splitting Buddy</title>
+<meta name="theme-color" content="#FAF7F2">
+<meta name="apple-mobile-web-app-title" content="EQUITO">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --amber: #C8902E;
+  --amber-light: #F5E6C8;
+  --amber-glow: #E8A940;
+  --amber-deep: #8B5E1A;
+  --ember: #D4654A;
+  --ember-light: #FCEAE5;
+  --jade: #3A8F7C;
+  --jade-light: #E2F3EF;
+  --ink: #1C1917;
+  --parchment: #FAF7F2;
+  --card: #FFFFFF;
+  --g100: #F5F3EF;
+  --g200: #E8E4DD;
+  --g300: #D6D0C6;
+  --g400: #A8A196;
+  --g500: #78716C;
+  --g600: #57534E;
+  --g700: #44403C;
+  --g800: #292524;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--parchment);
+  color: var(--g800);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== ATMOSPHERIC BACKGROUND (pure CSS) ===== */
+.bg-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.bg-atmosphere .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+.bg-atmosphere .orb-1 {
+  width: 420px; height: 420px;
+  top: -100px; right: -80px;
+  background: radial-gradient(circle, rgba(232, 169, 64, 0.18) 0%, transparent 70%);
+  animation: orbDrift 22s ease-in-out infinite alternate;
+}
+.bg-atmosphere .orb-2 {
+  width: 350px; height: 350px;
+  bottom: 8%; left: -70px;
+  background: radial-gradient(circle, rgba(212, 101, 74, 0.1) 0%, transparent 70%);
+  animation: orbDrift 28s ease-in-out infinite alternate-reverse;
+}
+.bg-atmosphere .orb-3 {
+  width: 260px; height: 260px;
+  top: 45%; right: -50px;
+  background: radial-gradient(circle, rgba(58, 143, 124, 0.08) 0%, transparent 70%);
+  animation: orbDrift 18s ease-in-out infinite alternate;
+}
+@keyframes orbDrift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(-25px, 18px) scale(1.08); }
+}
+
+/* ===== PURE CSS LANGUAGE TOGGLE ===== */
+.lang-radio { position: absolute; opacity: 0; pointer-events: none; }
+
+/* Default: show English, hide Chinese */
+.zh { display: none !important; }
+.en { display: inline !important; }
+
+/* When Chinese radio is checked: flip visibility */
+#lang-zh:checked ~ .hero-header .en,
+#lang-zh:checked ~ .page-body .en { display: none !important; }
+#lang-zh:checked ~ .hero-header .zh,
+#lang-zh:checked ~ .page-body .zh { display: inline !important; }
+
+/* Block-level variants */
+.zh-block { display: none !important; }
+.en-block { display: block !important; }
+#lang-zh:checked ~ .hero-header .en-block,
+#lang-zh:checked ~ .page-body .en-block { display: none !important; }
+#lang-zh:checked ~ .hero-header .zh-block,
+#lang-zh:checked ~ .page-body .zh-block { display: block !important; }
+
+/* Language button active states */
+.lang-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  min-height: 44px;
+  border: 2px solid var(--g200);
+  border-radius: 24px;
+  background: var(--card);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--g500);
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.15);
+  user-select: none;
+}
+
+#lang-en:checked ~ .page-body .lang-label-en {
+  border-color: var(--amber);
+  background: var(--amber-light);
+  color: var(--amber-deep);
+  box-shadow: 0 2px 8px rgba(200,144,46,0.15);
+}
+#lang-zh:checked ~ .page-body .lang-label-zh {
+  border-color: var(--amber);
+  background: var(--amber-light);
+  color: var(--amber-deep);
+  box-shadow: 0 2px 8px rgba(200,144,46,0.15);
+}
+
+/* ===== HEADER ===== */
+.hero-header {
+  position: relative;
+  text-align: center;
+  padding: 36px 20px 28px;
+}
+.hero-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--g300), var(--amber-light), var(--g300), transparent);
+}
+
+.logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--amber-deep);
+  position: relative;
+  display: inline-block;
+}
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 15%; right: 15%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--amber), var(--amber-glow), var(--amber), transparent);
+  border-radius: 2px;
+}
+
+.tagline {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--g600);
+  margin-top: 10px;
+  letter-spacing: 0.3px;
+}
+.subtitle {
+  font-size: 12px;
+  color: var(--g400);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* ===== LAYOUT ===== */
+.page-body {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 14px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.lang-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+  padding: 20px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+}
+.card-title .icon {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.icon-people { background: linear-gradient(135deg, #E2F3EF, #C4E5DD); }
+.icon-shared { background: linear-gradient(135deg, #FFF0DB, #FDDFA0); }
+.icon-tax { background: linear-gradient(135deg, #E8EDF5, #CDD6E8); }
+
+/* ===== PERSON SECTIONS ===== */
+.person-section {
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--g100);
+}
+.person-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+.person-name-input {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  border: none; outline: none;
+  background: transparent;
+  color: var(--ink);
+  min-width: 0; flex: 1;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.person-name-input:focus { border-bottom-color: var(--amber); }
+
+.person-subtotal {
+  font-size: 12px;
+  color: var(--g500);
+  font-weight: 600;
+  background: var(--card);
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--g200);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ===== ITEM ROWS ===== */
+.item-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 7px;
+  align-items: center;
+}
+.item-name {
+  flex: 1; min-width: 0;
+  padding: 10px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  background: var(--card);
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.item-name:focus { border-color: var(--amber); }
+
+.item-qty {
+  width: 44px; flex-shrink: 0;
+  padding: 10px 2px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  text-align: center;
+  background: var(--card);
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.item-qty:focus { border-color: var(--amber); }
+
+.multiply-sign {
+  color: var(--g400);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 12px;
+  text-align: center;
+}
+
+.item-price {
+  width: 70px; flex-shrink: 0;
+  padding: 10px 8px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  text-align: right;
+  background: var(--card);
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.item-price:focus { border-color: var(--amber); }
+
+/* ===== BUTTONS — all 44px+ touch targets ===== */
+.btn-remove {
+  background: none; border: none;
+  color: var(--g400);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+  width: 44px; height: 44px;
+  min-width: 44px; min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(212,101,74,0.15);
+  user-select: none;
+}
+.btn-remove:active {
+  color: var(--ember);
+  background: var(--ember-light);
+}
+
+.add-item-btn {
+  background: none; border: none;
+  color: var(--amber);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 0;
+  min-height: 44px;
+  display: flex; align-items: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.15);
+  user-select: none;
+  font-family: inherit;
+}
+
+.btn-outline {
+  background: var(--card);
+  color: var(--amber-deep);
+  border: 2px dashed var(--amber);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  min-height: 48px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.15);
+  user-select: none;
+}
+.btn-outline:active {
+  background: var(--amber-light);
+  border-style: solid;
+}
+
+.btn-calculate {
+  width: 100%;
+  padding: 16px;
+  min-height: 52px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--amber-deep), var(--amber), var(--amber-glow));
+  color: #FFF;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(200,144,46,0.25);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.25);
+  user-select: none;
+  letter-spacing: 0.5px;
+}
+.btn-calculate:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(200,144,46,0.2);
+}
+
+/* ===== SHARED ITEMS ===== */
+.shared-section {
+  border-color: var(--amber);
+  background: #FFFBF3;
+}
+.shared-item-block {
+  border: 1.5px solid rgba(200,144,46,0.2);
+  border-radius: var(--radius-xs);
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--card);
+}
+.shared-item-inputs {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.shared-people-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.shared-people-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--g500);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.person-chip {
+  padding: 6px 12px;
+  min-height: 32px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--g300);
+  background: var(--card);
+  color: var(--g500);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(58,143,124,0.15);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+}
+.person-chip.active {
+  border-color: var(--jade);
+  background: var(--jade-light);
+  color: var(--jade);
+}
+
+/* ===== TAX & SERVICE ===== */
+.tax-service {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.tax-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--g600);
+  display: block;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tax-field input {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  text-align: right;
+  background: var(--card);
+  -webkit-appearance: none;
+}
+.tax-field input:focus { border-color: var(--amber); }
+
+.sst-presets {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.preset-btn {
+  padding: 6px 12px;
+  min-height: 32px;
+  border-radius: 16px;
+  border: 1.5px solid var(--g200);
+  background: var(--card);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--g500);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.15);
+  user-select: none;
+  font-family: inherit;
+}
+.preset-btn:active {
+  background: var(--amber-light);
+  color: var(--amber-deep);
+  border-color: var(--amber);
+}
+
+.discount-field { margin-top: 14px; }
+.discount-field label {
+  font-size: 12px; font-weight: 700;
+  color: var(--g600); display: block;
+  margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.discount-field input {
+  width: 100%; padding: 10px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px; font-family: inherit;
+  outline: none; text-align: right;
+  background: var(--card); -webkit-appearance: none;
+}
+.discount-field input:focus { border-color: var(--amber); }
+
+.checkbox-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 14px; padding: 12px;
+  min-height: 48px;
+  background: var(--g100);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.1);
+  user-select: none;
+}
+.checkbox-row input[type="checkbox"] {
+  width: 20px; height: 20px;
+  accent-color: var(--amber);
+  cursor: pointer; flex-shrink: 0;
+}
+.checkbox-row span {
+  font-size: 14px; color: var(--g600); font-weight: 500;
+}
+
+/* ===== RESULTS ===== */
+.result-card {
+  background: var(--ink);
+  color: #FFF;
+  border-radius: var(--radius);
+  padding: 24px 18px;
+  margin-top: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber-deep), var(--amber-glow), var(--amber));
+}
+.result-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px; font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--amber-glow);
+  letter-spacing: 1px;
+}
+.result-person {
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.result-person:last-of-type { margin-bottom: 0; }
+.result-person-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 6px; gap: 8px;
+}
+.result-person-name {
+  font-weight: 700; font-size: 15px;
+  color: rgba(255,255,255,0.9);
+  min-width: 0; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.result-person-total {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800; font-size: 19px;
+  color: var(--amber-glow);
+  white-space: nowrap; flex-shrink: 0;
+}
+.result-detail {
+  font-size: 12px; opacity: 0.5;
+  line-height: 1.7; word-break: break-word;
+}
+.result-grand-total {
+  text-align: center;
+  margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid rgba(200,144,46,0.2);
+}
+.result-grand-total .label {
+  font-size: 11px; opacity: 0.45; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.result-grand-total .amount {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--amber-glow); letter-spacing: -0.5px;
+}
+.round-toggle {
+  display: flex; justify-content: center;
+  gap: 6px; margin-top: 14px;
+  align-items: center; flex-wrap: wrap;
+}
+.round-label-text { font-size: 11px; opacity: 0.35; }
+.round-btn {
+  padding: 6px 12px; min-height: 32px;
+  border-radius: 14px;
+  border: 1px solid rgba(200,144,46,0.2);
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.2);
+  user-select: none; font-family: inherit;
+}
+.round-btn.active {
+  background: rgba(200,144,46,0.15);
+  border-color: rgba(200,144,46,0.4);
+  color: var(--amber-glow);
+}
+
+.rounding-note {
+  text-align: center; margin-top: 8px;
+  font-size: 10px; opacity: 0.3;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center; padding: 28px 0 20px;
+  color: var(--g400); font-size: 11px; line-height: 1.8;
+}
+footer .brand {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700; color: var(--amber); letter-spacing: 2px;
+}
+
+/* ===== RECEIPT SCANNER ===== */
+.icon-scan { background: linear-gradient(135deg, #EFE6F5, #DCC9EC); }
+
+.scan-hint {
+  font-size: 12px; color: var(--g400); margin: -6px 0 12px;
+}
+.scan-spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--amber);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: scanSpin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+@keyframes scanSpin { to { transform: rotate(360deg); } }
+.btn-outline.loading { opacity: 0.65; pointer-events: none; }
+
+.scan-msg {
+  margin-top: 10px;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: var(--radius-xs);
+  background: var(--g100);
+  color: var(--g600);
+  line-height: 1.6;
+}
+.scan-msg.error { background: var(--ember-light); color: var(--ember); font-weight: 600; }
+.scan-msg.success { background: var(--jade-light); color: var(--jade); font-weight: 600; }
+
+.api-toggle {
+  background: none; border: none;
+  color: var(--g400);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  min-height: 40px;
+  font-family: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.1);
+  user-select: none;
+}
+.api-panel {
+  margin-top: 4px;
+  padding: 12px;
+  background: var(--g100);
+  border-radius: var(--radius-xs);
+}
+.api-panel label {
+  font-size: 12px; font-weight: 700;
+  color: var(--g600); display: block;
+  margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.api-panel input {
+  width: 100%; padding: 10px;
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  font-size: 16px; font-family: inherit;
+  outline: none; background: var(--card);
+  -webkit-appearance: none;
+}
+.api-panel input:focus { border-color: var(--amber); }
+.api-hint {
+  font-size: 11px; color: var(--g400);
+  margin-top: 8px; line-height: 1.7;
+}
+.api-hint a { color: var(--amber-deep); font-weight: 600; }
+
+/* ===== OCR REVIEW ===== */
+.ocr-review {
+  margin-top: 14px;
+  border-top: 1px dashed var(--g300);
+  padding-top: 14px;
+}
+.ocr-review-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--ink); margin-bottom: 10px;
+}
+.ocr-item-block {
+  border: 1.5px solid var(--g200);
+  border-radius: var(--radius-xs);
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--card);
+}
+.ocr-charges {
+  background: var(--g100);
+  border-radius: var(--radius-xs);
+  padding: 10px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+  color: var(--g600);
+  line-height: 1.9;
+}
+.ocr-sanity {
+  font-size: 12px; margin: 8px 0;
+  color: var(--jade); font-weight: 600;
+}
+.ocr-sanity.warn { color: var(--ember); }
+.ocr-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-import {
+  flex: 1;
+  padding: 13px;
+  min-height: 48px;
+  font-size: 15px; font-weight: 700;
+  font-family: inherit;
+  background: linear-gradient(135deg, var(--amber-deep), var(--amber));
+  color: #FFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(200,144,46,0.25);
+  user-select: none;
+}
+.btn-import:active { transform: scale(0.98); }
+.btn-cancel {
+  padding: 13px 18px;
+  min-height: 48px;
+  background: var(--card);
+  border: 1.5px solid var(--g300);
+  color: var(--g500);
+  border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.btn-cancel:active { background: var(--g100); }
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+  .hero-header { padding: 28px 16px 22px; }
+  .logo { font-size: 32px; }
+  .page-body { padding: 0 10px 16px; }
+  .card { padding: 16px; }
+  .person-section { padding: 12px; }
+  .item-row .item-price,
+  .shared-item-inputs .item-price { width: 64px; }
+}
+@media (max-width: 360px) {
+  .tax-service { grid-template-columns: 1fr; }
+  .logo { font-size: 28px; letter-spacing: 2px; }
+  .item-row .item-qty,
+  .shared-item-inputs .item-qty { width: 38px; }
+  .item-row .item-price,
+  .shared-item-inputs .item-price { width: 58px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-atmosphere">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- PURE CSS LANGUAGE RADIOS — must be siblings of .hero-header and .page-body -->
+<input type="radio" name="lang" id="lang-en" class="lang-radio" checked>
+<input type="radio" name="lang" id="lang-zh" class="lang-radio">
+
+<div class="hero-header">
+  <div class="logo">EQUITO</div>
+  <div class="tagline">
+    <span class="en">Your Trusted Bill Splitting Buddy</span>
+    <span class="zh">你的分账好帮手</span>
+  </div>
+  <p class="subtitle">
+    <span class="en">Fair & easy bill splitting to make everyone happy before and after meal</span>
+    <span class="zh">公平轻松的分账，让饭前饭后都开心</span>
+  </p>
+</div>
+
+<div class="page-body" id="app">
+
+  <div class="lang-toggle">
+    <label for="lang-en" class="lang-label lang-label-en">English</label>
+    <label for="lang-zh" class="lang-label lang-label-zh">中文</label>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon icon-scan">📷</span>
+      <span class="en">Scan Receipt</span><span class="zh">扫描小票</span>
+    </div>
+    <p class="scan-hint">
+      <span class="en">Snap or upload receipt photos — items are read automatically by AI</span>
+      <span class="zh">拍摄或上传小票照片 — AI 自动识别菜品</span>
+    </p>
+    <button class="btn-outline" id="scan-btn">
+      <span class="en">📷 Upload / Take Photo</span><span class="zh">📷 上传 / 拍摄小票</span>
+    </button>
+    <input type="file" id="receipt-file" accept="image/*" multiple style="display:none">
+    <div id="scan-status"></div>
+    <button class="api-toggle" id="api-toggle">
+      ⚙️ <span class="en">Gemini API key settings</span><span class="zh">Gemini API 密钥设置</span>
+    </button>
+    <div class="api-panel" id="api-panel" style="display:none">
+      <label>Gemini API Key</label>
+      <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
+      <p class="api-hint">
+        <span class="en-block">Get a <b>free</b> key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> (no credit card needed). The key is saved only in this browser. Note: receipt photos are sent to Google for reading.</span>
+        <span class="zh-block">前往 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> 免费获取密钥（无需信用卡）。密钥仅保存在本浏览器中。注意：小票照片将发送给 Google 进行识别。</span>
+      </p>
+    </div>
+    <div id="ocr-review"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon icon-people">👥</span>
+      <span class="en">People</span><span class="zh">参与者</span>
+    </div>
+    <div id="people-list"></div>
+    <button class="btn-outline" id="add-person-btn">
+      <span class="en">+ Add Person</span><span class="zh">+ 添加人员</span>
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon icon-shared">🍲</span>
+      <span class="en">Shared Items</span><span class="zh">共享菜品</span>
+    </div>
+    <p style="font-size:12px;color:var(--g400);margin:-6px 0 12px">
+      <span class="en">Select who shares each item — defaults to everyone</span>
+      <span class="zh">选择每道共享菜品的分摊人 — 默认为所有人</span>
+    </p>
+    <div class="person-section shared-section">
+      <div id="shared-items"></div>
+      <button class="add-item-btn" id="add-shared-btn">
+        <span class="en">+ Add item</span><span class="zh">+ 添加菜品</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon icon-tax">🧾</span>
+      <span class="en">Tax & Service Charge</span><span class="zh">税费与服务费</span>
+    </div>
+    <div class="tax-service">
+      <div class="tax-field">
+        <label>SST (%)</label>
+        <input type="number" id="tax" value="8" min="0" step="0.1" inputmode="decimal">
+        <div class="sst-presets">
+          <button class="preset-btn" data-target="tax" data-val="0">0%</button>
+          <button class="preset-btn" data-target="tax" data-val="6">6%</button>
+          <button class="preset-btn" data-target="tax" data-val="8">8%</button>
+        </div>
+      </div>
+      <div class="tax-field">
+        <label><span class="en">Service (%)</span><span class="zh">服务费 (%)</span></label>
+        <input type="number" id="service" value="10" min="0" step="0.1" inputmode="decimal">
+        <div class="sst-presets">
+          <button class="preset-btn" data-target="service" data-val="0">0%</button>
+          <button class="preset-btn" data-target="service" data-val="10">10%</button>
+        </div>
+      </div>
+    </div>
+    <div class="discount-field">
+      <label><span class="en">Discount (RM)</span><span class="zh">折扣 (RM)</span></label>
+      <input type="number" id="discount" value="0" min="0" step="0.01" inputmode="decimal">
+    </div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="tax-on-service" checked>
+      <span>
+        <span class="en">SST applies on service charge</span>
+        <span class="zh">服务费需征收 SST</span>
+      </span>
+    </label>
+  </div>
+
+  <button class="btn-calculate" id="calc-btn">
+    <span class="en">Calculate!</span><span class="zh">开始计算！</span>
+  </button>
+
+  <div id="results"></div>
+
+  <footer>
+    <span class="brand">EQUITO</span> &copy; 2026<br>
+    <span class="en">Made for happy dining, everywhere</span>
+    <span class="zh">为快乐聚餐而生</span>
+  </footer>
+</div>
+
+<script>
+(function() {
+  var personCount = 0;
+  var roundTo = 0.05;
+
+  function getLang() {
+    var zh = document.getElementById('lang-zh');
+    return (zh && zh.checked) ? 'zh' : 'en';
+  }
+
+  function escHtml(str) {
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function getActivePeople() {
+    var people = [];
+    var sections = document.querySelectorAll('[id^="person-"]');
+    for (var i = 0; i < sections.length; i++) {
+      var section = sections[i];
+      var id = section.id.replace('person-', '');
+      var nameInput = section.querySelector('.person-name-input');
+      var name = nameInput ? nameInput.value : 'Person ' + id;
+      people.push({ id: id, name: name });
+    }
+    return people;
+  }
+
+  function addPerson() {
+    personCount++;
+    var div = document.createElement('div');
+    div.className = 'person-section';
+    div.id = 'person-' + personCount;
+    var num = personCount;
+    var lang = getLang();
+    var defaultName = lang === 'zh' ? '第' + num + '位' : 'Person ' + num;
+    div.innerHTML =
+      '<div class="person-header">' +
+        '<input class="person-name-input" value="' + defaultName + '" data-person-id="' + num + '">' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          '<span class="person-subtotal" id="subtotal-' + num + '">RM 0.00</span>' +
+          '<button class="btn-remove" data-remove-person="' + num + '">&times;</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="items-' + num + '"></div>' +
+      '<button class="add-item-btn" data-add-item="' + num + '">' +
+        '<span class="en">+ Add item</span><span class="zh">+ 添加菜品</span>' +
+      '</button>';
+    document.getElementById('people-list').appendChild(div);
+    addItem(num);
+    refreshSharedItemChips();
+  }
+
+  function removePerson(id) {
+    var el = document.getElementById('person-' + id);
+    if (el) el.remove();
+    refreshSharedItemChips();
+    calculate();
+  }
+
+  function addItem(personId) {
+    var container = document.getElementById('items-' + personId);
+    if (!container) return;
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML =
+      '<input type="text" class="item-name" placeholder="Item name">' +
+      '<input type="number" class="item-qty" value="1" min="1" step="1" inputmode="numeric">' +
+      '<span class="multiply-sign">×</span>' +
+      '<input type="number" class="item-price" placeholder="Price" min="0" step="0.01" inputmode="decimal">' +
+      '<button class="btn-remove" data-remove-row="1">×</button>';
+    container.appendChild(div);
+  }
+
+  function addSharedItem() {
+    var container = document.getElementById('shared-items');
+    if (!container) return;
+    var div = document.createElement('div');
+    div.className = 'shared-item-block';
+    var people = getActivePeople();
+    var chipsHtml = '';
+    for (var i = 0; i < people.length; i++) {
+      chipsHtml += '<span class="person-chip active" data-person-id="' + people[i].id + '">' + escHtml(people[i].name) + '</span>';
+    }
+    var lang = getLang();
+    var splitLabel = lang === 'zh' ? '分摊人' : 'Split among';
+    div.innerHTML =
+      '<div class="shared-item-inputs">' +
+        '<input type="text" class="item-name" placeholder="Item name">' +
+        '<input type="number" class="item-qty" value="1" min="1" step="1" inputmode="numeric">' +
+        '<span class="multiply-sign">×</span>' +
+        '<input type="number" class="item-price" placeholder="Price" min="0" step="0.01" inputmode="decimal">' +
+        '<button class="btn-remove" data-remove-shared="1">×</button>' +
+      '</div>' +
+      '<div class="shared-people-row">' +
+        '<span class="shared-people-label">' + splitLabel + ':</span>' +
+        chipsHtml +
+      '</div>';
+    container.appendChild(div);
+  }
+
+  function refreshSharedItemChips() {
+    var people = getActivePeople();
+    var blocks = document.querySelectorAll('.shared-item-block');
+    var lang = getLang();
+    var splitLabel = lang === 'zh' ? '分摊人' : 'Split among';
+    for (var b = 0; b < blocks.length; b++) {
+      var row = blocks[b].querySelector('.shared-people-row');
+      if (!row) continue;
+      var existingChips = row.querySelectorAll('.person-chip');
+      var activeIds = {};
+      for (var c = 0; c < existingChips.length; c++) {
+        if (existingChips[c].classList.contains('active')) {
+          activeIds[existingChips[c].getAttribute('data-person-id')] = true;
+        }
+      }
+      var hasAny = Object.keys(activeIds).length > 0;
+      var chipsHtml = '<span class="shared-people-label">' + splitLabel + ':</span>';
+      for (var p = 0; p < people.length; p++) {
+        var isActive = !hasAny || activeIds[people[p].id];
+        chipsHtml += '<span class="person-chip ' + (isActive ? 'active' : '') + '" data-person-id="' + people[p].id + '">' + escHtml(people[p].name) + '</span>';
+      }
+      row.innerHTML = chipsHtml;
+    }
+  }
+
+  function getItems(containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return [];
+    var rows = container.querySelectorAll('.item-row');
+    var items = [];
+    for (var i = 0; i < rows.length; i++) {
+      var nameEl = rows[i].querySelector('.item-name');
+      var qtyEl = rows[i].querySelector('.item-qty');
+      var priceEl = rows[i].querySelector('.item-price');
+      var name = nameEl.value || '—';
+      var qty = parseFloat(qtyEl.value) || 1;
+      var price = parseFloat(priceEl.value) || 0;
+      if (price > 0) items.push({ name: name, qty: qty, price: price * qty });
+    }
+    return items;
+  }
+
+  function getSharedItems() {
+    var blocks = document.querySelectorAll('.shared-item-block');
+    var items = [];
+    for (var i = 0; i < blocks.length; i++) {
+      var nameEl = blocks[i].querySelector('.shared-item-inputs .item-name');
+      var qtyEl = blocks[i].querySelector('.shared-item-inputs .item-qty');
+      var priceEl = blocks[i].querySelector('.shared-item-inputs .item-price');
+      var name = nameEl.value || '—';
+      var qty = parseFloat(qtyEl.value) || 1;
+      var price = parseFloat(priceEl.value) || 0;
+      if (price > 0) {
+        var chips = blocks[i].querySelectorAll('.person-chip.active');
+        var sharedWith = [];
+        for (var c = 0; c < chips.length; c++) {
+          sharedWith.push(chips[c].getAttribute('data-person-id'));
+        }
+        items.push({ name: name, qty: qty, price: price * qty, sharedWith: sharedWith });
+      }
+    }
+    return items;
+  }
+
+  function roundAmount(val, precision) {
+    return Math.round(val / precision) * precision;
+  }
+
+  function calculate() {
+    var lang = getLang();
+    var labels = {
+      en: { result_title:'Each Person Pays', own_items:'Own items', shared_part:'Shared', subtotal:'Subtotal', tax_service_share:'Tax & service', discount_share:'Discount', grand_total:'Grand Total', round_label:'Round to', rounding_note:'Individual amounts may not add up exactly due to rounding' },
+      zh: { result_title:'每人应付', own_items:'个人点单', shared_part:'共享部分', subtotal:'小计', tax_service_share:'税费与服务费', discount_share:'折扣', grand_total:'总计', round_label:'取整到', rounding_note:'由于取整，个人金额总和可能与总计略有出入' }
+    };
+    var t = labels[lang];
+
+    var taxPct = parseFloat(document.getElementById('tax').value) || 0;
+    var servicePct = parseFloat(document.getElementById('service').value) || 0;
+    var discount = parseFloat(document.getElementById('discount').value) || 0;
+    var taxOnService = document.getElementById('tax-on-service').checked;
+    var personSections = document.querySelectorAll('[id^="person-"]');
+    var people = [];
+
+    for (var i = 0; i < personSections.length; i++) {
+      var section = personSections[i];
+      var id = section.id.replace('person-', '');
+      var nameInput = section.querySelector('.person-name-input');
+      var name = nameInput ? nameInput.value : 'Person ' + id;
+      var items = getItems('items-' + id);
+      var ownTotal = 0;
+      for (var j = 0; j < items.length; j++) ownTotal += items[j].price;
+      people.push({ id: id, name: name, items: items, ownTotal: ownTotal, sharedTotal: 0 });
+      var subtotalEl = document.getElementById('subtotal-' + id);
+      if (subtotalEl) subtotalEl.textContent = 'RM ' + ownTotal.toFixed(2);
+    }
+
+    if (people.length === 0) {
+      document.getElementById('results').innerHTML = '';
+      return;
+    }
+
+    var sharedItems = getSharedItems();
+    for (var s = 0; s < sharedItems.length; s++) {
+      var item = sharedItems[s];
+      var recipients = item.sharedWith.length > 0 ? item.sharedWith : people.map(function(p) { return p.id; });
+      var perPerson = item.price / recipients.length;
+      for (var r = 0; r < recipients.length; r++) {
+        for (var pp = 0; pp < people.length; pp++) {
+          if (people[pp].id === recipients[r]) {
+            people[pp].sharedTotal += perPerson;
+            break;
+          }
+        }
+      }
+    }
+
+    var grandSubtotal = 0;
+    for (var g = 0; g < people.length; g++) grandSubtotal += people[g].ownTotal + people[g].sharedTotal;
+    var serviceAmount = grandSubtotal * (servicePct / 100);
+    var taxBase = taxOnService ? (grandSubtotal + serviceAmount) : grandSubtotal;
+    var taxAmount = taxBase * (taxPct / 100);
+    var multiplier = grandSubtotal > 0 ? (serviceAmount + taxAmount) / grandSubtotal : 0;
+    var discountPerRM = grandSubtotal > 0 ? discount / grandSubtotal : 0;
+
+    var html = '<div class="result-card"><h3>' + t.result_title + '</h3>';
+    var runningTotal = 0;
+
+    for (var k = 0; k < people.length; k++) {
+      var p = people[k];
+      var sub = p.ownTotal + p.sharedTotal;
+      var taxServiceShare = sub * multiplier;
+      var discountShare = sub * discountPerRM;
+      var total = sub + taxServiceShare - discountShare;
+      total = roundAmount(total, roundTo);
+      runningTotal += total;
+
+      var detailLines = '';
+      for (var d = 0; d < p.items.length; d++) {
+        detailLines += escHtml(p.items[d].name) + ': RM ' + p.items[d].price.toFixed(2) + '<br>';
+      }
+      if (p.items.length > 0) detailLines += t.own_items + ': RM ' + p.ownTotal.toFixed(2) + '<br>';
+      if (p.sharedTotal > 0) detailLines += t.shared_part + ': RM ' + p.sharedTotal.toFixed(2) + '<br>';
+      detailLines += t.subtotal + ': RM ' + sub.toFixed(2);
+      if (taxServiceShare > 0) detailLines += '<br>' + t.tax_service_share + ': RM ' + taxServiceShare.toFixed(2);
+      if (discountShare > 0) detailLines += '<br>' + t.discount_share + ': -RM ' + discountShare.toFixed(2);
+
+      html += '<div class="result-person">' +
+        '<div class="result-person-header">' +
+          '<span class="result-person-name">' + escHtml(p.name) + '</span>' +
+          '<span class="result-person-total">RM ' + total.toFixed(2) + '</span>' +
+        '</div>' +
+        '<div class="result-detail">' + detailLines + '</div></div>';
+    }
+
+    html += '<div class="result-grand-total">' +
+        '<div class="label">' + t.grand_total + '</div>' +
+        '<div class="amount">RM ' + runningTotal.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div class="round-toggle">' +
+        '<span class="round-label-text">' + t.round_label + ':</span>' +
+        '<button class="round-btn ' + (roundTo===0.01?'active':'') + '" data-round="0.01">0.01</button>' +
+        '<button class="round-btn ' + (roundTo===0.05?'active':'') + '" data-round="0.05">0.05</button>' +
+        '<button class="round-btn ' + (roundTo===0.10?'active':'') + '" data-round="0.10">0.10</button>' +
+        '<button class="round-btn ' + (roundTo===1.00?'active':'') + '" data-round="1">1.00</button>' +
+      '</div>' +
+      '<div class="rounding-note">' + t.rounding_note + '</div>' +
+    '</div>';
+
+    document.getElementById('results').innerHTML = html;
+  }
+
+  /* ====== RECEIPT OCR (Gemini vision) ====== */
+  var GEMINI_MODELS = ['gemini-3-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
+  var API_KEY_STORAGE = 'equito_gemini_key';
+  var ocrData = null;
+
+  var OCR_PROMPT =
+    'You are reading photos of a restaurant or retail receipt (multiple photos may show parts of the same receipt; if they are clearly different receipts, combine all items into one bill). ' +
+    'Extract every purchased line item with its quantity and UNIT price (the price of ONE unit — if only the line total is printed, divide it by the quantity). ' +
+    'Item names may be in English, Malay, or Chinese; keep them as printed (shorten very long names). ' +
+    'Do NOT include subtotal, total, tax, SST, GST, service charge, rounding, discount, voucher, cash, change, or loyalty-point lines as items. ' +
+    'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST percent), discount_amount (total discount as a positive number), ' +
+    'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), and currency (e.g. "RM"). ' +
+    'If a percentage is not printed but its amount is, compute the percent from the subtotal and round to one decimal. Use null for anything not present on the receipt.';
+
+  var OCR_SCHEMA = {
+    type: 'OBJECT',
+    properties: {
+      items: {
+        type: 'ARRAY',
+        items: {
+          type: 'OBJECT',
+          properties: {
+            name: { type: 'STRING' },
+            qty: { type: 'NUMBER' },
+            unit_price: { type: 'NUMBER' }
+          },
+          required: ['name', 'qty', 'unit_price']
+        }
+      },
+      service_charge_pct: { type: 'NUMBER', nullable: true },
+      tax_pct: { type: 'NUMBER', nullable: true },
+      discount_amount: { type: 'NUMBER', nullable: true },
+      rounding_adj: { type: 'NUMBER', nullable: true },
+      subtotal: { type: 'NUMBER', nullable: true },
+      total: { type: 'NUMBER', nullable: true },
+      currency: { type: 'STRING', nullable: true }
+    },
+    required: ['items']
+  };
+
+  function escAttr(str) { return escHtml(str).replace(/"/g, '&quot;'); }
+
+  function getApiKey() {
+    try { return localStorage.getItem(API_KEY_STORAGE) || ''; } catch (e) { return ''; }
+  }
+  function saveApiKey(val) {
+    try { localStorage.setItem(API_KEY_STORAGE, val.trim()); } catch (e) {}
+  }
+
+  function biMsg(en, zh) {
+    return '<span class="en">' + en + '</span><span class="zh">' + zh + '</span>';
+  }
+
+  function showScanStatus(html, kind) {
+    var el = document.getElementById('scan-status');
+    if (!html) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="scan-msg ' + (kind || '') + '">' + html + '</div>';
+  }
+
+  function setScanLoading(on) {
+    var btn = document.getElementById('scan-btn');
+    if (on) {
+      btn.classList.add('loading');
+      btn.innerHTML = '<span class="scan-spinner"></span>' +
+        biMsg('Reading receipt…', '正在识别小票…');
+    } else {
+      btn.classList.remove('loading');
+      btn.innerHTML = biMsg('📷 Upload / Take Photo', '📷 上传 / 拍摄小票');
+    }
+  }
+
+  function preprocessImage(file) {
+    return new Promise(function(resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var maxSide = 1600;
+          var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          var w = Math.max(1, Math.round(img.width * scale));
+          var h = Math.max(1, Math.round(img.height * scale));
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(url);
+          resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+        } catch (e) {
+          URL.revokeObjectURL(url);
+          reject({ type: 'unreadable' });
+        }
+      };
+      img.onerror = function() {
+        URL.revokeObjectURL(url);
+        reject({ type: 'unreadable' });
+      };
+      img.src = url;
+    });
+  }
+
+  function callGemini(key, images) {
+    var parts = [{ text: OCR_PROMPT }];
+    for (var i = 0; i < images.length; i++) {
+      parts.push({ inline_data: { mime_type: 'image/jpeg', data: images[i] } });
+    }
+    var body = JSON.stringify({
+      contents: [{ parts: parts }],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        responseSchema: OCR_SCHEMA
+      }
+    });
+
+    function tryModel(idx) {
+      if (idx >= GEMINI_MODELS.length) return Promise.reject({ type: 'model' });
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
+        GEMINI_MODELS[idx] + ':generateContent?key=' + encodeURIComponent(key);
+      return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body
+      }).catch(function() { throw { type: 'network' }; })
+        .then(function(resp) {
+          if (resp.status === 404) return tryModel(idx + 1);
+          if (resp.status === 429) throw { type: 'quota' };
+          if (resp.status === 400 || resp.status === 401 || resp.status === 403) throw { type: 'key' };
+          if (!resp.ok) throw { type: 'http', status: resp.status };
+          return resp.json().then(function(data) {
+            var text = data && data.candidates && data.candidates[0] &&
+              data.candidates[0].content && data.candidates[0].content.parts &&
+              data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+            if (!text) throw { type: 'unclear' };
+            try { return JSON.parse(text); } catch (e) { throw { type: 'unclear' }; }
+          });
+        });
+    }
+    return tryModel(0);
+  }
+
+  function ocrErrorMessage(err) {
+    var t = (err && err.type) || 'http';
+    if (t === 'network') return biMsg('No internet connection — scanning needs to be online.', '无法连接网络 — 识别功能需要联网。');
+    if (t === 'quota') return biMsg('Free-tier limit reached — please wait a minute and try again.', '已达免费额度上限 — 请稍等一分钟后重试。');
+    if (t === 'key') return biMsg('API key was rejected — please check your Gemini API key in the settings below.', 'API 密钥无效 — 请检查下方设置中的 Gemini 密钥。');
+    if (t === 'unclear') return biMsg('Could not read the receipt — try a sharper, well-lit photo.', '无法识别小票 — 请尝试更清晰、光线更好的照片。');
+    if (t === 'unreadable') return biMsg('That file is not a readable image — please choose a photo.', '无法读取该文件 — 请选择图片文件。');
+    if (t === 'model') return biMsg('Gemini model unavailable — please try again later.', 'Gemini 模型暂不可用 — 请稍后重试。');
+    return biMsg('Something went wrong (HTTP ' + (err && err.status || '?') + ') — please try again.', '出错了（HTTP ' + (err && err.status || '?') + '）— 请重试。');
+  }
+
+  function normalizeOcr(raw) {
+    var items = [];
+    var rawItems = (raw && raw.items) || [];
+    for (var i = 0; i < rawItems.length; i++) {
+      var it = rawItems[i];
+      var qty = parseFloat(it.qty) || 1;
+      var price = parseFloat(it.unit_price) || 0;
+      if (price <= 0) continue;
+      items.push({
+        name: String(it.name || '—'),
+        qty: qty,
+        price: price,
+        assign: 'shared'
+      });
+    }
+    function num(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+    return {
+      items: items,
+      servicePct: num(raw.service_charge_pct),
+      taxPct: num(raw.tax_pct),
+      discount: num(raw.discount_amount),
+      rounding: num(raw.rounding_adj),
+      subtotal: num(raw.subtotal),
+      total: num(raw.total),
+      currency: raw.currency || 'RM'
+    };
+  }
+
+  function handleReceiptFiles(files) {
+    if (!files || files.length === 0) return;
+    var key = getApiKey();
+    if (!key) {
+      document.getElementById('api-panel').style.display = 'block';
+      showScanStatus(biMsg(
+        'Please add your free Gemini API key first (settings below).',
+        '请先在下方设置中填写免费的 Gemini API 密钥。'), 'error');
+      return;
+    }
+    setScanLoading(true);
+    showScanStatus('');
+    var jobs = [];
+    for (var i = 0; i < files.length; i++) jobs.push(preprocessImage(files[i]));
+    Promise.all(jobs)
+      .then(function(images) { return callGemini(key, images); })
+      .then(function(raw) {
+        ocrData = normalizeOcr(raw);
+        if (ocrData.items.length === 0) {
+          ocrData = null;
+          showScanStatus(ocrErrorMessage({ type: 'unclear' }), 'error');
+        } else {
+          renderOcrReview();
+        }
+        setScanLoading(false);
+      })
+      .catch(function(err) {
+        setScanLoading(false);
+        showScanStatus(ocrErrorMessage(err), 'error');
+        if (err && err.type === 'key') {
+          document.getElementById('api-panel').style.display = 'block';
+        }
+      });
+  }
+
+  function ocrItemsSum() {
+    var sum = 0;
+    for (var i = 0; i < ocrData.items.length; i++) {
+      sum += ocrData.items[i].qty * ocrData.items[i].price;
+    }
+    return sum;
+  }
+
+  function ocrSanityHtml() {
+    var cur = ocrData.currency;
+    var sum = ocrItemsSum();
+    var ref = null, refLabelEn = '', refLabelZh = '';
+    if (ocrData.subtotal !== null) {
+      ref = ocrData.subtotal; refLabelEn = 'receipt subtotal'; refLabelZh = '小票小计';
+    } else if (ocrData.total !== null && !ocrData.taxPct && !ocrData.servicePct && !ocrData.discount) {
+      ref = ocrData.total; refLabelEn = 'receipt total'; refLabelZh = '小票总额';
+    }
+    if (ref === null) {
+      return '<div class="ocr-sanity" id="ocr-sanity">' +
+        biMsg('Items total: ' + cur + ' ' + sum.toFixed(2), '菜品合计：' + cur + ' ' + sum.toFixed(2)) + '</div>';
+    }
+    if (Math.abs(sum - ref) <= 0.051) {
+      return '<div class="ocr-sanity" id="ocr-sanity">' +
+        biMsg('✓ Items total ' + cur + ' ' + sum.toFixed(2) + ' matches the ' + refLabelEn,
+              '✓ 菜品合计 ' + cur + ' ' + sum.toFixed(2) + ' 与' + refLabelZh + '相符') + '</div>';
+    }
+    return '<div class="ocr-sanity warn" id="ocr-sanity">' +
+      biMsg('⚠️ Items total ' + cur + ' ' + sum.toFixed(2) + ' ≠ ' + refLabelEn + ' ' + cur + ' ' + ref.toFixed(2) + ' — please check the items below',
+            '⚠️ 菜品合计 ' + cur + ' ' + sum.toFixed(2) + ' 与' + refLabelZh + ' ' + cur + ' ' + ref.toFixed(2) + ' 不符 — 请检查以下菜品') + '</div>';
+  }
+
+  function renderOcrReview() {
+    var container = document.getElementById('ocr-review');
+    if (!ocrData) { container.innerHTML = ''; return; }
+    var people = getActivePeople();
+    var cur = ocrData.currency;
+
+    var html = '<div class="ocr-review">' +
+      '<div class="ocr-review-title">' +
+      biMsg('Found ' + ocrData.items.length + ' item(s) — check &amp; assign to people:',
+            '识别到 ' + ocrData.items.length + ' 道菜品 — 请核对并分配给参与者：') + '</div>';
+
+    for (var i = 0; i < ocrData.items.length; i++) {
+      var it = ocrData.items[i];
+      var chips = '<span class="person-chip ' + (it.assign === 'shared' ? 'active' : '') +
+        '" data-ocr-assign="' + i + '" data-assign-val="shared">' + biMsg('Shared', '共享') + '</span>';
+      for (var p = 0; p < people.length; p++) {
+        chips += '<span class="person-chip ' + (it.assign === people[p].id ? 'active' : '') +
+          '" data-ocr-assign="' + i + '" data-assign-val="' + people[p].id + '">' + escHtml(people[p].name) + '</span>';
+      }
+      html += '<div class="ocr-item-block">' +
+        '<div class="shared-item-inputs">' +
+          '<input type="text" class="item-name" value="' + escAttr(it.name) + '" data-ocr-field="name" data-ocr-idx="' + i + '">' +
+          '<input type="number" class="item-qty" value="' + it.qty + '" min="1" step="1" inputmode="numeric" data-ocr-field="qty" data-ocr-idx="' + i + '">' +
+          '<span class="multiply-sign">×</span>' +
+          '<input type="number" class="item-price" value="' + it.price.toFixed(2) + '" min="0" step="0.01" inputmode="decimal" data-ocr-field="price" data-ocr-idx="' + i + '">' +
+          '<button class="btn-remove" data-ocr-remove="' + i + '">×</button>' +
+        '</div>' +
+        '<div class="shared-people-row">' +
+          '<span class="shared-people-label">' + biMsg('Assign to', '分配给') + ':</span>' + chips +
+        '</div></div>';
+    }
+
+    html += ocrSanityHtml();
+
+    var chargeBits = [];
+    chargeBits.push('SST ' + (ocrData.taxPct !== null ? ocrData.taxPct : 0) + '%');
+    chargeBits.push((getLang() === 'zh' ? '服务费 ' : 'Service ') + (ocrData.servicePct !== null ? ocrData.servicePct : 0) + '%');
+    if (ocrData.discount) chargeBits.push((getLang() === 'zh' ? '折扣 ' : 'Discount ') + cur + ' ' + ocrData.discount.toFixed(2));
+    if (ocrData.rounding) chargeBits.push((getLang() === 'zh' ? '取整 ' : 'Rounding ') + (ocrData.rounding > 0 ? '+' : '') + ocrData.rounding.toFixed(2));
+    html += '<div class="ocr-charges">' +
+      '<label class="checkbox-row" style="margin-top:0">' +
+        '<input type="checkbox" id="ocr-apply-charges" checked>' +
+        '<span>' + biMsg('Apply charges from receipt: ', '套用小票上的费用：') + chargeBits.join(' • ') + '</span>' +
+      '</label></div>';
+
+    html += '<div class="ocr-actions">' +
+      '<button class="btn-import" id="ocr-import-btn">' + biMsg('Import to Bill ↓', '导入账单 ↓') + '</button>' +
+      '<button class="btn-cancel" id="ocr-cancel-btn">' + biMsg('Cancel', '取消') + '</button>' +
+      '</div></div>';
+
+    container.innerHTML = html;
+  }
+
+  function updateOcrField(input) {
+    if (!ocrData) return;
+    var idx = parseInt(input.getAttribute('data-ocr-idx'), 10);
+    var field = input.getAttribute('data-ocr-field');
+    var it = ocrData.items[idx];
+    if (!it) return;
+    if (field === 'name') it.name = input.value;
+    if (field === 'qty') it.qty = parseFloat(input.value) || 1;
+    if (field === 'price') it.price = parseFloat(input.value) || 0;
+    var sanity = document.getElementById('ocr-sanity');
+    if (sanity) sanity.outerHTML = ocrSanityHtml();
+  }
+
+  function importOcr() {
+    if (!ocrData) return;
+    var applyCharges = document.getElementById('ocr-apply-charges');
+    if (applyCharges && applyCharges.checked) {
+      document.getElementById('tax').value = ocrData.taxPct !== null ? ocrData.taxPct : 0;
+      document.getElementById('service').value = ocrData.servicePct !== null ? ocrData.servicePct : 0;
+      var netDiscount = (ocrData.discount || 0) - (ocrData.rounding || 0);
+      document.getElementById('discount').value = Math.round(netDiscount * 100) / 100;
+    }
+
+    var count = 0;
+    for (var i = 0; i < ocrData.items.length; i++) {
+      var it = ocrData.items[i];
+      if (it.price <= 0) continue;
+      var target = null;
+      if (it.assign !== 'shared') {
+        target = document.getElementById('items-' + it.assign);
+      }
+      if (target) {
+        addItem(it.assign);
+        var rows = target.querySelectorAll('.item-row');
+        var row = rows[rows.length - 1];
+        row.querySelector('.item-name').value = it.name;
+        row.querySelector('.item-qty').value = it.qty;
+        row.querySelector('.item-price').value = it.price.toFixed(2);
+      } else {
+        addSharedItem();
+        var blocks = document.querySelectorAll('.shared-item-block');
+        var block = blocks[blocks.length - 1];
+        block.querySelector('.shared-item-inputs .item-name').value = it.name;
+        block.querySelector('.shared-item-inputs .item-qty').value = it.qty;
+        block.querySelector('.shared-item-inputs .item-price').value = it.price.toFixed(2);
+      }
+      count++;
+    }
+
+    ocrData = null;
+    renderOcrReview();
+    showScanStatus(biMsg('✓ Imported ' + count + ' item(s) — scroll down to review the split.',
+      '✓ 已导入 ' + count + ' 道菜品 — 请往下核对分账。'), 'success');
+    calculate();
+  }
+
+  function cancelOcr() {
+    ocrData = null;
+    renderOcrReview();
+    showScanStatus('');
+  }
+
+  function initScan() {
+    var keyInput = document.getElementById('api-key');
+    if (keyInput) keyInput.value = getApiKey();
+    document.getElementById('receipt-file').addEventListener('change', function(e) {
+      handleReceiptFiles(e.target.files);
+      e.target.value = '';
+    });
+  }
+
+  /* ====== EVENT DELEGATION ====== */
+  document.addEventListener('click', function(e) {
+    var target = e.target;
+    var btn;
+
+    if (target.id === 'scan-btn' || target.closest('#scan-btn')) {
+      document.getElementById('receipt-file').click();
+      return;
+    }
+    if (target.id === 'api-toggle' || target.closest('#api-toggle')) {
+      var panel = document.getElementById('api-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      return;
+    }
+    if (target.id === 'ocr-import-btn' || target.closest('#ocr-import-btn')) { importOcr(); return; }
+    if (target.id === 'ocr-cancel-btn' || target.closest('#ocr-cancel-btn')) { cancelOcr(); return; }
+
+    var ocrChip = target.closest('[data-ocr-assign]');
+    if (ocrChip) {
+      if (ocrData) {
+        var ocrIdx = parseInt(ocrChip.getAttribute('data-ocr-assign'), 10);
+        if (ocrData.items[ocrIdx]) {
+          ocrData.items[ocrIdx].assign = ocrChip.getAttribute('data-assign-val');
+          var rowChips = ocrChip.parentNode.querySelectorAll('.person-chip');
+          for (var rc = 0; rc < rowChips.length; rc++) rowChips[rc].classList.remove('active');
+          ocrChip.classList.add('active');
+        }
+      }
+      return;
+    }
+
+    if (target.closest('[data-ocr-remove]')) {
+      if (ocrData) {
+        var remIdx = parseInt(target.closest('[data-ocr-remove]').getAttribute('data-ocr-remove'), 10);
+        ocrData.items.splice(remIdx, 1);
+        if (ocrData.items.length === 0) { cancelOcr(); } else { renderOcrReview(); }
+      }
+      return;
+    }
+
+    if (target.id === 'add-person-btn' || target.closest('#add-person-btn')) { addPerson(); return; }
+    if (target.id === 'add-shared-btn' || target.closest('#add-shared-btn')) { addSharedItem(); return; }
+    if (target.id === 'calc-btn' || target.closest('#calc-btn')) { calculate(); return; }
+
+    btn = target.closest('[data-remove-person]');
+    if (btn) { removePerson(btn.getAttribute('data-remove-person')); return; }
+
+    btn = target.closest('[data-add-item]');
+    if (btn) { addItem(btn.getAttribute('data-add-item')); return; }
+
+    if (target.closest('[data-remove-row]')) {
+      var row = target.closest('.item-row');
+      if (row) { row.remove(); calculate(); }
+      return;
+    }
+
+    if (target.closest('[data-remove-shared]')) {
+      var block = target.closest('.shared-item-block');
+      if (block) { block.remove(); calculate(); }
+      return;
+    }
+
+    var chip = target.closest('.person-chip');
+    if (chip) {
+      if (chip.classList.contains('active')) { chip.classList.remove('active'); }
+      else { chip.classList.add('active'); }
+      calculate();
+      return;
+    }
+
+    var preset = target.closest('.preset-btn');
+    if (preset) {
+      var tid = preset.getAttribute('data-target');
+      var val = preset.getAttribute('data-val');
+      document.getElementById(tid).value = val;
+      calculate();
+      return;
+    }
+
+    var roundBtn = target.closest('[data-round]');
+    if (roundBtn) {
+      roundTo = parseFloat(roundBtn.getAttribute('data-round'));
+      calculate();
+      return;
+    }
+  });
+
+  document.addEventListener('input', function(e) {
+    var t = e.target;
+    if (t.getAttribute && t.getAttribute('data-ocr-field')) { updateOcrField(t); return; }
+    if (t.id === 'api-key') { saveApiKey(t.value); return; }
+    if (t.classList.contains('item-name') || t.classList.contains('item-qty') || t.classList.contains('item-price') ||
+        t.id === 'tax' || t.id === 'service' || t.id === 'discount') {
+      calculate();
+    }
+    if (t.classList.contains('person-name-input')) {
+      refreshSharedItemChips();
+      calculate();
+    }
+  });
+
+  document.addEventListener('change', function(e) {
+    if (e.target.id === 'tax-on-service') calculate();
+    if (e.target.name === 'lang') {
+      refreshSharedItemChips();
+      if (ocrData) renderOcrReview();
+      calculate();
+    }
+  });
+
+  addPerson();
+  addPerson();
+  addSharedItem();
+  initScan();
+})();
+</script>
+</body>
+</html>

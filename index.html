@@ -2582,12 +2582,14 @@ var RECEIPT_CUR_MAP = {
     document.getElementById('people-list').appendChild(div);
     addItem(num);
     refreshSharedItemChips();
+    if (ocrData) renderOcrReview();
   }
 
   function removePerson(id) {
     var el = document.getElementById('person-' + id);
     if (el) el.remove();
     refreshSharedItemChips();
+    if (ocrData) renderOcrReview();
     calculate();
   }
 
@@ -3463,6 +3465,17 @@ var RECEIPT_CUR_MAP = {
     var people = getActivePeople();
     var cur = ocrData.currency;
 
+    /* preserve checkbox state across re-renders; drop assignments to removed buddies */
+    var applyEl = document.getElementById('ocr-apply-charges');
+    var applyChecked = applyEl ? applyEl.checked : true;
+    var validIds = {};
+    for (var v = 0; v < people.length; v++) validIds[people[v].id] = true;
+    for (var w = 0; w < ocrData.items.length; w++) {
+      if (ocrData.items[w].assign !== 'shared' && !validIds[ocrData.items[w].assign]) {
+        ocrData.items[w].assign = 'shared';
+      }
+    }
+
     var html = '<div class="ocr-review">' +
       ocrBillSummaryHtml() +
       ocrThumbsHtml(true) +
@@ -3499,7 +3512,7 @@ var RECEIPT_CUR_MAP = {
     if (ocrData.rounding) chargeBits.push(escHtml(t('rounding_word')) + ' ' + (ocrData.rounding > 0 ? '+' : '') + ocrData.rounding.toFixed(2));
     html += '<div class="ocr-charges">' +
       '<label class="checkbox-row" style="margin-top:0">' +
-        '<input type="checkbox" id="ocr-apply-charges" checked>' +
+        '<input type="checkbox" id="ocr-apply-charges"' + (applyChecked ? ' checked' : '') + '>' +
         '<span>' + escHtml(t('apply_charges')) + chargeBits.join(' • ') + '</span>' +
       '</label></div>';
 
@@ -3765,6 +3778,7 @@ var RECEIPT_CUR_MAP = {
     if (el.classList.contains('person-name-input')) {
       el.removeAttribute('data-auto');
       refreshSharedItemChips();
+      if (ocrData) renderOcrReview();
       calculate();
       return;
     }

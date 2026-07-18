@@ -1438,6 +1438,8 @@ var I18N = {
   items_total: "Items total: {sum}",
   sum_match: "✓ Items total {sum} matches the {ref}",
   sum_mismatch: "⚠️ Items total {sum} ≠ {ref} {refval} — please check the items below",
+  total_match: "✓ Projected total {sum} matches the receipt's net total",
+  total_mismatch: "⚠️ Projected total {sum} ≠ receipt net total {refval} — check items & charges",
   ref_subtotal: "receipt subtotal",
   ref_total: "receipt total",
   apply_charges: "Apply charges from receipt: ",
@@ -1462,7 +1464,7 @@ var I18N = {
   shared_hint: "Select who shares each item — defaults to everyone",
   split_among: "Split among",
   tax_title: "Tax & Service Charge",
-  tax_label: "Tax / GST / VAT (%)",
+  tax_label: "Tax (%)",
   service_label: "Service (%)",
   discount_label: "Discount ({sym})",
   tax_on_service: "Tax applies on service charge",
@@ -1534,6 +1536,8 @@ var I18N = {
   items_total: "项目合计：{sum}",
   sum_match: "✓ 项目合计 {sum} 与{ref}相符",
   sum_mismatch: "⚠️ 项目合计 {sum} 与{ref} {refval} 不符 — 请检查以下项目",
+  total_match: "✓ 预计总额 {sum} 与收据净总额相符",
+  total_mismatch: "⚠️ 预计总额 {sum} 与收据净总额 {refval} 不符 — 请检查项目与费用",
   ref_subtotal: "收据小计",
   ref_total: "收据总额",
   apply_charges: "套用收据上的费用：",
@@ -1628,6 +1632,8 @@ var I18N = {
   items_total: "品項合計：{sum}",
   sum_match: "✓ 品項合計 {sum} 與{ref}相符",
   sum_mismatch: "⚠️ 品項合計 {sum} 與{ref} {refval} 不符 — 請檢查以下品項",
+  total_match: "✓ 預計總額 {sum} 與收據淨總額相符",
+  total_mismatch: "⚠️ 預計總額 {sum} 與收據淨總額 {refval} 不符 — 請檢查品項與費用",
   ref_subtotal: "收據小計",
   ref_total: "收據總額",
   apply_charges: "套用收據上的費用：",
@@ -1722,6 +1728,8 @@ var I18N = {
   items_total: "Jumlah item: {sum}",
   sum_match: "✓ Jumlah item {sum} sepadan dengan {ref}",
   sum_mismatch: "⚠️ Jumlah item {sum} ≠ {ref} {refval} — sila semak item di bawah",
+  total_match: "✓ Jumlah dijangka {sum} sepadan dengan jumlah bersih resit",
+  total_mismatch: "⚠️ Jumlah dijangka {sum} ≠ jumlah bersih resit {refval} — semak item & caj",
   ref_subtotal: "jumlah kecil resit",
   ref_total: "jumlah resit",
   apply_charges: "Guna caj daripada resit: ",
@@ -1746,7 +1754,7 @@ var I18N = {
   shared_hint: "Pilih siapa berkongsi setiap item — lalai untuk semua",
   split_among: "Kongsi antara",
   tax_title: "Cukai & Caj Perkhidmatan",
-  tax_label: "Cukai / SST (%)",
+  tax_label: "Cukai (%)",
   service_label: "Perkhidmatan (%)",
   discount_label: "Diskaun ({sym})",
   tax_on_service: "Cukai dikenakan atas caj perkhidmatan",
@@ -1816,6 +1824,8 @@ var I18N = {
   items_total: "Total de artículos: {sum}",
   sum_match: "✓ El total {sum} coincide con el {ref}",
   sum_mismatch: "⚠️ El total {sum} ≠ {ref} {refval} — revisa los artículos abajo",
+  total_match: "✓ El total previsto {sum} coincide con el total neto del recibo",
+  total_mismatch: "⚠️ El total previsto {sum} ≠ total neto del recibo {refval} — revisa artículos y cargos",
   ref_subtotal: "subtotal del recibo",
   ref_total: "total del recibo",
   apply_charges: "Aplicar cargos del recibo: ",
@@ -1840,7 +1850,7 @@ var I18N = {
   shared_hint: "Elige quién comparte cada artículo — por defecto, todos",
   split_among: "Dividir entre",
   tax_title: "Impuestos y servicio",
-  tax_label: "Impuesto / IVA (%)",
+  tax_label: "Impuesto (%)",
   service_label: "Servicio (%)",
   discount_label: "Descuento ({sym})",
   tax_on_service: "El impuesto se aplica al cargo por servicio",
@@ -1910,6 +1920,8 @@ var I18N = {
   items_total: "Total des articles : {sum}",
   sum_match: "✓ Le total {sum} correspond au {ref}",
   sum_mismatch: "⚠️ Le total {sum} ≠ {ref} {refval} — vérifiez les articles ci-dessous",
+  total_match: "✓ Le total prévu {sum} correspond au total net du reçu",
+  total_mismatch: "⚠️ Le total prévu {sum} ≠ total net du reçu {refval} — vérifiez articles et frais",
   ref_subtotal: "sous-total du reçu",
   ref_total: "total du reçu",
   apply_charges: "Appliquer les frais du reçu : ",
@@ -1934,7 +1946,7 @@ var I18N = {
   shared_hint: "Choisissez qui partage chaque article — tout le monde par défaut",
   split_among: "Partager entre",
   tax_title: "Taxes et service",
-  tax_label: "Taxe / TVA (%)",
+  tax_label: "Taxe (%)",
   service_label: "Service (%)",
   discount_label: "Remise ({sym})",
   tax_on_service: "La taxe s'applique aux frais de service",
@@ -2004,6 +2016,8 @@ var I18N = {
   items_total: "Postensumme: {sum}",
   sum_match: "✓ Postensumme {sum} stimmt mit der {ref} überein",
   sum_mismatch: "⚠️ Postensumme {sum} ≠ {ref} {refval} — bitte Posten unten prüfen",
+  total_match: "✓ Erwartete Summe {sum} stimmt mit dem Netto-Gesamtbetrag des Belegs überein",
+  total_mismatch: "⚠️ Erwartete Summe {sum} ≠ Netto-Gesamtbetrag {refval} — bitte Posten & Gebühren prüfen",
   ref_subtotal: "Zwischensumme des Belegs",
   ref_total: "Belegsumme",
   apply_charges: "Gebühren vom Beleg übernehmen: ",
@@ -2028,7 +2042,7 @@ var I18N = {
   shared_hint: "Wähle, wer sich jeden Posten teilt — standardmäßig alle",
   split_among: "Teilen unter",
   tax_title: "Steuern & Servicegebühr",
-  tax_label: "Steuer / MwSt. (%)",
+  tax_label: "Steuer (%)",
   service_label: "Service (%)",
   discount_label: "Rabatt ({sym})",
   tax_on_service: "Steuer gilt auch für die Servicegebühr",
@@ -2098,6 +2112,8 @@ var I18N = {
   items_total: "Total dos itens: {sum}",
   sum_match: "✓ O total {sum} confere com o {ref}",
   sum_mismatch: "⚠️ O total {sum} ≠ {ref} {refval} — confira os itens abaixo",
+  total_match: "✓ O total previsto {sum} confere com o total líquido do recibo",
+  total_mismatch: "⚠️ O total previsto {sum} ≠ total líquido do recibo {refval} — confira itens e taxas",
   ref_subtotal: "subtotal do recibo",
   ref_total: "total do recibo",
   apply_charges: "Aplicar taxas do recibo: ",
@@ -2122,7 +2138,7 @@ var I18N = {
   shared_hint: "Escolha quem divide cada item — todos por padrão",
   split_among: "Dividir entre",
   tax_title: "Impostos e serviço",
-  tax_label: "Imposto / IVA (%)",
+  tax_label: "Imposto (%)",
   service_label: "Serviço (%)",
   discount_label: "Desconto ({sym})",
   tax_on_service: "O imposto incide sobre a taxa de serviço",
@@ -2192,6 +2208,8 @@ var I18N = {
   items_total: "品目合計：{sum}",
   sum_match: "✓ 品目合計 {sum} は{ref}と一致しています",
   sum_mismatch: "⚠️ 品目合計 {sum} が{ref} {refval} と一致しません — 以下の品目を確認してください",
+  total_match: "✓ 想定合計 {sum} はレシートの支払総額と一致しています",
+  total_mismatch: "⚠️ 想定合計 {sum} がレシートの支払総額 {refval} と一致しません — 品目と料金を確認してください",
   ref_subtotal: "レシート小計",
   ref_total: "レシート合計",
   apply_charges: "レシートの料金を適用：",
@@ -2286,6 +2304,8 @@ var I18N = {
   items_total: "항목 합계: {sum}",
   sum_match: "✓ 항목 합계 {sum}이(가) {ref}와 일치합니다",
   sum_mismatch: "⚠️ 항목 합계 {sum} ≠ {ref} {refval} — 아래 항목을 확인하세요",
+  total_match: "✓ 예상 총액 {sum}이(가) 영수증 실결제 금액과 일치합니다",
+  total_mismatch: "⚠️ 예상 총액 {sum} ≠ 영수증 실결제 금액 {refval} — 항목과 요금을 확인하세요",
   ref_subtotal: "영수증 소계",
   ref_total: "영수증 합계",
   apply_charges: "영수증의 요금 적용: ",
@@ -2380,6 +2400,8 @@ var I18N = {
   items_total: "आइटम कुल: {sum}",
   sum_match: "✓ आइटम कुल {sum}, {ref} से मेल खाता है",
   sum_mismatch: "⚠️ आइटम कुल {sum} ≠ {ref} {refval} — नीचे आइटम जाँचें",
+  total_match: "✓ अनुमानित कुल {sum} रसीद के नेट कुल से मेल खाता है",
+  total_mismatch: "⚠️ अनुमानित कुल {sum} ≠ रसीद नेट कुल {refval} — आइटम और शुल्क जाँचें",
   ref_subtotal: "रसीद उप-योग",
   ref_total: "रसीद कुल",
   apply_charges: "रसीद के शुल्क लागू करें: ",
@@ -2404,7 +2426,7 @@ var I18N = {
   shared_hint: "चुनें कि हर आइटम कौन-कौन बाँटेगा — डिफ़ॉल्ट: सभी",
   split_among: "इनमें बाँटें",
   tax_title: "कर और सेवा शुल्क",
-  tax_label: "कर / GST (%)",
+  tax_label: "कर (%)",
   service_label: "सेवा (%)",
   discount_label: "छूट ({sym})",
   tax_on_service: "सेवा शुल्क पर भी कर लगेगा",
@@ -3278,7 +3300,7 @@ var RECEIPT_CUR_MAP = {
     'Extract every purchased line item with its quantity and UNIT price (the price of ONE unit — if only the line total is printed, divide it by the quantity). ' +
     'Item names may be in any language; keep them as printed (shorten very long names). ' +
     'Do NOT include subtotal, total, tax, SST, GST, VAT, service charge, rounding, discount, voucher, cash, change, or loyalty-point lines as items. ' +
-    'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST/VAT percent), discount_amount (total discount as a positive number), ' +
+    'Also extract: service_charge_pct (e.g. 10 for "Service Charge 10%"), tax_pct (SST/GST/VAT percent), discount_amount (the SUM of ALL discounts on the receipt — per-item discounts, member or loyalty discounts, vouchers, and bill-level discounts combined, as a positive number), ' +
     'rounding_adj (rounding adjustment: positive if added to the bill, negative if subtracted), subtotal (before tax/service), total (final amount payable), currency (the currency symbol or code printed, e.g. "RM", "$", "EUR"), ' +
     'merchant (the shop/restaurant name from the receipt header), bill_date (the date printed on the receipt, e.g. "18/07/2026"), and bill_time (the time printed, e.g. "13:45"). ' +
     'If a percentage is not printed but its amount is, compute the percent from the subtotal and round to one decimal. Use null for anything not present on the receipt.';
@@ -3457,7 +3479,7 @@ var RECEIPT_CUR_MAP = {
       });
     }
     function num(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
-    return {
+    var res = {
       items: items,
       servicePct: num(raw.service_charge_pct),
       taxPct: num(raw.tax_pct),
@@ -3470,6 +3492,24 @@ var RECEIPT_CUR_MAP = {
       billDate: raw.bill_date || null,
       billTime: raw.bill_time || null
     };
+    /* Discount guard: the receipt's own arithmetic (subtotal + charges − net total)
+       is more reliable than AI extraction of discount lines, which can miss
+       vouchers or per-item discounts. When the printed numbers disagree with the
+       extracted discount, trust the math. */
+    if (res.subtotal !== null && res.total !== null) {
+      var gSvc = res.subtotal * (res.servicePct || 0) / 100;
+      var gTaxA = (res.subtotal + gSvc) * (res.taxPct || 0) / 100;
+      var gTaxB = res.subtotal * (res.taxPct || 0) / 100;
+      var gRound = res.rounding || 0;
+      var impliedA = res.subtotal + gSvc + gTaxA + gRound - res.total;
+      var impliedB = res.subtotal + gSvc + gTaxB + gRound - res.total;
+      var extracted = res.discount || 0;
+      var matches = Math.abs(extracted - impliedA) <= 0.06 || Math.abs(extracted - impliedB) <= 0.06;
+      if (!matches) {
+        res.discount = impliedA > 0.01 ? Math.round(impliedA * 100) / 100 : 0;
+      }
+    }
+    return res;
   }
 
   function getAuth() {
@@ -3552,6 +3592,9 @@ var RECEIPT_CUR_MAP = {
   function ocrSanityHtml() {
     var cur = ocrData.currency;
     var sum = ocrItemsSum();
+    var html = '<div id="ocr-sanity">';
+
+    /* check 1: items sum vs receipt subtotal */
     var ref = null, refLabel = '';
     if (ocrData.subtotal !== null) {
       ref = ocrData.subtotal; refLabel = t('ref_subtotal');
@@ -3559,15 +3602,30 @@ var RECEIPT_CUR_MAP = {
       ref = ocrData.total; refLabel = t('ref_total');
     }
     if (ref === null) {
-      return '<div class="ocr-sanity" id="ocr-sanity">' +
+      html += '<div class="ocr-sanity">' +
         escHtml(t('items_total', { sum: cur + ' ' + sum.toFixed(2) })) + '</div>';
-    }
-    if (Math.abs(sum - ref) <= 0.051) {
-      return '<div class="ocr-sanity" id="ocr-sanity">' +
+    } else if (Math.abs(sum - ref) <= 0.051) {
+      html += '<div class="ocr-sanity">' +
         escHtml(t('sum_match', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel })) + '</div>';
+    } else {
+      html += '<div class="ocr-sanity warn">' +
+        escHtml(t('sum_mismatch', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel, refval: cur + ' ' + ref.toFixed(2) })) + '</div>';
     }
-    return '<div class="ocr-sanity warn" id="ocr-sanity">' +
-      escHtml(t('sum_mismatch', { sum: cur + ' ' + sum.toFixed(2), ref: refLabel, refval: cur + ' ' + ref.toFixed(2) })) + '</div>';
+
+    /* check 2: projected payable vs receipt net total */
+    if (ocrData.total !== null) {
+      var pSvc = sum * (ocrData.servicePct || 0) / 100;
+      var pTax = (sum + pSvc) * (ocrData.taxPct || 0) / 100;
+      var projected = sum + pSvc + pTax + (ocrData.rounding || 0) - (ocrData.discount || 0);
+      if (Math.abs(projected - ocrData.total) <= 0.10) {
+        html += '<div class="ocr-sanity">' +
+          escHtml(t('total_match', { sum: cur + ' ' + projected.toFixed(2) })) + '</div>';
+      } else {
+        html += '<div class="ocr-sanity warn">' +
+          escHtml(t('total_mismatch', { sum: cur + ' ' + projected.toFixed(2), refval: cur + ' ' + ocrData.total.toFixed(2) })) + '</div>';
+      }
+    }
+    return html + '</div>';
   }
 
   function ocrThumbsHtml(removable) {

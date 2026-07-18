@@ -917,6 +917,44 @@ footer .brand {
   margin-top: 8px; line-height: 1.7;
 }
 .api-hint a { color: var(--amber-deep); font-weight: 600; }
+.or-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--g400);
+  font-weight: 600;
+  margin: 14px 0 12px;
+  letter-spacing: 1px;
+}
+
+.btn-reset {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  min-height: 44px;
+  background: none;
+  border: 1.5px solid var(--g300);
+  border-radius: var(--radius);
+  color: var(--g500);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(212,101,74,0.1);
+  user-select: none;
+}
+.btn-reset:active {
+  background: var(--ember-light);
+  color: var(--ember);
+  border-color: var(--ember);
+}
+
+.btn-add-photos {
+  margin: 4px 0 10px;
+  padding: 10px;
+  min-height: 44px;
+  font-size: 13.5px;
+}
 
 /* ===== OCR REVIEW ===== */
 .ocr-review {
@@ -1179,15 +1217,13 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div id="receipt-thumbs"></div>
     <button class="api-toggle" id="api-toggle">⚙️ <span data-i18n="api_toggle"></span></button>
     <div class="api-panel" id="api-panel" style="display:none">
+      <label>Gemini API Key</label>
+      <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
+      <p class="api-hint" data-i18n="api_hint_html"></p>
+      <div class="or-divider" data-i18n="or_word"></div>
       <label data-i18n="pass_label"></label>
       <input type="password" id="family-pass" placeholder="••••••" autocomplete="off">
       <p class="api-hint" data-i18n="pass_hint"></p>
-      <button class="api-toggle" id="ownkey-toggle">🔑 <span data-i18n="own_key_label"></span></button>
-      <div id="ownkey-panel" style="display:none">
-        <label>Gemini API Key</label>
-        <input type="password" id="api-key" placeholder="AIza..." autocomplete="off">
-        <p class="api-hint" data-i18n="api_hint_html"></p>
-      </div>
     </div>
     <div id="ocr-review"></div>
   </div>
@@ -1251,6 +1287,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
   </div>
 
   <button class="btn-calculate" id="calc-btn" data-i18n="calc_btn"></button>
+  <button class="btn-reset" id="reset-btn" data-i18n="reset_btn"></button>
 
   <div id="results"></div>
 
@@ -1298,7 +1335,7 @@ var I18N = {
   pass_label: "Family passcode",
   pass_hint: "Enter it once — it's remembered on this device. Ask the app owner if you don't have it.",
   own_key_label: "Advanced: use your own Gemini API key",
-  need_access: "To scan, enter the family passcode below — or your own API key under Advanced.",
+  need_access: "To scan, add your free Gemini API key below — or enter the family passcode.",
   err_pass: "Passcode incorrect — please check with the app owner.",
   err_cap: "Today's shared scan limit is used up — try again tomorrow, or use your own API key under Advanced.",
   err_toomany: "Please choose up to 5 photos per scan.",
@@ -1339,6 +1376,10 @@ var I18N = {
   discount_label: "Discount ({sym})",
   tax_on_service: "Tax applies on service charge",
   calc_btn: "Calculate!",
+  reset_btn: "↺ Start New Bill",
+  reset_confirm: "Clear the whole bill and start fresh?",
+  add_photos: "➕ Add more photos",
+  or_word: "— or —",
   result_title: "Each Person Pays",
   own_items: "Own items",
   shared_part: "Shared",
@@ -1382,7 +1423,7 @@ var I18N = {
   pass_label: "家庭通行码",
   pass_hint: "只需输入一次，本设备会记住。没有通行码请向应用主人索取。",
   own_key_label: "高级：使用自己的 Gemini API 密钥",
-  need_access: "要使用扫描，请在下方输入家庭通行码 — 或在高级设置中填写自己的 API 密钥。",
+  need_access: "要使用扫描，请在下方填写免费的 Gemini API 密钥 — 或输入家庭通行码。",
   err_pass: "通行码不正确 — 请与应用主人确认。",
   err_cap: "今日共享扫描额度已用完 — 请明天再试，或在高级设置中使用自己的 API 密钥。",
   err_toomany: "每次最多选择 5 张照片。",
@@ -1423,6 +1464,10 @@ var I18N = {
   discount_label: "折扣（{sym}）",
   tax_on_service: "服务费需缴税",
   calc_btn: "开始计算！",
+  reset_btn: "↺ 开始新账单",
+  reset_confirm: "清空整个账单并重新开始？",
+  add_photos: "➕ 添加更多照片",
+  or_word: "— 或 —",
   result_title: "每人应付",
   own_items: "个人项目",
   shared_part: "共享部分",
@@ -1464,7 +1509,7 @@ var I18N = {
   pass_label: "家庭通行碼",
   pass_hint: "只需輸入一次，本裝置會記住。沒有通行碼請向應用主人索取。",
   own_key_label: "進階：使用自己的 Gemini API 金鑰",
-  need_access: "要使用掃描，請在下方輸入家庭通行碼 — 或在進階設定中填寫自己的 API 金鑰。",
+  need_access: "要使用掃描，請在下方填寫免費的 Gemini API 金鑰 — 或輸入家庭通行碼。",
   err_pass: "通行碼不正確 — 請與應用主人確認。",
   err_cap: "今日共享掃描額度已用完 — 請明天再試，或在進階設定中使用自己的 API 金鑰。",
   err_toomany: "每次最多選擇 5 張照片。",
@@ -1505,6 +1550,10 @@ var I18N = {
   discount_label: "折扣（{sym}）",
   tax_on_service: "服務費需課稅",
   calc_btn: "開始計算！",
+  reset_btn: "↺ 開始新帳單",
+  reset_confirm: "清空整個帳單並重新開始？",
+  add_photos: "➕ 新增更多照片",
+  or_word: "— 或 —",
   result_title: "每人應付",
   own_items: "個人品項",
   shared_part: "共享部分",
@@ -1546,7 +1595,7 @@ var I18N = {
   pass_label: "Kod laluan keluarga",
   pass_hint: "Masukkan sekali sahaja — peranti ini akan mengingatinya. Minta daripada pemilik aplikasi jika anda tiada.",
   own_key_label: "Lanjutan: guna kunci API Gemini sendiri",
-  need_access: "Untuk mengimbas, masukkan kod laluan keluarga di bawah — atau kunci API anda sendiri di bahagian Lanjutan.",
+  need_access: "Untuk mengimbas, masukkan kunci API Gemini percuma anda di bawah — atau kod laluan keluarga.",
   err_pass: "Kod laluan salah — sila semak dengan pemilik aplikasi.",
   err_cap: "Had imbasan kongsi hari ini telah habis — cuba esok, atau guna kunci API sendiri di Lanjutan.",
   err_toomany: "Sila pilih maksimum 5 gambar setiap imbasan.",
@@ -1587,6 +1636,10 @@ var I18N = {
   discount_label: "Diskaun ({sym})",
   tax_on_service: "Cukai dikenakan atas caj perkhidmatan",
   calc_btn: "Kira!",
+  reset_btn: "↺ Mula Bil Baru",
+  reset_confirm: "Kosongkan seluruh bil dan mula semula?",
+  add_photos: "➕ Tambah gambar lagi",
+  or_word: "— atau —",
   result_title: "Bayaran Setiap Orang",
   own_items: "Item sendiri",
   shared_part: "Kongsi",
@@ -1628,7 +1681,7 @@ var I18N = {
   pass_label: "Código familiar",
   pass_hint: "Introdúcelo una vez: este dispositivo lo recordará. Pídeselo al dueño de la app si no lo tienes.",
   own_key_label: "Avanzado: usa tu propia clave API de Gemini",
-  need_access: "Para escanear, introduce el código familiar abajo, o tu propia clave API en Avanzado.",
+  need_access: "Para escanear, añade tu clave API gratuita de Gemini abajo, o introduce el código familiar.",
   err_pass: "Código incorrecto — consulta con el dueño de la app.",
   err_cap: "El límite compartido de hoy se agotó — inténtalo mañana o usa tu propia clave API en Avanzado.",
   err_toomany: "Elige un máximo de 5 fotos por escaneo.",
@@ -1669,6 +1722,10 @@ var I18N = {
   discount_label: "Descuento ({sym})",
   tax_on_service: "El impuesto se aplica al cargo por servicio",
   calc_btn: "¡Calcular!",
+  reset_btn: "↺ Nueva cuenta",
+  reset_confirm: "¿Borrar toda la cuenta y empezar de nuevo?",
+  add_photos: "➕ Añadir más fotos",
+  or_word: "— o —",
   result_title: "Cada uno paga",
   own_items: "Artículos propios",
   shared_part: "Compartido",
@@ -1710,7 +1767,7 @@ var I18N = {
   pass_label: "Code d'accès famille",
   pass_hint: "Saisissez-le une fois — cet appareil s'en souviendra. Demandez-le au propriétaire de l'appli.",
   own_key_label: "Avancé : utiliser votre propre clé API Gemini",
-  need_access: "Pour scanner, saisissez le code famille ci-dessous — ou votre propre clé API dans Avancé.",
+  need_access: "Pour scanner, ajoutez votre clé API Gemini gratuite ci-dessous — ou saisissez le code famille.",
   err_pass: "Code incorrect — vérifiez auprès du propriétaire de l'appli.",
   err_cap: "La limite partagée du jour est atteinte — réessayez demain ou utilisez votre propre clé API dans Avancé.",
   err_toomany: "Choisissez au maximum 5 photos par scan.",
@@ -1751,6 +1808,10 @@ var I18N = {
   discount_label: "Remise ({sym})",
   tax_on_service: "La taxe s'applique aux frais de service",
   calc_btn: "Calculer !",
+  reset_btn: "↺ Nouvelle addition",
+  reset_confirm: "Effacer toute l'addition et recommencer ?",
+  add_photos: "➕ Ajouter des photos",
+  or_word: "— ou —",
   result_title: "Chacun paie",
   own_items: "Articles personnels",
   shared_part: "Partagé",
@@ -1792,7 +1853,7 @@ var I18N = {
   pass_label: "Familien-Zugangscode",
   pass_hint: "Einmal eingeben — dieses Gerät merkt es sich. Frag den App-Besitzer, wenn du ihn nicht hast.",
   own_key_label: "Erweitert: eigenen Gemini-API-Schlüssel verwenden",
-  need_access: "Zum Scannen unten den Familien-Zugangscode eingeben — oder unter Erweitert den eigenen API-Schlüssel.",
+  need_access: "Zum Scannen unten den kostenlosen Gemini-API-Schlüssel eintragen — oder den Familien-Zugangscode.",
   err_pass: "Zugangscode falsch — bitte beim App-Besitzer nachfragen.",
   err_cap: "Das geteilte Tageslimit ist aufgebraucht — versuche es morgen erneut oder nutze unter Erweitert deinen eigenen Schlüssel.",
   err_toomany: "Bitte höchstens 5 Fotos pro Scan auswählen.",
@@ -1833,6 +1894,10 @@ var I18N = {
   discount_label: "Rabatt ({sym})",
   tax_on_service: "Steuer gilt auch für die Servicegebühr",
   calc_btn: "Berechnen!",
+  reset_btn: "↺ Neue Rechnung",
+  reset_confirm: "Die ganze Rechnung löschen und neu beginnen?",
+  add_photos: "➕ Weitere Fotos hinzufügen",
+  or_word: "— oder —",
   result_title: "Jeder zahlt",
   own_items: "Eigene Posten",
   shared_part: "Geteilt",
@@ -1874,7 +1939,7 @@ var I18N = {
   pass_label: "Código da família",
   pass_hint: "Digite uma vez — este dispositivo vai lembrar. Peça ao dono do app se não tiver.",
   own_key_label: "Avançado: usar sua própria chave API Gemini",
-  need_access: "Para escanear, digite o código da família abaixo — ou sua própria chave API em Avançado.",
+  need_access: "Para escanear, adicione sua chave API gratuita do Gemini abaixo — ou digite o código da família.",
   err_pass: "Código incorreto — confirme com o dono do app.",
   err_cap: "O limite compartilhado de hoje acabou — tente amanhã ou use sua própria chave API em Avançado.",
   err_toomany: "Escolha no máximo 5 fotos por escaneamento.",
@@ -1915,6 +1980,10 @@ var I18N = {
   discount_label: "Desconto ({sym})",
   tax_on_service: "O imposto incide sobre a taxa de serviço",
   calc_btn: "Calcular!",
+  reset_btn: "↺ Nova conta",
+  reset_confirm: "Apagar toda a conta e começar de novo?",
+  add_photos: "➕ Adicionar mais fotos",
+  or_word: "— ou —",
   result_title: "Cada um paga",
   own_items: "Itens próprios",
   shared_part: "Compartilhado",
@@ -1956,7 +2025,7 @@ var I18N = {
   pass_label: "ファミリーパスコード",
   pass_hint: "一度入力すれば、この端末に記憶されます。お持ちでない場合はアプリの管理者にご確認ください。",
   own_key_label: "上級：自分の Gemini API キーを使う",
-  need_access: "スキャンするには、下にファミリーパスコードを入力してください（または上級設定で自分の API キーを設定）。",
+  need_access: "スキャンするには、下に無料の Gemini API キーを入力するか、ファミリーパスコードを入力してください。",
   err_pass: "パスコードが正しくありません — アプリの管理者にご確認ください。",
   err_cap: "本日の共有スキャン上限に達しました — 明日再試行するか、上級設定で自分の API キーをご利用ください。",
   err_toomany: "1回のスキャンで選べる写真は5枚までです。",
@@ -1997,6 +2066,10 @@ var I18N = {
   discount_label: "割引（{sym}）",
   tax_on_service: "サービス料にも税金がかかる",
   calc_btn: "計算する！",
+  reset_btn: "↺ 新しい会計を開始",
+  reset_confirm: "会計をすべてクリアして最初からやり直しますか？",
+  add_photos: "➕ 写真を追加",
+  or_word: "— または —",
   result_title: "一人あたりの支払い",
   own_items: "個人の品目",
   shared_part: "シェア分",
@@ -2038,7 +2111,7 @@ var I18N = {
   pass_label: "가족 패스코드",
   pass_hint: "한 번만 입력하면 이 기기에 저장됩니다. 없다면 앱 관리자에게 문의하세요.",
   own_key_label: "고급: 내 Gemini API 키 사용",
-  need_access: "스캔하려면 아래에 가족 패스코드를 입력하세요 — 또는 고급 설정에서 내 API 키를 사용하세요.",
+  need_access: "스캔하려면 아래에 무료 Gemini API 키를 입력하거나 가족 패스코드를 입력하세요.",
   err_pass: "패스코드가 올바르지 않습니다 — 앱 관리자에게 확인하세요.",
   err_cap: "오늘의 공유 스캔 한도를 모두 사용했습니다 — 내일 다시 시도하거나 고급 설정에서 내 API 키를 사용하세요.",
   err_toomany: "한 번에 최대 5장의 사진만 선택할 수 있습니다.",
@@ -2079,6 +2152,10 @@ var I18N = {
   discount_label: "할인 ({sym})",
   tax_on_service: "봉사료에도 세금 부과",
   calc_btn: "계산하기!",
+  reset_btn: "↺ 새 계산 시작",
+  reset_confirm: "전체 계산을 지우고 새로 시작할까요?",
+  add_photos: "➕ 사진 추가",
+  or_word: "— 또는 —",
   result_title: "1인당 결제 금액",
   own_items: "개인 항목",
   shared_part: "공유 몫",
@@ -2120,7 +2197,7 @@ var I18N = {
   pass_label: "फ़ैमिली पासकोड",
   pass_hint: "एक बार डालें — यह डिवाइस याद रखेगा। न होने पर ऐप मालिक से माँगें।",
   own_key_label: "उन्नत: अपनी Gemini API कुंजी उपयोग करें",
-  need_access: "स्कैन के लिए नीचे फ़ैमिली पासकोड डालें — या उन्नत में अपनी API कुंजी।",
+  need_access: "स्कैन के लिए नीचे अपनी मुफ़्त Gemini API कुंजी डालें — या फ़ैमिली पासकोड।",
   err_pass: "पासकोड गलत है — ऐप मालिक से जाँच करें।",
   err_cap: "आज की साझा स्कैन सीमा समाप्त — कल फिर आज़माएँ, या उन्नत में अपनी API कुंजी उपयोग करें।",
   err_toomany: "प्रति स्कैन अधिकतम 5 फोटो चुनें।",
@@ -2161,6 +2238,10 @@ var I18N = {
   discount_label: "छूट ({sym})",
   tax_on_service: "सेवा शुल्क पर भी कर लगेगा",
   calc_btn: "गणना करें!",
+  reset_btn: "↺ नया बिल शुरू करें",
+  reset_confirm: "पूरा बिल साफ़ कर नए सिरे से शुरू करें?",
+  add_photos: "➕ और फोटो जोड़ें",
+  or_word: "— या —",
   result_title: "हर व्यक्ति का भुगतान",
   own_items: "अपने आइटम",
   shared_part: "साझा हिस्सा",
@@ -3010,6 +3091,7 @@ var RECEIPT_CUR_MAP = {
   var MAX_RECEIPTS = 5;
   var ocrData = null;
   var ocrImages = [];
+  var addMoreMode = false;
 
   var OCR_PROMPT =
     'You are reading photos of a restaurant or retail receipt (multiple photos may show parts of the same receipt; if they are clearly different receipts, combine all items into one bill). ' +
@@ -3198,8 +3280,11 @@ var RECEIPT_CUR_MAP = {
   }
 
   function handleReceiptFiles(files) {
+    var appending = addMoreMode && ocrImages.length > 0;
+    addMoreMode = false;
     if (!files || files.length === 0) return;
-    if (files.length > MAX_RECEIPTS) {
+    var existing = appending ? ocrImages.slice() : [];
+    if (existing.length + files.length > MAX_RECEIPTS) {
       showScanStatus(escHtml(t('err_toomany')), 'error');
       return;
     }
@@ -3213,16 +3298,14 @@ var RECEIPT_CUR_MAP = {
     }
     setScanLoading(true);
     showScanStatus('');
-    ocrImages = [];
-    document.getElementById('receipt-thumbs').innerHTML = '';
+    if (!appending) document.getElementById('receipt-thumbs').innerHTML = '';
     var jobs = [];
     for (var i = 0; i < files.length; i++) jobs.push(preprocessImage(files[i]));
     Promise.all(jobs)
-      .then(function(images) {
-        for (var m = 0; m < images.length; m++) {
-          ocrImages.push('data:image/jpeg;base64,' + images[m]);
-        }
-        return callGemini(auth, images);
+      .then(function(newImages) {
+        var allBase64 = existing.map(function(u) { return u.split(',')[1]; }).concat(newImages);
+        ocrImages = allBase64.map(function(b) { return 'data:image/jpeg;base64,' + b; });
+        return callGemini(auth, allBase64);
       })
       .then(function(raw) {
         ocrData = normalizeOcr(raw);
@@ -3239,7 +3322,6 @@ var RECEIPT_CUR_MAP = {
         showScanStatus(ocrErrorMessage(err), 'error');
         if (err && (err.type === 'key' || err.type === 'pass')) {
           document.getElementById('api-panel').style.display = 'block';
-          if (err.type === 'key') document.getElementById('ownkey-panel').style.display = 'block';
         }
       });
   }
@@ -3283,6 +3365,12 @@ var RECEIPT_CUR_MAP = {
     return html + '</div>';
   }
 
+  function ocrAddPhotosHtml() {
+    if (ocrImages.length >= MAX_RECEIPTS) return '';
+    return '<button class="btn-outline btn-add-photos" id="ocr-add-btn">' +
+      escHtml(t('add_photos')) + ' (' + ocrImages.length + '/' + MAX_RECEIPTS + ')</button>';
+  }
+
   function ocrBillSummaryHtml() {
     var cur = ocrData.currency;
     var total = ocrData.total !== null ? ocrData.total : ocrItemsSum();
@@ -3323,6 +3411,7 @@ var RECEIPT_CUR_MAP = {
     var html = '<div class="ocr-review">' +
       ocrBillSummaryHtml() +
       ocrThumbsHtml() +
+      ocrAddPhotosHtml() +
       '<div class="ocr-review-title">' + escHtml(t('found_items', { n: ocrData.items.length })) + '</div>';
 
     for (var i = 0; i < ocrData.items.length; i++) {
@@ -3453,11 +3542,29 @@ var RECEIPT_CUR_MAP = {
     if (keyInput) keyInput.value = getApiKey();
     var passInput = document.getElementById('family-pass');
     if (passInput) passInput.value = getPass();
-    if (getApiKey()) document.getElementById('ownkey-panel').style.display = 'block';
     document.getElementById('receipt-file').addEventListener('change', function(e) {
       handleReceiptFiles(e.target.files);
       e.target.value = '';
     });
+  }
+
+  function resetBill() {
+    if (!window.confirm(t('reset_confirm'))) return;
+    document.getElementById('people-list').innerHTML = '';
+    document.getElementById('shared-items').innerHTML = '';
+    personCount = 0;
+    document.getElementById('tax').value = 8;
+    document.getElementById('service').value = 10;
+    document.getElementById('discount').value = 0;
+    document.getElementById('tax-on-service').checked = true;
+    roundTo = defaultRound();
+    lastCalc = null;
+    billMeta = null;
+    cancelOcr();
+    document.getElementById('results').innerHTML = '';
+    addPerson();
+    addPerson();
+    addSharedItem();
   }
 
   /* ====== EVENT DELEGATION ====== */
@@ -3513,11 +3620,12 @@ var RECEIPT_CUR_MAP = {
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
       return;
     }
-    if (target.id === 'ownkey-toggle' || target.closest('#ownkey-toggle')) {
-      var okPanel = document.getElementById('ownkey-panel');
-      okPanel.style.display = okPanel.style.display === 'none' ? 'block' : 'none';
+    if (target.id === 'ocr-add-btn' || target.closest('#ocr-add-btn')) {
+      addMoreMode = true;
+      document.getElementById('receipt-file').click();
       return;
     }
+    if (target.id === 'reset-btn' || target.closest('#reset-btn')) { resetBill(); return; }
     if (target.id === 'ocr-import-btn' || target.closest('#ocr-import-btn')) { importOcr(); return; }
     if (target.id === 'ocr-cancel-btn' || target.closest('#ocr-cancel-btn')) { cancelOcr(); return; }
 

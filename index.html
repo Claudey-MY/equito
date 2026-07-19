@@ -826,17 +826,43 @@ body.mode-essential #scan-card { display: none; }
 
 /* ===== FOOTER ===== */
 footer {
-  text-align: center; padding: 28px 0 20px;
+  position: relative;
+  text-align: center; padding: 34px 16px 24px;
+  margin-top: 26px;
   color: var(--g400); font-size: 11px; line-height: 1.8;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--g300), var(--amber-light), var(--g300), transparent);
 }
 footer .brand {
   font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 700; color: var(--amber); letter-spacing: 2px;
+  font-weight: 900; color: var(--amber-deep); letter-spacing: 3px;
+  font-size: 17px;
+  position: relative; display: inline-block;
+}
+footer .brand::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 15%; right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--amber), var(--amber-glow), var(--amber), transparent);
+  border-radius: 2px;
+}
+.footer-line {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--g500);
 }
 .footer-privacy {
   display: inline-block;
   max-width: 460px;
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 10px;
   color: var(--g400);
   line-height: 1.7;
@@ -844,8 +870,9 @@ footer .brand {
 }
 .footer-rights {
   display: inline-block;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 10px;
+  letter-spacing: 0.4px;
   color: var(--g400);
 }
 
@@ -1167,6 +1194,131 @@ footer .brand {
   margin-top: 1px;
 }
 
+/* ===== FEEDBACK ===== */
+#fb-overlay {
+  position: fixed; inset: 0;
+  z-index: 900;
+  background: rgba(22,16,10,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 18px;
+}
+#fb-overlay.open { display: flex; }
+.fb-card { max-width: 420px; }
+#fb-close {
+  position: absolute; top: 10px; right: 10px;
+  width: 40px; height: 40px;
+  min-width: 40px; min-height: 40px;
+  border-radius: 50%; border: none;
+  background: var(--g100);
+  color: var(--g500);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.fb-q {
+  font-size: 14px; color: var(--g700);
+  margin-bottom: 10px;
+}
+.fb-ratings {
+  display: flex; gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.fb-rate {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--g200);
+  background: var(--g100);
+  font-size: 26px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+.fb-rate.active {
+  border-color: var(--amber-deep);
+  background: var(--amber-light);
+  transform: scale(1.12);
+}
+#fb-msg {
+  width: 100%;
+  border: 1.5px solid var(--g200);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit; font-size: 14px;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 84px;
+  margin-bottom: 12px;
+}
+#fb-msg:focus { outline: none; border-color: var(--amber-deep); }
+.fb-attach {
+  display: inline-flex; align-items: center;
+  border: none; background: none;
+  color: var(--amber-deep);
+  font: inherit; font-size: 13px; font-weight: 600;
+  padding: 6px 0; min-height: 36px;
+  margin: -4px 0 6px;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+.fb-attach:disabled { color: var(--g400); cursor: default; }
+.fb-thumbs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 12px;
+}
+.fb-thumbs:empty { display: none; }
+.fb-thumb {
+  position: relative;
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  border: 1.5px solid var(--g200);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.fb-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.fb-thumb-x {
+  position: absolute; top: 2px; right: 2px;
+  width: 22px; height: 22px;
+  min-width: 22px; min-height: 22px;
+  border-radius: 50%; border: none;
+  background: rgba(22,16,10,0.62);
+  color: #FFF;
+  font-size: 12px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.fb-send { margin-top: 0; }
+.fb-send:disabled { opacity: 0.55; cursor: default; }
+.fb-err {
+  display: none;
+  font-size: 13px; color: var(--ember);
+  margin-top: 10px; line-height: 1.5;
+}
+.fb-err.show { display: block; }
+.fb-note {
+  font-size: 12px; color: var(--g400);
+  text-align: center;
+  margin-top: 12px;
+}
+#fb-thanks {
+  display: none;
+  text-align: center;
+  padding: 18px 6px 10px;
+}
+#fb-thanks.show { display: block; }
+.fb-thanks-emoji { font-size: 44px; margin-bottom: 12px; }
+.fb-thanks-text { font-size: 15px; color: var(--g700); line-height: 1.6; }
+
 /* ===== DARK THEME ===== */
 [data-theme="dark"] {
   --parchment: #171412;
@@ -1228,11 +1380,14 @@ body, .card, .sel-btn, .sel-panel, .person-section,
   .shared-item-inputs .item-price { width: 64px; }
   .sel-btn { padding: 6px 10px; min-height: 34px; font-size: 12px; }
   .mode-btn { padding: 5px 9px; min-height: 26px; font-size: 11px; }
+  .topbar { gap: 4px; }
+  #guide-btn, #fb-btn, #theme-btn { padding: 6px 6px; }
 }
 @media (max-width: 360px) {
   .tax-service { grid-template-columns: 1fr; }
-  .topbar { gap: 4px; }
+  .topbar { gap: 3px; }
   .sel-btn { padding: 5px 7px; min-height: 30px; font-size: 11px; }
+  #guide-btn, #fb-btn, #theme-btn { padding: 5px 3px; }
   .mode-btn { padding: 4px 7px; min-height: 24px; font-size: 10.5px; }
   .logo { font-size: 28px; letter-spacing: 2px; }
   .item-row .item-qty,
@@ -1257,6 +1412,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
 
 <div class="topbar" id="topbar">
   <button class="sel-btn" id="guide-btn" aria-label="Guide">📖</button>
+  <button class="sel-btn" id="fb-btn" aria-label="Feedback">💬</button>
   <button class="sel-btn" id="theme-btn" aria-label="Theme">🌙</button>
   <div class="sel-wrap">
     <button class="sel-btn" id="lang-btn"><span id="lang-btn-label">🇬🇧 EN</span><span class="caret">▼</span></button>
@@ -1372,7 +1528,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
 
   <footer>
     <span class="brand">EQUITO</span><br>
-    <span data-i18n="footer_line"></span><br>
+    <span class="footer-line" data-i18n="footer_line"></span><br>
     <span class="footer-privacy" data-i18n="footer_privacy"></span><br>
     <span class="footer-rights" data-i18n="footer_rights"></span>
   </footer>
@@ -1392,6 +1548,33 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div class="guide-step"><span class="gnum">3</span><span data-i18n="guide_s3"></span></div>
     <div class="guide-step"><span class="gnum">4</span><span data-i18n="guide_s4"></span></div>
     <div class="guide-step"><span class="gnum">5</span><span data-i18n="guide_s5"></span></div>
+  </div>
+</div>
+
+<div id="fb-overlay">
+  <div class="guide-card fb-card">
+    <button id="fb-close" aria-label="Close">✕</button>
+    <h3>💬 <span data-i18n="fb_title"></span></h3>
+    <div id="fb-form">
+      <div class="fb-q" data-i18n="fb_q"></div>
+      <div class="fb-ratings">
+        <button type="button" class="fb-rate" data-fb-rate="1" aria-label="1/4">😞</button>
+        <button type="button" class="fb-rate" data-fb-rate="2" aria-label="2/4">😐</button>
+        <button type="button" class="fb-rate" data-fb-rate="3" aria-label="3/4">🙂</button>
+        <button type="button" class="fb-rate" data-fb-rate="4" aria-label="4/4">😍</button>
+      </div>
+      <textarea id="fb-msg" maxlength="1000" rows="4" data-i18n-ph="fb_ph"></textarea>
+      <input type="file" id="fb-file" accept="image/*" multiple style="display:none">
+      <button type="button" class="fb-attach" id="fb-attach"></button>
+      <div class="fb-thumbs" id="fb-thumbs"></div>
+      <button type="button" class="btn-calculate fb-send" id="fb-send" data-i18n="fb_send"></button>
+      <div class="fb-err" id="fb-err"></div>
+      <div class="fb-note">🔒 <span data-i18n="fb_note"></span></div>
+    </div>
+    <div id="fb-thanks">
+      <div class="fb-thanks-emoji">💛</div>
+      <div class="fb-thanks-text" data-i18n="fb_thanks"></div>
+    </div>
   </div>
 </div>
 <script>
@@ -1483,7 +1666,7 @@ var I18N = {
   round_label: "Round to",
   rounding_note: "Individual amounts may not add up exactly due to rounding",
   footer_line: "Made for happy moments together, everywhere",
-  footer_privacy: "Your privacy matters — everything runs in your browser. Bills, names and amounts are never uploaded or stored. Receipt photos are sent to Google Gemini only when you scan, and are never kept by EQUITO.",
+  footer_privacy: "Privacy by design — EQUITO runs entirely in your browser. Bills, names and amounts never leave your device. Receipt photos are shared with Google Gemini only when you choose to scan, and are never stored by EQUITO.",
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "Item name",
   price_ph: "Price",
@@ -1494,6 +1677,17 @@ var I18N = {
   guide_s3: "Tax, service charge and discounts are split fairly, in proportion to what each buddy spent.",
   guide_s4: "Tap Calculate! to see what each buddy pays, then share the result as text or a picture.",
   guide_s5: "Scanning needs access: enter your own free Gemini API key, or the family passcode from the app owner (Scan access settings).",
+  fb_title: "Share your feedback",
+  fb_q: "How's your experience?",
+  fb_ph: "Any suggestions or issues? (optional)",
+  fb_send: "Send feedback",
+  fb_sending: "Sending…",
+  fb_thanks: "Thank you! Your feedback helps make EQUITO better.",
+  fb_err: "Couldn't send — please check your connection and try again.",
+  fb_empty: "Please pick a rating or write a message first.",
+  fb_note: "Anonymous — no account or login needed.",
+  fb_attach: "Attach screenshots ({n}/{max}, optional)",
+  fb_img_max: "You can attach up to 3 images.",
   lang_pick: "Language",
   cur_pick: "Currency",
   cur_search_ph: "Search currency…",
@@ -1581,7 +1775,7 @@ var I18N = {
   round_label: "取整到",
   rounding_note: "由于取整，个人金额总和可能与总计略有出入",
   footer_line: "为快乐相聚而生",
-  footer_privacy: "隐私无忧 — 所有计算都在你的浏览器中完成，账单、姓名和金额不会被上传或存储。收据照片仅在使用扫描时发送给 Google Gemini，EQUITO 不会保存。",
+  footer_privacy: "隐私优先设计 — EQUITO 完全在您的浏览器中运行，账单、名字和金额绝不会离开您的设备。收据照片仅在您选择扫描时发送给 Google Gemini，EQUITO 绝不保存。",
   footer_rights: "© 2026 EQUITO 版权所有。",
   item_ph: "项目名称",
   price_ph: "价格",
@@ -1592,6 +1786,17 @@ var I18N = {
   guide_s3: "税费、服务费和折扣会按每位伙伴的消费比例公平分摊。",
   guide_s4: "点击开始计算！查看每人应付金额，然后以文字或图片分享结果。",
   guide_s5: "扫描需要权限：填写你自己的免费 Gemini API 密钥，或输入应用主人提供的家庭通行码（扫描权限设置）。",
+  fb_title: "反馈建议",
+  fb_q: "您的使用体验如何？",
+  fb_ph: "有什么建议或问题吗？（选填）",
+  fb_send: "发送反馈",
+  fb_sending: "发送中…",
+  fb_thanks: "谢谢您！您的反馈将帮助 EQUITO 变得更好。",
+  fb_err: "发送失败 — 请检查网络后重试。",
+  fb_empty: "请先选择一个评分或写下留言。",
+  fb_note: "匿名反馈 — 无需帐号或登录。",
+  fb_attach: "添加截图（{n}/{max}，选填）",
+  fb_img_max: "最多可添加 3 张图片。",
   lang_pick: "语言",
   cur_pick: "货币",
   cur_search_ph: "搜索货币…",
@@ -1677,7 +1882,7 @@ var I18N = {
   round_label: "進位到",
   rounding_note: "由於進位，個人金額總和可能與總計略有出入",
   footer_line: "為快樂相聚而生",
-  footer_privacy: "隱私無憂 — 所有計算都在你的瀏覽器中完成，帳單、姓名和金額不會被上傳或儲存。收據照片僅在使用掃描時傳送給 Google Gemini，EQUITO 不會保存。",
+  footer_privacy: "隱私優先設計 — EQUITO 完全在您的瀏覽器中執行，帳單、名字和金額絕不會離開您的裝置。收據照片僅在您選擇掃描時傳送給 Google Gemini，EQUITO 絕不儲存。",
   footer_rights: "© 2026 EQUITO 版權所有。",
   item_ph: "品項名稱",
   price_ph: "價格",
@@ -1688,6 +1893,17 @@ var I18N = {
   guide_s3: "稅金、服務費和折扣會按每位夥伴的消費比例公平分攤。",
   guide_s4: "點擊開始計算！查看每人應付金額，然後以文字或圖片分享結果。",
   guide_s5: "掃描需要權限：填寫你自己的免費 Gemini API 金鑰，或輸入應用主人提供的家庭通行碼（掃描權限設定）。",
+  fb_title: "意見回饋",
+  fb_q: "您的使用體驗如何？",
+  fb_ph: "有什麼建議或問題嗎？（選填）",
+  fb_send: "送出回饋",
+  fb_sending: "傳送中…",
+  fb_thanks: "謝謝您！您的回饋將幫助 EQUITO 變得更好。",
+  fb_err: "傳送失敗 — 請檢查網路後再試。",
+  fb_empty: "請先選擇評分或寫下留言。",
+  fb_note: "匿名回饋 — 無需帳號或登入。",
+  fb_attach: "附加截圖（{n}/{max}，選填）",
+  fb_img_max: "最多可附加 3 張圖片。",
   lang_pick: "語言",
   cur_pick: "貨幣",
   cur_search_ph: "搜尋貨幣…",
@@ -1773,7 +1989,7 @@ var I18N = {
   round_label: "Bundarkan ke",
   rounding_note: "Jumlah individu mungkin tidak tepat kerana pembundaran",
   footer_line: "Dicipta untuk detik gembira bersama, di mana jua",
-  footer_privacy: "Privasi anda terjamin — semuanya berjalan dalam pelayar anda. Bil, nama dan jumlah tidak pernah dimuat naik atau disimpan. Gambar resit hanya dihantar ke Google Gemini semasa anda mengimbas, dan tidak disimpan oleh EQUITO.",
+  footer_privacy: "Direka dengan privasi diutamakan — EQUITO berjalan sepenuhnya dalam pelayar anda. Bil, nama dan jumlah tidak pernah meninggalkan peranti anda. Foto resit dihantar kepada Google Gemini hanya apabila anda memilih untuk mengimbas, dan tidak pernah disimpan oleh EQUITO.",
   footer_rights: "© 2026 EQUITO. Hak cipta terpelihara.",
   item_ph: "Nama item",
   price_ph: "Harga",
@@ -1784,6 +2000,17 @@ var I18N = {
   guide_s3: "Cukai, caj perkhidmatan dan diskaun dibahagi secara adil mengikut perbelanjaan setiap rakan.",
   guide_s4: "Tekan Kira! untuk melihat bayaran setiap rakan, kemudian kongsi keputusan sebagai teks atau gambar.",
   guide_s5: "Imbasan memerlukan akses: masukkan kunci API Gemini percuma anda sendiri, atau kod laluan keluarga daripada pemilik aplikasi (Tetapan akses imbasan).",
+  fb_title: "Kongsi maklum balas anda",
+  fb_q: "Bagaimana pengalaman anda?",
+  fb_ph: "Ada cadangan atau masalah? (pilihan)",
+  fb_send: "Hantar maklum balas",
+  fb_sending: "Menghantar…",
+  fb_thanks: "Terima kasih! Maklum balas anda membantu EQUITO menjadi lebih baik.",
+  fb_err: "Tidak dapat dihantar — sila semak sambungan anda dan cuba lagi.",
+  fb_empty: "Sila pilih penilaian atau tulis mesej dahulu.",
+  fb_note: "Tanpa nama — tiada akaun atau log masuk diperlukan.",
+  fb_attach: "Lampirkan tangkapan skrin ({n}/{max}, pilihan)",
+  fb_img_max: "Anda boleh melampirkan sehingga 3 imej.",
   lang_pick: "Bahasa",
   cur_pick: "Mata wang",
   cur_search_ph: "Cari mata wang…",
@@ -1869,7 +2096,7 @@ var I18N = {
   round_label: "Redondear a",
   rounding_note: "Las cantidades individuales pueden no cuadrar exactamente por el redondeo",
   footer_line: "Hecho para momentos felices, en todas partes",
-  footer_privacy: "Tu privacidad importa — todo funciona en tu navegador. Las cuentas, nombres e importes nunca se suben ni se guardan. Las fotos de recibos se envían a Google Gemini solo al escanear, y EQUITO nunca las conserva.",
+  footer_privacy: "Privacidad por diseño — EQUITO funciona íntegramente en tu navegador. Las cuentas, nombres e importes nunca salen de tu dispositivo. Las fotos de recibos se envían a Google Gemini solo cuando decides escanear, y EQUITO nunca las almacena.",
   footer_rights: "© 2026 EQUITO. Todos los derechos reservados.",
   item_ph: "Artículo",
   price_ph: "Precio",
@@ -1880,6 +2107,17 @@ var I18N = {
   guide_s3: "Impuestos, servicio y descuentos se reparten en proporción a lo que gastó cada amigo.",
   guide_s4: "Pulsa ¡Calcular! para ver cuánto paga cada uno y comparte el resultado como texto o imagen.",
   guide_s5: "Escanear requiere acceso: tu propia clave API gratuita de Gemini o el código familiar del dueño de la app (Ajustes de acceso al escaneo).",
+  fb_title: "Comparte tu opinión",
+  fb_q: "¿Qué tal tu experiencia?",
+  fb_ph: "¿Alguna sugerencia o problema? (opcional)",
+  fb_send: "Enviar opinión",
+  fb_sending: "Enviando…",
+  fb_thanks: "¡Gracias! Tu opinión ayuda a mejorar EQUITO.",
+  fb_err: "No se pudo enviar — comprueba tu conexión e inténtalo de nuevo.",
+  fb_empty: "Elige una valoración o escribe un mensaje primero.",
+  fb_note: "Anónimo — no se necesita cuenta ni inicio de sesión.",
+  fb_attach: "Adjuntar capturas ({n}/{max}, opcional)",
+  fb_img_max: "Puedes adjuntar hasta 3 imágenes.",
   lang_pick: "Idioma",
   cur_pick: "Moneda",
   cur_search_ph: "Buscar moneda…",
@@ -1965,7 +2203,7 @@ var I18N = {
   round_label: "Arrondir à",
   rounding_note: "Les montants individuels peuvent différer légèrement à cause des arrondis",
   footer_line: "Conçu pour des moments heureux, partout",
-  footer_privacy: "Votre vie privée compte — tout fonctionne dans votre navigateur. Additions, noms et montants ne sont jamais téléversés ni conservés. Les photos de reçus ne sont envoyées à Google Gemini que lors du scan, et EQUITO ne les conserve jamais.",
+  footer_privacy: "Confidentialité par conception — EQUITO fonctionne entièrement dans votre navigateur. Notes, noms et montants ne quittent jamais votre appareil. Les photos de reçus ne sont transmises à Google Gemini que lorsque vous choisissez de scanner, et ne sont jamais conservées par EQUITO.",
   footer_rights: "© 2026 EQUITO. Tous droits réservés.",
   item_ph: "Article",
   price_ph: "Prix",
@@ -1976,6 +2214,17 @@ var I18N = {
   guide_s3: "Taxes, service et remises sont répartis équitablement, au prorata des dépenses de chacun.",
   guide_s4: "Touchez Calculer ! pour voir la part de chacun, puis partagez le résultat en texte ou en image.",
   guide_s5: "Le scan nécessite un accès : votre propre clé API Gemini gratuite, ou le code famille du propriétaire de l'appli (Paramètres d'accès au scan).",
+  fb_title: "Partagez votre avis",
+  fb_q: "Comment se passe votre expérience ?",
+  fb_ph: "Une suggestion ou un problème ? (facultatif)",
+  fb_send: "Envoyer l'avis",
+  fb_sending: "Envoi…",
+  fb_thanks: "Merci ! Votre avis aide EQUITO à s'améliorer.",
+  fb_err: "Échec de l'envoi — vérifiez votre connexion et réessayez.",
+  fb_empty: "Choisissez d'abord une note ou écrivez un message.",
+  fb_note: "Anonyme — aucun compte ni connexion requis.",
+  fb_attach: "Joindre des captures d'écran ({n}/{max}, facultatif)",
+  fb_img_max: "Vous pouvez joindre jusqu'à 3 images.",
   lang_pick: "Langue",
   cur_pick: "Devise",
   cur_search_ph: "Rechercher une devise…",
@@ -2061,7 +2310,7 @@ var I18N = {
   round_label: "Runden auf",
   rounding_note: "Einzelbeträge können wegen Rundung leicht abweichen",
   footer_line: "Für fröhliche Momente, überall",
-  footer_privacy: "Deine Privatsphäre zählt — alles läuft in deinem Browser. Rechnungen, Namen und Beträge werden nie hochgeladen oder gespeichert. Belegfotos werden nur beim Scannen an Google Gemini gesendet und von EQUITO nie aufbewahrt.",
+  footer_privacy: "Datenschutz von Grund auf — EQUITO läuft vollständig in deinem Browser. Rechnungen, Namen und Beträge verlassen nie dein Gerät. Belegfotos werden nur beim Scannen an Google Gemini übermittelt und von EQUITO niemals gespeichert.",
   footer_rights: "© 2026 EQUITO. Alle Rechte vorbehalten.",
   item_ph: "Posten",
   price_ph: "Preis",
@@ -2072,6 +2321,17 @@ var I18N = {
   guide_s3: "Steuern, Service und Rabatte werden fair im Verhältnis der Ausgaben aufgeteilt.",
   guide_s4: "Tippe auf Berechnen!, um jeden Anteil zu sehen, und teile das Ergebnis als Text oder Bild.",
   guide_s5: "Zum Scannen brauchst du Zugang: deinen eigenen kostenlosen Gemini-API-Schlüssel oder den Familien-Zugangscode vom App-Besitzer (Scan-Zugriffseinstellungen).",
+  fb_title: "Feedback teilen",
+  fb_q: "Wie ist deine Erfahrung?",
+  fb_ph: "Vorschläge oder Probleme? (optional)",
+  fb_send: "Feedback senden",
+  fb_sending: "Wird gesendet…",
+  fb_thanks: "Danke! Dein Feedback macht EQUITO besser.",
+  fb_err: "Senden fehlgeschlagen — bitte Verbindung prüfen und erneut versuchen.",
+  fb_empty: "Bitte zuerst eine Bewertung wählen oder eine Nachricht schreiben.",
+  fb_note: "Anonym — kein Konto oder Login nötig.",
+  fb_attach: "Screenshots anhängen ({n}/{max}, optional)",
+  fb_img_max: "Du kannst bis zu 3 Bilder anhängen.",
   lang_pick: "Sprache",
   cur_pick: "Währung",
   cur_search_ph: "Währung suchen…",
@@ -2157,7 +2417,7 @@ var I18N = {
   round_label: "Arredondar para",
   rounding_note: "Os valores individuais podem não fechar exatamente por causa do arredondamento",
   footer_line: "Feito para momentos felizes, em qualquer lugar",
-  footer_privacy: "Sua privacidade importa — tudo roda no seu navegador. Contas, nomes e valores nunca são enviados nem armazenados. As fotos de recibos vão ao Google Gemini apenas ao escanear, e o EQUITO nunca as guarda.",
+  footer_privacy: "Privacidade por padrão — o EQUITO funciona inteiramente no seu navegador. Contas, nomes e valores nunca saem do seu dispositivo. Fotos de recibos são enviadas ao Google Gemini apenas quando você escolhe escanear, e nunca são armazenadas pelo EQUITO.",
   footer_rights: "© 2026 EQUITO. Todos os direitos reservados.",
   item_ph: "Item",
   price_ph: "Preço",
@@ -2168,6 +2428,17 @@ var I18N = {
   guide_s3: "Impostos, serviço e descontos são divididos de forma justa, proporcional ao gasto de cada amigo.",
   guide_s4: "Toque em Calcular! para ver quanto cada um paga e compartilhe o resultado como texto ou imagem.",
   guide_s5: "Escanear exige acesso: sua própria chave API gratuita do Gemini ou o código da família do dono do app (Configurações de acesso).",
+  fb_title: "Compartilhe sua opinião",
+  fb_q: "Como está sua experiência?",
+  fb_ph: "Alguma sugestão ou problema? (opcional)",
+  fb_send: "Enviar opinião",
+  fb_sending: "Enviando…",
+  fb_thanks: "Obrigado! Sua opinião ajuda a melhorar o EQUITO.",
+  fb_err: "Não foi possível enviar — verifique sua conexão e tente novamente.",
+  fb_empty: "Escolha uma avaliação ou escreva uma mensagem primeiro.",
+  fb_note: "Anônimo — não precisa de conta nem login.",
+  fb_attach: "Anexar capturas de tela ({n}/{max}, opcional)",
+  fb_img_max: "Você pode anexar até 3 imagens.",
   lang_pick: "Idioma",
   cur_pick: "Moeda",
   cur_search_ph: "Buscar moeda…",
@@ -2253,7 +2524,7 @@ var I18N = {
   round_label: "丸め単位",
   rounding_note: "端数処理のため、個人の合計が総額と一致しない場合があります",
   footer_line: "楽しいひとときのために、どこでも",
-  footer_privacy: "プライバシーも安心 — すべてブラウザ内で動作します。会計・名前・金額がアップロードや保存されることはありません。レシート写真はスキャン時のみ Google Gemini に送信され、EQUITO が保存することはありません。",
+  footer_privacy: "プライバシー第一の設計 — EQUITO はすべてブラウザ内で動作します。金額や名前などの情報が端末の外に出ることはありません。レシート写真はスキャン時のみ Google Gemini に送信され、EQUITO が保存することは一切ありません。",
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "品目名",
   price_ph: "価格",
@@ -2264,6 +2535,17 @@ var I18N = {
   guide_s3: "税金・サービス料・割引は、各自の利用額に応じて公平に分配されます。",
   guide_s4: "計算する！をタップして各自の支払額を確認し、テキストや画像で結果をシェアしましょう。",
   guide_s5: "スキャンにはアクセスが必要です：自分の無料 Gemini API キー、または管理者からのファミリーパスコード（スキャンアクセス設定）。",
+  fb_title: "フィードバックを送る",
+  fb_q: "使い心地はいかがですか？",
+  fb_ph: "ご意見・ご要望があればどうぞ（任意）",
+  fb_send: "送信する",
+  fb_sending: "送信中…",
+  fb_thanks: "ありがとうございます！いただいた声は EQUITO の改善に役立てます。",
+  fb_err: "送信できませんでした — 接続を確認してもう一度お試しください。",
+  fb_empty: "評価を選ぶか、メッセージをご記入ください。",
+  fb_note: "匿名です — アカウントやログインは不要。",
+  fb_attach: "スクリーンショットを添付（{n}/{max}・任意）",
+  fb_img_max: "画像は最大 3 枚まで添付できます。",
   lang_pick: "言語",
   cur_pick: "通貨",
   cur_search_ph: "通貨を検索…",
@@ -2349,7 +2631,7 @@ var I18N = {
   round_label: "반올림 단위",
   rounding_note: "반올림으로 인해 개인 금액의 합이 총계와 다를 수 있습니다",
   footer_line: "즐거운 시간을 위해, 어디서나",
-  footer_privacy: "개인정보 걱정 없이 — 모든 계산은 브라우저 안에서 이루어집니다. 계산서, 이름, 금액은 업로드되거나 저장되지 않습니다. 영수증 사진은 스캔할 때만 Google Gemini로 전송되며 EQUITO는 보관하지 않습니다.",
+  footer_privacy: "프라이버시 우선 설계 — EQUITO는 전적으로 브라우저 안에서 실행됩니다. 계산서, 이름, 금액은 기기를 벗어나지 않습니다. 영수증 사진은 스캔을 선택할 때만 Google Gemini로 전송되며, EQUITO는 절대 저장하지 않습니다.",
   footer_rights: "© 2026 EQUITO. All rights reserved.",
   item_ph: "항목명",
   price_ph: "가격",
@@ -2360,6 +2642,17 @@ var I18N = {
   guide_s3: "세금·봉사료·할인은 각자 쓴 금액에 비례해 공정하게 나눠집니다.",
   guide_s4: "계산하기!를 눌러 각자 낼 금액을 확인하고, 결과를 텍스트나 이미지로 공유하세요.",
   guide_s5: "스캔에는 접근 권한이 필요합니다: 본인의 무료 Gemini API 키 또는 앱 관리자의 가족 패스코드(스캔 접근 설정).",
+  fb_title: "피드백 보내기",
+  fb_q: "사용 경험이 어떠신가요?",
+  fb_ph: "제안이나 문제가 있나요? (선택)",
+  fb_send: "피드백 보내기",
+  fb_sending: "보내는 중…",
+  fb_thanks: "감사합니다! 보내주신 의견은 EQUITO 개선에 큰 도움이 됩니다.",
+  fb_err: "전송하지 못했습니다 — 연결을 확인하고 다시 시도해 주세요.",
+  fb_empty: "먼저 평점을 선택하거나 메시지를 작성해 주세요.",
+  fb_note: "익명 — 계정이나 로그인이 필요 없습니다.",
+  fb_attach: "스크린샷 첨부 ({n}/{max}, 선택)",
+  fb_img_max: "이미지는 최대 3장까지 첨부할 수 있습니다.",
   lang_pick: "언어",
   cur_pick: "통화",
   cur_search_ph: "통화 검색…",
@@ -2445,7 +2738,7 @@ var I18N = {
   round_label: "पूर्णांकन इकाई",
   rounding_note: "पूर्णांकन के कारण व्यक्तिगत राशियों का योग थोड़ा अलग हो सकता है",
   footer_line: "खुशियों भरे पलों के लिए, हर जगह",
-  footer_privacy: "आपकी निजता सुरक्षित है — सब कुछ आपके ब्राउज़र में चलता है। बिल, नाम और राशियाँ कभी अपलोड या संग्रहीत नहीं होतीं। रसीद की फोटो केवल स्कैन करते समय Google Gemini को भेजी जाती हैं, EQUITO उन्हें कभी सहेजता नहीं।",
+  footer_privacy: "प्राइवेसी-फ़र्स्ट डिज़ाइन — EQUITO पूरी तरह आपके ब्राउज़र में चलता है। बिल, नाम और रकम कभी आपके डिवाइस से बाहर नहीं जाते। रसीद की तस्वीरें केवल स्कैन करने पर ही Google Gemini को भेजी जाती हैं, और EQUITO उन्हें कभी संग्रहीत नहीं करता।",
   footer_rights: "© 2026 EQUITO. सर्वाधिकार सुरक्षित।",
   item_ph: "आइटम का नाम",
   price_ph: "कीमत",
@@ -2456,6 +2749,17 @@ var I18N = {
   guide_s3: "कर, सेवा शुल्क और छूट हर दोस्त के खर्च के अनुपात में बाँटे जाते हैं।",
   guide_s4: "गणना करें! दबाकर देखें कि कौन कितना देगा, फिर नतीजा टेक्स्ट या इमेज में साझा करें।",
   guide_s5: "स्कैन के लिए एक्सेस चाहिए: अपनी मुफ़्त Gemini API कुंजी या ऐप मालिक से मिला फ़ैमिली पासकोड (स्कैन एक्सेस सेटिंग)।",
+  fb_title: "अपनी राय साझा करें",
+  fb_q: "आपका अनुभव कैसा रहा?",
+  fb_ph: "कोई सुझाव या समस्या? (वैकल्पिक)",
+  fb_send: "राय भेजें",
+  fb_sending: "भेजा जा रहा है…",
+  fb_thanks: "धन्यवाद! आपकी राय EQUITO को बेहतर बनाने में मदद करती है।",
+  fb_err: "भेजा नहीं जा सका — कृपया अपना कनेक्शन जाँचें और फिर से कोशिश करें।",
+  fb_empty: "पहले कोई रेटिंग चुनें या संदेश लिखें।",
+  fb_note: "गुमनाम — किसी खाते या लॉगिन की ज़रूरत नहीं।",
+  fb_attach: "स्क्रीनशॉट जोड़ें ({n}/{max}, वैकल्पिक)",
+  fb_img_max: "अधिकतम 3 इमेज जोड़ी जा सकती हैं।",
   lang_pick: "भाषा",
   cur_pick: "मुद्रा",
   cur_search_ph: "मुद्रा खोजें…",
@@ -2634,6 +2938,109 @@ var RECEIPT_CUR_MAP = {
     for (var i = 0; i < btns.length; i++) {
       btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === mode);
     }
+  }
+
+  /* ====== FEEDBACK ====== */
+  var APP_VER = 'v24';
+  var FB_MAX_IMAGES = 3;
+  var fbRating = 0;
+  var fbSending = false;
+  var fbImages = [];   /* base64 JPEG strings (no data: prefix) */
+
+  function renderFbThumbs() {
+    var html = '';
+    for (var i = 0; i < fbImages.length; i++) {
+      html += '<div class="fb-thumb"><img src="data:image/jpeg;base64,' + fbImages[i] + '" alt="">' +
+        '<button type="button" class="fb-thumb-x" data-fb-imgx="' + i + '" aria-label="Remove">✕</button></div>';
+    }
+    document.getElementById('fb-thumbs').innerHTML = html;
+    var attach = document.getElementById('fb-attach');
+    attach.textContent = '📎 ' + t('fb_attach', { n: fbImages.length, max: FB_MAX_IMAGES });
+    attach.disabled = fbImages.length >= FB_MAX_IMAGES;
+  }
+
+  function fbShowErr(key) {
+    var errEl = document.getElementById('fb-err');
+    errEl.textContent = t(key);
+    errEl.classList.add('show');
+  }
+
+  function handleFbFiles(files) {
+    if (!files || !files.length) return;
+    document.getElementById('fb-err').classList.remove('show');
+    if (fbImages.length + files.length > FB_MAX_IMAGES) fbShowErr('fb_img_max');
+    var room = FB_MAX_IMAGES - fbImages.length;
+    var take = Math.min(room, files.length);
+    for (var i = 0; i < take; i++) {
+      preprocessImage(files[i], 1200, 0.8).then(function(b64) {
+        if (fbImages.length < FB_MAX_IMAGES) {
+          fbImages.push(b64);
+          renderFbThumbs();
+        }
+      }, function() {
+        fbShowErr('err_unreadable');
+      });
+    }
+  }
+
+  function openFeedback() {
+    fbRating = 0;
+    fbSending = false;
+    fbImages = [];
+    var rates = document.querySelectorAll('.fb-rate');
+    for (var i = 0; i < rates.length; i++) rates[i].classList.remove('active');
+    document.getElementById('fb-msg').value = '';
+    document.getElementById('fb-err').classList.remove('show');
+    document.getElementById('fb-form').style.display = 'block';
+    document.getElementById('fb-thanks').classList.remove('show');
+    renderFbThumbs();
+    var send = document.getElementById('fb-send');
+    send.disabled = false;
+    send.textContent = t('fb_send');
+    document.getElementById('fb-overlay').classList.add('open');
+  }
+
+  function closeFeedback() {
+    document.getElementById('fb-overlay').classList.remove('open');
+  }
+
+  function sendFeedback() {
+    if (fbSending) return;
+    var message = document.getElementById('fb-msg').value.trim();
+    var errEl = document.getElementById('fb-err');
+    if (!fbRating && !message) {
+      errEl.textContent = t('fb_empty');
+      errEl.classList.add('show');
+      return;
+    }
+    fbSending = true;
+    errEl.classList.remove('show');
+    var send = document.getElementById('fb-send');
+    send.disabled = true;
+    send.textContent = t('fb_sending');
+    fetch(WORKER_URL + '/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rating: fbRating || null,
+        message: message,
+        images: fbImages,
+        lang: LANG,
+        mode: document.body.classList.contains('mode-essential') ? 'essential' : 'pro',
+        ver: APP_VER
+      })
+    }).then(function (res) {
+      if (!res.ok) throw new Error('http');
+      document.getElementById('fb-form').style.display = 'none';
+      document.getElementById('fb-thanks').classList.add('show');
+      setTimeout(closeFeedback, 2200);
+    }).catch(function () {
+      fbSending = false;
+      send.disabled = false;
+      send.textContent = t('fb_send');
+      errEl.textContent = t('fb_err');
+      errEl.classList.add('show');
+    });
   }
 
   /* ====== TOP BAR DROPDOWNS ====== */
@@ -3377,13 +3784,13 @@ var RECEIPT_CUR_MAP = {
     }
   }
 
-  function preprocessImage(file) {
+  function preprocessImage(file, maxSideOpt, qualityOpt) {
     return new Promise(function(resolve, reject) {
       var url = URL.createObjectURL(file);
       var img = new Image();
       img.onload = function() {
         try {
-          var maxSide = 1600;
+          var maxSide = maxSideOpt || 1600;
           var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
           var w = Math.max(1, Math.round(img.width * scale));
           var h = Math.max(1, Math.round(img.height * scale));
@@ -3391,7 +3798,7 @@ var RECEIPT_CUR_MAP = {
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           URL.revokeObjectURL(url);
-          resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+          resolve(canvas.toDataURL('image/jpeg', qualityOpt || 0.85).split(',')[1]);
         } catch (e) {
           URL.revokeObjectURL(url);
           reject({ type: 'unreadable' });
@@ -3828,6 +4235,10 @@ var RECEIPT_CUR_MAP = {
       handleReceiptFiles(e.target.files);
       e.target.value = '';
     });
+    document.getElementById('fb-file').addEventListener('change', function(e) {
+      handleFbFiles(e.target.files);
+      e.target.value = '';
+    });
   }
 
   function resetBill() {
@@ -3914,6 +4325,31 @@ var RECEIPT_CUR_MAP = {
       document.getElementById('guide-overlay').classList.remove('open');
       return;
     }
+    if (target.id === 'fb-btn' || target.closest('#fb-btn')) { openFeedback(); return; }
+    if (target.id === 'fb-close' || target.closest('#fb-close') || target.id === 'fb-overlay') {
+      closeFeedback();
+      return;
+    }
+    var fbRateBtn = target.closest('.fb-rate');
+    if (fbRateBtn) {
+      fbRating = parseInt(fbRateBtn.getAttribute('data-fb-rate'), 10) || 0;
+      var fbRates = document.querySelectorAll('.fb-rate');
+      for (var fr = 0; fr < fbRates.length; fr++) fbRates[fr].classList.remove('active');
+      fbRateBtn.classList.add('active');
+      document.getElementById('fb-err').classList.remove('show');
+      return;
+    }
+    if (target.id === 'fb-attach' || target.closest('#fb-attach')) {
+      if (fbImages.length < FB_MAX_IMAGES) document.getElementById('fb-file').click();
+      return;
+    }
+    var fbImgX = target.closest('[data-fb-imgx]');
+    if (fbImgX) {
+      fbImages.splice(parseInt(fbImgX.getAttribute('data-fb-imgx'), 10), 1);
+      renderFbThumbs();
+      return;
+    }
+    if (target.id === 'fb-send' || target.closest('#fb-send')) { sendFeedback(); return; }
     if (target.closest('.guide-card')) return;
     if (target.id === 'ocr-import-btn' || target.closest('#ocr-import-btn')) { importOcr(); return; }
     if (target.id === 'ocr-cancel-btn' || target.closest('#ocr-cancel-btn')) { cancelOcr(); return; }

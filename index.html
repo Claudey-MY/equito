@@ -886,6 +886,14 @@ footer .brand::after {
 }
 #a2hs-overlay.open { display: flex; }
 .a2hs-card { max-width: 420px; }
+.a2hs-note {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--amber-light);
+  color: var(--g700);
+  font-size: 12.5px; line-height: 1.6;
+}
 #a2hs-close {
   position: absolute; top: 10px; right: 10px;
   width: 40px; height: 40px;
@@ -1598,6 +1606,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div class="guide-step"><span class="gnum">1</span><span data-i18n="a2hs_ios_s1"></span></div>
     <div class="guide-step"><span class="gnum">2</span><span data-i18n="a2hs_ios_s2"></span></div>
     <div class="guide-step"><span class="gnum">3</span><span data-i18n="a2hs_ios_s3"></span></div>
+    <div class="a2hs-note" data-i18n="a2hs_ios_note"></div>
   </div>
 </div>
 
@@ -1743,6 +1752,7 @@ var I18N = {
   a2hs_ios_s1: "Tap the Share button (the square with ↑) in Safari's toolbar.",
   a2hs_ios_s2: "Scroll down and choose “Add to Home Screen ➕”.",
   a2hs_ios_s3: "Tap Add — EQUITO will open like an app from your Home Screen.",
+  a2hs_ios_note: "⚠️ Opened EQUITO inside another app (e.g. Telegram or WhatsApp)? That browser can't add icons — tap ⋯ and choose “Open in Safari” first.",
   lang_pick: "Language",
   cur_pick: "Currency",
   cur_search_ph: "Search currency…",
@@ -1857,6 +1867,7 @@ var I18N = {
   a2hs_ios_s1: "点击 Safari 工具栏中的分享按钮（带 ↑ 的方框）。",
   a2hs_ios_s2: "向下滑动，选择“添加到主屏幕 ➕”。",
   a2hs_ios_s3: "点击“添加”— EQUITO 就会像应用一样出现在主屏幕上。",
+  a2hs_ios_note: "⚠️ 如果是在其他应用内打开 EQUITO（如 Telegram 或 WhatsApp），该浏览器无法添加图标 — 请先点 ⋯ 选择“在 Safari 中打开”。",
   lang_pick: "语言",
   cur_pick: "货币",
   cur_search_ph: "搜索货币…",
@@ -1969,6 +1980,7 @@ var I18N = {
   a2hs_ios_s1: "點按 Safari 工具列中的分享按鈕（帶 ↑ 的方框）。",
   a2hs_ios_s2: "向下捲動，選擇「加入主畫面 ➕」。",
   a2hs_ios_s3: "點按「加入」— EQUITO 就會像 App 一樣出現在主畫面上。",
+  a2hs_ios_note: "⚠️ 如果是在其他 App 內開啟 EQUITO（如 Telegram 或 WhatsApp），該瀏覽器無法加入圖示 — 請先點 ⋯ 選擇「在 Safari 中開啟」。",
   lang_pick: "語言",
   cur_pick: "貨幣",
   cur_search_ph: "搜尋貨幣…",
@@ -2081,6 +2093,7 @@ var I18N = {
   a2hs_ios_s1: "Ketik butang Kongsi (petak dengan ↑) pada bar alat Safari.",
   a2hs_ios_s2: "Tatal ke bawah dan pilih “Tambah ke Skrin Utama ➕”.",
   a2hs_ios_s3: "Ketik Tambah — EQUITO akan dibuka seperti aplikasi dari Skrin Utama anda.",
+  a2hs_ios_note: "⚠️ Membuka EQUITO dalam aplikasi lain (cth. Telegram atau WhatsApp)? Pelayar itu tidak boleh menambah ikon — ketik ⋯ dan pilih “Buka dalam Safari” dahulu.",
   lang_pick: "Bahasa",
   cur_pick: "Mata wang",
   cur_search_ph: "Cari mata wang…",
@@ -2193,6 +2206,7 @@ var I18N = {
   a2hs_ios_s1: "Toca el botón Compartir (el cuadro con ↑) en la barra de Safari.",
   a2hs_ios_s2: "Desplázate y elige “Añadir a pantalla de inicio ➕”.",
   a2hs_ios_s3: "Toca Añadir — EQUITO se abrirá como una app desde tu pantalla de inicio.",
+  a2hs_ios_note: "⚠️ ¿Abriste EQUITO dentro de otra app (p. ej. Telegram o WhatsApp)? Ese navegador no puede añadir iconos — toca ⋯ y elige “Abrir en Safari” primero.",
   lang_pick: "Idioma",
   cur_pick: "Moneda",
   cur_search_ph: "Buscar moneda…",
@@ -2305,6 +2319,7 @@ var I18N = {
   a2hs_ios_s1: "Touchez le bouton Partager (le carré avec ↑) dans la barre de Safari.",
   a2hs_ios_s2: "Faites défiler et choisissez « Sur l'écran d'accueil ➕ ».",
   a2hs_ios_s3: "Touchez Ajouter — EQUITO s'ouvrira comme une app depuis votre écran d'accueil.",
+  a2hs_ios_note: "⚠️ EQUITO ouvert dans une autre app (ex. Telegram ou WhatsApp) ? Ce navigateur ne peut pas ajouter d'icône — touchez ⋯ puis « Ouvrir dans Safari » d'abord.",
   lang_pick: "Langue",
   cur_pick: "Devise",
   cur_search_ph: "Rechercher une devise…",
@@ -2417,6 +2432,7 @@ var I18N = {
   a2hs_ios_s1: "Tippe auf die Teilen-Taste (Quadrat mit ↑) in der Safari-Leiste.",
   a2hs_ios_s2: "Scrolle nach unten und wähle „Zum Home-Bildschirm ➕“.",
   a2hs_ios_s3: "Tippe auf Hinzufügen — EQUITO öffnet sich wie eine App vom Home-Bildschirm.",
+  a2hs_ios_note: "⚠️ EQUITO in einer anderen App geöffnet (z. B. Telegram oder WhatsApp)? Dieser Browser kann keine Icons hinzufügen — tippe zuerst auf ⋯ und wähle „In Safari öffnen“.",
   lang_pick: "Sprache",
   cur_pick: "Währung",
   cur_search_ph: "Währung suchen…",
@@ -2529,6 +2545,7 @@ var I18N = {
   a2hs_ios_s1: "Toque no botão Compartilhar (o quadrado com ↑) na barra do Safari.",
   a2hs_ios_s2: "Role para baixo e escolha “Adicionar à Tela de Início ➕”.",
   a2hs_ios_s3: "Toque em Adicionar — o EQUITO abrirá como um app na sua Tela de Início.",
+  a2hs_ios_note: "⚠️ Abriu o EQUITO dentro de outro app (ex. Telegram ou WhatsApp)? Esse navegador não pode adicionar ícones — toque em ⋯ e escolha “Abrir no Safari” primeiro.",
   lang_pick: "Idioma",
   cur_pick: "Moeda",
   cur_search_ph: "Buscar moeda…",
@@ -2641,6 +2658,7 @@ var I18N = {
   a2hs_ios_s1: "Safari のツールバーで共有ボタン（↑付きの四角）をタップします。",
   a2hs_ios_s2: "下にスクロールして「ホーム画面に追加 ➕」を選びます。",
   a2hs_ios_s3: "「追加」をタップすると、EQUITO がアプリのようにホーム画面に表示されます。",
+  a2hs_ios_note: "⚠️ 他のアプリ内（Telegram や WhatsApp など）で EQUITO を開いた場合、そのブラウザではアイコンを追加できません。先に ⋯ から「Safari で開く」を選んでください。",
   lang_pick: "言語",
   cur_pick: "通貨",
   cur_search_ph: "通貨を検索…",
@@ -2753,6 +2771,7 @@ var I18N = {
   a2hs_ios_s1: "Safari 도구 막대의 공유 버튼(↑가 있는 사각형)을 탭하세요.",
   a2hs_ios_s2: "아래로 스크롤하여 “홈 화면에 추가 ➕”를 선택하세요.",
   a2hs_ios_s3: "추가를 탭하면 EQUITO가 앱처럼 홈 화면에 나타납니다.",
+  a2hs_ios_note: "⚠️ 다른 앱(Telegram, WhatsApp 등) 안에서 EQUITO를 열었다면 그 브라우저에서는 아이콘을 추가할 수 없습니다 — 먼저 ⋯을 탭해 “Safari에서 열기”를 선택하세요.",
   lang_pick: "언어",
   cur_pick: "통화",
   cur_search_ph: "통화 검색…",
@@ -2865,6 +2884,7 @@ var I18N = {
   a2hs_ios_s1: "Safari टूलबार में शेयर बटन (↑ वाला वर्ग) पर टैप करें।",
   a2hs_ios_s2: "नीचे स्क्रॉल करें और “होम स्क्रीन में जोड़ें ➕” चुनें।",
   a2hs_ios_s3: "जोड़ें पर टैप करें — EQUITO आपकी होम स्क्रीन से ऐप की तरह खुलेगा।",
+  a2hs_ios_note: "⚠️ क्या EQUITO किसी और ऐप (जैसे Telegram या WhatsApp) के अंदर खुला है? वह ब्राउज़र आइकन नहीं जोड़ सकता — पहले ⋯ पर टैप करके “Safari में खोलें” चुनें।",
   lang_pick: "भाषा",
   cur_pick: "मुद्रा",
   cur_search_ph: "मुद्रा खोजें…",
@@ -3029,24 +3049,28 @@ var RECEIPT_CUR_MAP = {
   }
 
   /* ====== CURRENCY ====== */
-  /* First visit only: guess currency from the device's locale region (en-MY → MYR),
-     else its timezone (Asia/Singapore → SGD), else fall back to MYR. */
+  /* First visit only: guess currency from the device TIMEZONE first (actual location —
+     Asia/Kuala_Lumpur → MYR even when the phone language is "English (UK)"), then the
+     locale region subtag (en-SG → SGD) as fallback, else MYR.
+     Timezone must win: locale region reflects language preference, not location —
+     a Malaysian phone set to en-GB would otherwise get GBP (v26 bug). */
   function detectCur() {
-    var region = null;
-    var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ''];
-    for (var i = 0; i < langs.length && !region; i++) {
-      var parts = String(langs[i]).split('-');
-      for (var j = 1; j < parts.length; j++) {
-        if (/^[A-Za-z]{2}$/.test(parts[j])) { region = parts[j].toUpperCase(); break; }
-      }
-    }
-    var code = region ? COUNTRY_CUR[region] : null;
+    var code = null;
+    try {
+      var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var country = tz ? TZ_COUNTRY[tz] : null;
+      code = country ? COUNTRY_CUR[country] : null;
+    } catch (e) {}
     if (!code) {
-      try {
-        var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        var country = tz ? TZ_COUNTRY[tz] : null;
-        code = country ? COUNTRY_CUR[country] : null;
-      } catch (e) {}
+      var region = null;
+      var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ''];
+      for (var i = 0; i < langs.length && !region; i++) {
+        var parts = String(langs[i]).split('-');
+        for (var j = 1; j < parts.length; j++) {
+          if (/^[A-Za-z]{2}$/.test(parts[j])) { region = parts[j].toUpperCase(); break; }
+        }
+      }
+      code = region ? COUNTRY_CUR[region] : null;
     }
     return (code && CURRENCIES.indexOf(code) !== -1) ? code : 'MYR';
   }
@@ -3204,7 +3228,7 @@ var RECEIPT_CUR_MAP = {
   });
 
   /* ====== FEEDBACK ====== */
-  var APP_VER = 'v26';
+  var APP_VER = 'v27';
   var FB_MAX_IMAGES = 3;
   var fbRating = 0;
   var fbSending = false;

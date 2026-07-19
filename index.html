@@ -6,6 +6,8 @@
 <title>EQUITO - Your Trusted Bill Splitting Buddy</title>
 <meta name="theme-color" content="#FAF7F2">
 <meta name="apple-mobile-web-app-title" content="EQUITO">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -811,6 +813,7 @@ body.mode-essential #scan-card { display: none; }
   color: #FFF;
 }
 .share-btn:active { transform: scale(0.96); }
+.share-btn svg { flex-shrink: 0; }
 .share-img { background: #3A8F7C; }
 .share-copy { background: linear-gradient(135deg, #8B5E1A, #C8902E); }
 .person-share-row {
@@ -858,6 +861,42 @@ footer .brand::after {
   font-size: 12px;
   font-style: italic;
   color: var(--g500);
+}
+.a2hs-btn #a2hs-icon { display: inline-flex; align-items: center; }
+.a2hs-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px; min-height: 38px;
+  border: 1.5px solid var(--amber-deep);
+  border-radius: 19px;
+  background: var(--amber-light);
+  color: var(--amber-deep);
+  font: inherit; font-size: 12.5px; font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+#a2hs-overlay {
+  position: fixed; inset: 0;
+  z-index: 900;
+  background: rgba(22,16,10,0.55);
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 18px;
+}
+#a2hs-overlay.open { display: flex; }
+.a2hs-card { max-width: 420px; }
+#a2hs-close {
+  position: absolute; top: 10px; right: 10px;
+  width: 40px; height: 40px;
+  min-width: 40px; min-height: 40px;
+  border-radius: 50%; border: none;
+  background: var(--g100);
+  color: var(--g500);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
 }
 .footer-privacy {
   display: inline-block;
@@ -1529,6 +1568,7 @@ body, .card, .sel-btn, .sel-panel, .person-section,
   <footer>
     <span class="brand">EQUITO</span><br>
     <span class="footer-line" data-i18n="footer_line"></span><br>
+    <button type="button" class="a2hs-btn" id="a2hs-btn" style="display:none"><span id="a2hs-icon"></span><span data-i18n="a2hs_btn"></span></button><br>
     <span class="footer-privacy" data-i18n="footer_privacy"></span><br>
     <span class="footer-rights" data-i18n="footer_rights"></span>
   </footer>
@@ -1548,6 +1588,16 @@ body, .card, .sel-btn, .sel-panel, .person-section,
     <div class="guide-step"><span class="gnum">3</span><span data-i18n="guide_s3"></span></div>
     <div class="guide-step"><span class="gnum">4</span><span data-i18n="guide_s4"></span></div>
     <div class="guide-step"><span class="gnum">5</span><span data-i18n="guide_s5"></span></div>
+  </div>
+</div>
+
+<div id="a2hs-overlay">
+  <div class="guide-card a2hs-card">
+    <button id="a2hs-close" aria-label="Close">✕</button>
+    <h3><svg viewBox="0 0 384 512" width="0.9em" height="0.9em" fill="currentColor" aria-hidden="true" style="vertical-align:-0.08em"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.9-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg> <span data-i18n="a2hs_ios_title"></span></h3>
+    <div class="guide-step"><span class="gnum">1</span><span data-i18n="a2hs_ios_s1"></span></div>
+    <div class="guide-step"><span class="gnum">2</span><span data-i18n="a2hs_ios_s2"></span></div>
+    <div class="guide-step"><span class="gnum">3</span><span data-i18n="a2hs_ios_s3"></span></div>
   </div>
 </div>
 
@@ -1688,6 +1738,11 @@ var I18N = {
   fb_note: "Anonymous — no account or login needed.",
   fb_attach: "Attach screenshots ({n}/{max}, optional)",
   fb_img_max: "You can attach up to 3 images.",
+  a2hs_btn: "Add to phone",
+  a2hs_ios_title: "Add EQUITO to your Home Screen",
+  a2hs_ios_s1: "Tap the Share button (the square with ↑) in Safari's toolbar.",
+  a2hs_ios_s2: "Scroll down and choose “Add to Home Screen ➕”.",
+  a2hs_ios_s3: "Tap Add — EQUITO will open like an app from your Home Screen.",
   lang_pick: "Language",
   cur_pick: "Currency",
   cur_search_ph: "Search currency…",
@@ -1797,6 +1852,11 @@ var I18N = {
   fb_note: "匿名反馈 — 无需帐号或登录。",
   fb_attach: "添加截图（{n}/{max}，选填）",
   fb_img_max: "最多可添加 3 张图片。",
+  a2hs_btn: "添加到手机",
+  a2hs_ios_title: "将 EQUITO 添加到主屏幕",
+  a2hs_ios_s1: "点击 Safari 工具栏中的分享按钮（带 ↑ 的方框）。",
+  a2hs_ios_s2: "向下滑动，选择“添加到主屏幕 ➕”。",
+  a2hs_ios_s3: "点击“添加”— EQUITO 就会像应用一样出现在主屏幕上。",
   lang_pick: "语言",
   cur_pick: "货币",
   cur_search_ph: "搜索货币…",
@@ -1904,6 +1964,11 @@ var I18N = {
   fb_note: "匿名回饋 — 無需帳號或登入。",
   fb_attach: "附加截圖（{n}/{max}，選填）",
   fb_img_max: "最多可附加 3 張圖片。",
+  a2hs_btn: "加入手機",
+  a2hs_ios_title: "將 EQUITO 加入主畫面",
+  a2hs_ios_s1: "點按 Safari 工具列中的分享按鈕（帶 ↑ 的方框）。",
+  a2hs_ios_s2: "向下捲動，選擇「加入主畫面 ➕」。",
+  a2hs_ios_s3: "點按「加入」— EQUITO 就會像 App 一樣出現在主畫面上。",
   lang_pick: "語言",
   cur_pick: "貨幣",
   cur_search_ph: "搜尋貨幣…",
@@ -2011,6 +2076,11 @@ var I18N = {
   fb_note: "Tanpa nama — tiada akaun atau log masuk diperlukan.",
   fb_attach: "Lampirkan tangkapan skrin ({n}/{max}, pilihan)",
   fb_img_max: "Anda boleh melampirkan sehingga 3 imej.",
+  a2hs_btn: "Tambah ke telefon",
+  a2hs_ios_title: "Tambah EQUITO ke Skrin Utama",
+  a2hs_ios_s1: "Ketik butang Kongsi (petak dengan ↑) pada bar alat Safari.",
+  a2hs_ios_s2: "Tatal ke bawah dan pilih “Tambah ke Skrin Utama ➕”.",
+  a2hs_ios_s3: "Ketik Tambah — EQUITO akan dibuka seperti aplikasi dari Skrin Utama anda.",
   lang_pick: "Bahasa",
   cur_pick: "Mata wang",
   cur_search_ph: "Cari mata wang…",
@@ -2118,6 +2188,11 @@ var I18N = {
   fb_note: "Anónimo — no se necesita cuenta ni inicio de sesión.",
   fb_attach: "Adjuntar capturas ({n}/{max}, opcional)",
   fb_img_max: "Puedes adjuntar hasta 3 imágenes.",
+  a2hs_btn: "Añadir al teléfono",
+  a2hs_ios_title: "Añade EQUITO a tu pantalla de inicio",
+  a2hs_ios_s1: "Toca el botón Compartir (el cuadro con ↑) en la barra de Safari.",
+  a2hs_ios_s2: "Desplázate y elige “Añadir a pantalla de inicio ➕”.",
+  a2hs_ios_s3: "Toca Añadir — EQUITO se abrirá como una app desde tu pantalla de inicio.",
   lang_pick: "Idioma",
   cur_pick: "Moneda",
   cur_search_ph: "Buscar moneda…",
@@ -2225,6 +2300,11 @@ var I18N = {
   fb_note: "Anonyme — aucun compte ni connexion requis.",
   fb_attach: "Joindre des captures d'écran ({n}/{max}, facultatif)",
   fb_img_max: "Vous pouvez joindre jusqu'à 3 images.",
+  a2hs_btn: "Ajouter au téléphone",
+  a2hs_ios_title: "Ajoutez EQUITO à votre écran d'accueil",
+  a2hs_ios_s1: "Touchez le bouton Partager (le carré avec ↑) dans la barre de Safari.",
+  a2hs_ios_s2: "Faites défiler et choisissez « Sur l'écran d'accueil ➕ ».",
+  a2hs_ios_s3: "Touchez Ajouter — EQUITO s'ouvrira comme une app depuis votre écran d'accueil.",
   lang_pick: "Langue",
   cur_pick: "Devise",
   cur_search_ph: "Rechercher une devise…",
@@ -2332,6 +2412,11 @@ var I18N = {
   fb_note: "Anonym — kein Konto oder Login nötig.",
   fb_attach: "Screenshots anhängen ({n}/{max}, optional)",
   fb_img_max: "Du kannst bis zu 3 Bilder anhängen.",
+  a2hs_btn: "Zum Handy hinzufügen",
+  a2hs_ios_title: "EQUITO zum Home-Bildschirm hinzufügen",
+  a2hs_ios_s1: "Tippe auf die Teilen-Taste (Quadrat mit ↑) in der Safari-Leiste.",
+  a2hs_ios_s2: "Scrolle nach unten und wähle „Zum Home-Bildschirm ➕“.",
+  a2hs_ios_s3: "Tippe auf Hinzufügen — EQUITO öffnet sich wie eine App vom Home-Bildschirm.",
   lang_pick: "Sprache",
   cur_pick: "Währung",
   cur_search_ph: "Währung suchen…",
@@ -2439,6 +2524,11 @@ var I18N = {
   fb_note: "Anônimo — não precisa de conta nem login.",
   fb_attach: "Anexar capturas de tela ({n}/{max}, opcional)",
   fb_img_max: "Você pode anexar até 3 imagens.",
+  a2hs_btn: "Adicionar ao telefone",
+  a2hs_ios_title: "Adicione o EQUITO à sua Tela de Início",
+  a2hs_ios_s1: "Toque no botão Compartilhar (o quadrado com ↑) na barra do Safari.",
+  a2hs_ios_s2: "Role para baixo e escolha “Adicionar à Tela de Início ➕”.",
+  a2hs_ios_s3: "Toque em Adicionar — o EQUITO abrirá como um app na sua Tela de Início.",
   lang_pick: "Idioma",
   cur_pick: "Moeda",
   cur_search_ph: "Buscar moeda…",
@@ -2546,6 +2636,11 @@ var I18N = {
   fb_note: "匿名です — アカウントやログインは不要。",
   fb_attach: "スクリーンショットを添付（{n}/{max}・任意）",
   fb_img_max: "画像は最大 3 枚まで添付できます。",
+  a2hs_btn: "スマホに追加",
+  a2hs_ios_title: "EQUITO をホーム画面に追加",
+  a2hs_ios_s1: "Safari のツールバーで共有ボタン（↑付きの四角）をタップします。",
+  a2hs_ios_s2: "下にスクロールして「ホーム画面に追加 ➕」を選びます。",
+  a2hs_ios_s3: "「追加」をタップすると、EQUITO がアプリのようにホーム画面に表示されます。",
   lang_pick: "言語",
   cur_pick: "通貨",
   cur_search_ph: "通貨を検索…",
@@ -2653,6 +2748,11 @@ var I18N = {
   fb_note: "익명 — 계정이나 로그인이 필요 없습니다.",
   fb_attach: "스크린샷 첨부 ({n}/{max}, 선택)",
   fb_img_max: "이미지는 최대 3장까지 첨부할 수 있습니다.",
+  a2hs_btn: "휴대폰에 추가",
+  a2hs_ios_title: "EQUITO를 홈 화면에 추가",
+  a2hs_ios_s1: "Safari 도구 막대의 공유 버튼(↑가 있는 사각형)을 탭하세요.",
+  a2hs_ios_s2: "아래로 스크롤하여 “홈 화면에 추가 ➕”를 선택하세요.",
+  a2hs_ios_s3: "추가를 탭하면 EQUITO가 앱처럼 홈 화면에 나타납니다.",
   lang_pick: "언어",
   cur_pick: "통화",
   cur_search_ph: "통화 검색…",
@@ -2760,6 +2860,11 @@ var I18N = {
   fb_note: "गुमनाम — किसी खाते या लॉगिन की ज़रूरत नहीं।",
   fb_attach: "स्क्रीनशॉट जोड़ें ({n}/{max}, वैकल्पिक)",
   fb_img_max: "अधिकतम 3 इमेज जोड़ी जा सकती हैं।",
+  a2hs_btn: "फ़ोन में जोड़ें",
+  a2hs_ios_title: "EQUITO को होम स्क्रीन पर जोड़ें",
+  a2hs_ios_s1: "Safari टूलबार में शेयर बटन (↑ वाला वर्ग) पर टैप करें।",
+  a2hs_ios_s2: "नीचे स्क्रॉल करें और “होम स्क्रीन में जोड़ें ➕” चुनें।",
+  a2hs_ios_s3: "जोड़ें पर टैप करें — EQUITO आपकी होम स्क्रीन से ऐप की तरह खुलेगा।",
   lang_pick: "भाषा",
   cur_pick: "मुद्रा",
   cur_search_ph: "मुद्रा खोजें…",
@@ -3040,8 +3145,66 @@ var RECEIPT_CUR_MAP = {
     }
   }
 
+  /* ====== ADD TO HOME SCREEN ====== */
+  /* Android/desktop Chrome: capture the install prompt so our own button can fire it.
+     iOS Safari: no install API exists — the button opens a how-to card instead.
+     Hidden entirely when already installed (standalone) or unsupported. */
+  var deferredInstall = null;
+
+  /* Platform glyphs for the install button: Apple logo (iOS), Android robot (Android),
+     generic install arrow elsewhere. Apple follows text colour; robot keeps Android green. */
+  var SVG_APPLE = '<svg viewBox="0 0 384 512" width="1.1em" height="1.1em" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.9-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>';
+  var SVG_ANDROID = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="#3DDC84" aria-hidden="true"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4483-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4483.9993.9993 0 .5511-.4483.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 0 0-.1521-.5676.416.416 0 0 0-.5676.1521l-2.0223 3.503C15.5902 8.2439 13.8533 7.8508 12 7.8508s-3.5902.3931-5.1367 1.0989L4.841 5.4467a.4161.4161 0 0 0-.5677-.1521.4157.4157 0 0 0-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3435-4.1021-2.6892-7.5743-6.1185-9.4396"/></svg>';
+  var SVG_INSTALL = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v10"/><path d="m8 9 4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>';
+
+  function a2hsIcon() {
+    if (isIosSafari() || /iPad|iPhone|iPod/.test(navigator.userAgent || '')) return SVG_APPLE;
+    if (/Android/i.test(navigator.userAgent || '')) return SVG_ANDROID;
+    return SVG_INSTALL;
+  }
+
+  function isStandalone() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      window.navigator.standalone === true;
+  }
+  function isIosSafari() {
+    var ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  }
+  function updateA2hsBtn() {
+    var btn = document.getElementById('a2hs-btn');
+    if (!btn) return;
+    var show = !isStandalone() && (deferredInstall !== null || isIosSafari());
+    btn.style.display = show ? 'inline-flex' : 'none';
+    if (show) document.getElementById('a2hs-icon').innerHTML = a2hsIcon();
+  }
+  function a2hsClick() {
+    if (deferredInstall) {
+      var p = deferredInstall;
+      deferredInstall = null;
+      p.prompt();
+      if (p.userChoice && p.userChoice.then) {
+        p.userChoice.then(function(choice) {
+          if (!choice || choice.outcome !== 'accepted') deferredInstall = p;
+          updateA2hsBtn();
+        });
+      }
+    } else if (isIosSafari()) {
+      document.getElementById('a2hs-overlay').classList.add('open');
+    }
+  }
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredInstall = e;
+    updateA2hsBtn();
+  });
+  window.addEventListener('appinstalled', function() {
+    deferredInstall = null;
+    updateA2hsBtn();
+  });
+
   /* ====== FEEDBACK ====== */
-  var APP_VER = 'v25';
+  var APP_VER = 'v26';
   var FB_MAX_IMAGES = 3;
   var fbRating = 0;
   var fbSending = false;
@@ -3377,8 +3540,8 @@ var RECEIPT_CUR_MAP = {
 
   /* ====== CALCULATE ====== */
   function shareButtonsHtml(scope, idx, small) {
-    return '<button class="share-btn share-copy" data-share-via="copy" data-share-scope="' + scope + '" data-share-idx="' + idx + '">📋 ' + escHtml(t('copy_btn')) + '</button>' +
-      '<button class="share-btn share-img" data-share-via="img" data-share-scope="' + scope + '" data-share-idx="' + idx + '">🖼 ' + escHtml(t('image_btn')) + '</button>';
+    return '<button class="share-btn share-copy" data-share-via="copy" data-share-scope="' + scope + '" data-share-idx="' + idx + '">' + SVG_COPY + ' ' + escHtml(t('copy_btn')) + '</button>' +
+      '<button class="share-btn share-img" data-share-via="img" data-share-scope="' + scope + '" data-share-idx="' + idx + '">' + SVG_SHARE + ' ' + escHtml(t('image_btn')) + '</button>';
   }
 
   function calculate() {
@@ -3544,6 +3707,10 @@ var RECEIPT_CUR_MAP = {
     lines.push(t('sh_via') + ' ' + APP_URL);
     return lines.join('\n');
   }
+
+  /* Clean line icons for the share buttons (stroke inherits button text colour, scales with font) */
+  var SVG_COPY = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3H5v16"/><path d="M8 7h11v13a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7z"/><path d="M11 11h5M11 15h5"/></svg>';
+  var SVG_SHARE = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8H7a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3h-1"/><path d="M12 14V3"/><path d="m8 6.5 4-4 4 4"/></svg>';
 
   function copyText(text, btn) {
     function done() {
@@ -4425,6 +4592,11 @@ var RECEIPT_CUR_MAP = {
       document.getElementById('guide-overlay').classList.remove('open');
       return;
     }
+    if (target.id === 'a2hs-btn' || target.closest('#a2hs-btn')) { a2hsClick(); return; }
+    if (target.id === 'a2hs-close' || target.closest('#a2hs-close') || target.id === 'a2hs-overlay') {
+      document.getElementById('a2hs-overlay').classList.remove('open');
+      return;
+    }
     if (target.id === 'fb-btn' || target.closest('#fb-btn')) { openFeedback(); return; }
     if (target.id === 'fb-close' || target.closest('#fb-close') || target.id === 'fb-overlay') {
       closeFeedback();
@@ -4561,6 +4733,7 @@ var RECEIPT_CUR_MAP = {
   addSharedItem();
   initScan();
   loadCardFonts();
+  updateA2hsBtn();
 })();
 </script>
 </body>

@@ -347,6 +347,25 @@ body.mode-essential #scan-card { display: none; }
   margin-bottom: 10px;
   gap: 8px;
 }
+/* Buddy name is an editable field — it must LOOK tappable, not like a heading */
+.person-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+  background: var(--card);
+  border: 1.5px dashed var(--g300);
+  border-radius: var(--radius-xs);
+  padding: 0 8px 0 10px;
+  cursor: text;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.25s;
+}
+.person-name-wrap:focus-within {
+  border-style: solid;
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px var(--amber-light);
+}
 .person-name-input {
   font-family: inherit;
   font-size: 16px;
@@ -355,11 +374,17 @@ body.mode-essential #scan-card { display: none; }
   background: transparent;
   color: var(--ink);
   min-width: 0; flex: 1;
-  padding: 6px 0;
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s;
+  padding: 9px 0;
+  -webkit-appearance: none;
 }
-.person-name-input:focus { border-bottom-color: var(--amber); }
+.name-edit-icon {
+  flex-shrink: 0;
+  color: var(--amber);
+  opacity: 0.8;
+  pointer-events: none;
+  display: flex;
+}
+.person-name-wrap:focus-within .name-edit-icon { opacity: 1; }
 
 .person-subtotal {
   font-size: 12px;
@@ -698,7 +723,7 @@ body.mode-essential #scan-card { display: none; }
 }
 .result-person-name {
   font-weight: 700; font-size: 15px;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.97);
   min-width: 0; overflow: hidden;
   text-overflow: ellipsis; white-space: nowrap;
 }
@@ -709,9 +734,9 @@ body.mode-essential #scan-card { display: none; }
   white-space: nowrap; flex-shrink: 0;
 }
 .result-detail {
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.75;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.78);
 }
 .rd-line {
   display: flex; justify-content: space-between;
@@ -721,21 +746,21 @@ body.mode-essential #scan-card { display: none; }
 .rd-line .amt { white-space: nowrap; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 .rd-head {
   font-weight: 700;
-  color: rgba(255,255,255,0.78);
+  color: rgba(255,255,255,0.95);
   margin-top: 6px;
 }
 .rd-group:first-child .rd-head { margin-top: 0; }
 .rd-sub {
   padding-left: 13px; margin-left: 3px;
-  border-left: 2px solid rgba(232,169,64,0.3);
-  color: rgba(255,255,255,0.42);
-  font-size: 11.5px;
+  border-left: 2px solid rgba(232,169,64,0.5);
+  color: rgba(255,255,255,0.75);
+  font-size: 12px;
 }
 .rd-total {
-  border-top: 1px dashed rgba(255,255,255,0.18);
+  border-top: 1px dashed rgba(255,255,255,0.28);
   margin-top: 8px; padding-top: 6px;
   font-weight: 600;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.9);
 }
 .result-grand-total {
   text-align: center;
@@ -743,7 +768,7 @@ body.mode-essential #scan-card { display: none; }
   border-top: 1px solid rgba(200,144,46,0.2);
 }
 .result-grand-total .label {
-  font-size: 11px; opacity: 0.45; font-weight: 600;
+  font-size: 11px; opacity: 0.62; font-weight: 600;
   letter-spacing: 1.5px; text-transform: uppercase;
 }
 .result-grand-total .amount {
@@ -756,13 +781,13 @@ body.mode-essential #scan-card { display: none; }
   gap: 6px; margin-top: 14px;
   align-items: center; flex-wrap: wrap;
 }
-.round-label-text { font-size: 11px; opacity: 0.35; }
+.round-label-text { font-size: 11px; opacity: 0.55; }
 .round-btn {
   padding: 6px 12px; min-height: 32px;
   border-radius: 14px;
   border: 1px solid rgba(200,144,46,0.2);
   background: transparent;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.75);
   font-size: 12px; font-weight: 600;
   cursor: pointer;
   touch-action: manipulation;
@@ -777,7 +802,7 @@ body.mode-essential #scan-card { display: none; }
 
 .rounding-note {
   text-align: center; margin-top: 8px;
-  font-size: 10px; opacity: 0.3;
+  font-size: 10.5px; opacity: 0.55;
 }
 
 /* ===== SHARE ===== */
@@ -1408,7 +1433,7 @@ footer .brand::after {
 [data-theme="dark"] .sel-panel {
   box-shadow: 0 4px 16px rgba(0,0,0,0.35);
 }
-body, .card, .sel-btn, .sel-panel, .person-section,
+body, .card, .sel-btn, .sel-panel, .person-section, .person-name-wrap,
 .item-name, .item-qty, .item-price, .shared-item-block,
 .tax-field input, .discount-field input, .checkbox-row,
 .api-panel, .api-panel input, .ocr-charges, .scan-msg,
@@ -1701,6 +1726,7 @@ var I18N = {
   people_title: "Buddies",
   add_person: "+ Add Buddy",
   person_default: "Buddy {n}",
+  edit_name: "Tap to rename",
   add_item: "+ Add item",
   shared_title: "Shared Items",
   shared_hint: "Select who shares each item — defaults to everyone",
@@ -1816,6 +1842,7 @@ var I18N = {
   people_title: "伙伴",
   add_person: "+ 添加伙伴",
   person_default: "伙伴{n}",
+  edit_name: "点击可改名",
   add_item: "+ 添加项目",
   shared_title: "共享项目",
   shared_hint: "选择每个共享项目的分摊人 — 默认为所有人",
@@ -1929,6 +1956,7 @@ var I18N = {
   people_title: "夥伴",
   add_person: "+ 新增夥伴",
   person_default: "夥伴{n}",
+  edit_name: "點擊即可改名",
   add_item: "+ 新增品項",
   shared_title: "共享品項",
   shared_hint: "選擇每個共享品項的分攤人 — 預設為所有人",
@@ -2042,6 +2070,7 @@ var I18N = {
   people_title: "Rakan",
   add_person: "+ Tambah Rakan",
   person_default: "Rakan {n}",
+  edit_name: "Ketik untuk tukar nama",
   add_item: "+ Tambah item",
   shared_title: "Item Kongsi",
   shared_hint: "Pilih siapa berkongsi setiap item — lalai untuk semua",
@@ -2155,6 +2184,7 @@ var I18N = {
   people_title: "Amigos",
   add_person: "+ Añadir amigo",
   person_default: "Amigo {n}",
+  edit_name: "Toca para renombrar",
   add_item: "+ Añadir artículo",
   shared_title: "Artículos compartidos",
   shared_hint: "Elige quién comparte cada artículo — por defecto, todos",
@@ -2268,6 +2298,7 @@ var I18N = {
   people_title: "Amis",
   add_person: "+ Ajouter un ami",
   person_default: "Ami {n}",
+  edit_name: "Touchez pour renommer",
   add_item: "+ Ajouter un article",
   shared_title: "Articles partagés",
   shared_hint: "Choisissez qui partage chaque article — tout le monde par défaut",
@@ -2381,6 +2412,7 @@ var I18N = {
   people_title: "Freunde",
   add_person: "+ Freund hinzufügen",
   person_default: "Freund {n}",
+  edit_name: "Zum Umbenennen tippen",
   add_item: "+ Posten hinzufügen",
   shared_title: "Geteilte Posten",
   shared_hint: "Wähle, wer sich jeden Posten teilt — standardmäßig alle",
@@ -2494,6 +2526,7 @@ var I18N = {
   people_title: "Amigos",
   add_person: "+ Adicionar amigo",
   person_default: "Amigo {n}",
+  edit_name: "Toque para renomear",
   add_item: "+ Adicionar item",
   shared_title: "Itens compartilhados",
   shared_hint: "Escolha quem divide cada item — todos por padrão",
@@ -2607,6 +2640,7 @@ var I18N = {
   people_title: "仲間",
   add_person: "+ 仲間を追加",
   person_default: "仲間{n}",
+  edit_name: "タップして名前を変更",
   add_item: "+ 品目を追加",
   shared_title: "シェア品目",
   shared_hint: "各品目を誰でシェアするか選択 — 初期設定は全員",
@@ -2720,6 +2754,7 @@ var I18N = {
   people_title: "친구",
   add_person: "+ 친구 추가",
   person_default: "친구 {n}",
+  edit_name: "탭하여 이름 변경",
   add_item: "+ 항목 추가",
   shared_title: "공유 항목",
   shared_hint: "각 항목을 나눌 사람 선택 — 기본은 전원",
@@ -2833,6 +2868,7 @@ var I18N = {
   people_title: "दोस्त",
   add_person: "+ दोस्त जोड़ें",
   person_default: "दोस्त {n}",
+  edit_name: "नाम बदलने के लिए टैप करें",
   add_item: "+ आइटम जोड़ें",
   shared_title: "साझा आइटम",
   shared_hint: "चुनें कि हर आइटम कौन-कौन बाँटेगा — डिफ़ॉल्ट: सभी",
@@ -3389,6 +3425,12 @@ var RECEIPT_CUR_MAP = {
     for (var a = 0; a < autoNames.length; a++) {
       autoNames[a].value = t('person_default', { n: autoNames[a].getAttribute('data-person-id') });
     }
+    /* "tap to rename" affordance label on every buddy name field */
+    var nameFields = document.querySelectorAll('.person-name-input');
+    for (var nf = 0; nf < nameFields.length; nf++) {
+      nameFields[nf].title = t('edit_name');
+      nameFields[nf].setAttribute('aria-label', t('edit_name'));
+    }
     /* dynamic per-person "+ Add item" buttons */
     var addBtns = document.querySelectorAll('.add-item-btn[data-add-item]');
     for (var ab = 0; ab < addBtns.length; ab++) addBtns[ab].textContent = t('add_item');
@@ -3435,7 +3477,11 @@ var RECEIPT_CUR_MAP = {
     var defaultName = t('person_default', { n: num });
     div.innerHTML =
       '<div class="person-header">' +
-        '<input class="person-name-input" value="' + escAttr(defaultName) + '" data-person-id="' + num + '" data-auto="1">' +
+        '<label class="person-name-wrap">' +
+          '<input class="person-name-input" value="' + escAttr(defaultName) + '" data-person-id="' + num + '" data-auto="1" ' +
+            'title="' + escAttr(t('edit_name')) + '" aria-label="' + escAttr(t('edit_name')) + '">' +
+          '<span class="name-edit-icon">' + SVG_PENCIL + '</span>' +
+        '</label>' +
         '<div style="display:flex;align-items:center;gap:6px">' +
           '<span class="person-subtotal" id="subtotal-' + num + '">' + fmtMoney(0) + '</span>' +
           '<button class="btn-remove" data-remove-person="' + num + '">&times;</button>' +
@@ -3735,6 +3781,7 @@ var RECEIPT_CUR_MAP = {
   /* Clean line icons for the share buttons (stroke inherits button text colour, scales with font) */
   var SVG_COPY = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3H5v16"/><path d="M8 7h11v13a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7z"/><path d="M11 11h5M11 15h5"/></svg>';
   var SVG_SHARE = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8H7a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3h-1"/><path d="M12 14V3"/><path d="m8 6.5 4-4 4 4"/></svg>';
+  var SVG_PENCIL = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
 
   function copyText(text, btn) {
     function done() {
@@ -3867,14 +3914,14 @@ var RECEIPT_CUR_MAP = {
     y += 30;
     ctx.fillText('E Q U I T O', W / 2, y);
     ctx.font = '500 13px ' + IMG_SANS;
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillStyle = 'rgba(255,255,255,0.62)';
     y += 26;
     ctx.fillText(ellipText(ctx, subLabel, W - pad * 2), W / 2, y);
     y += 16;
 
     if (personName) {
       ctx.font = '700 20px ' + IMG_SANS;
-      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillStyle = 'rgba(255,255,255,0.97)';
       y += 26;
       ctx.fillText(ellipText(ctx, personName, W - pad * 2), W / 2, y);
       ctx.font = '800 36px ' + IMG_SERIF;
@@ -3889,32 +3936,31 @@ var RECEIPT_CUR_MAP = {
       if (row.t === 'gap') { y += ROW_H.gap; continue; }
       if (row.t === 'total') {
         y += 12;
-        ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.28)';
         ctx.setLineDash([3, 3]);
         ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
         ctx.setLineDash([]);
         y += 26;
         ctx.font = '600 13px ' + IMG_SANS;
-        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
       } else if (row.t === 'head') {
         y += ROW_H.head;
         ctx.font = '700 13px ' + IMG_SANS;
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
       } else if (row.t === 'sub') {
         y += ROW_H.sub;
-        ctx.font = '400 12px ' + IMG_SANS;
-        ctx.fillStyle = 'rgba(255,255,255,0.42)';
-        ctx.fillStyle = 'rgba(232,169,64,0.35)';
+        ctx.font = '400 12.5px ' + IMG_SANS;
+        ctx.fillStyle = 'rgba(232,169,64,0.5)';
         ctx.fillRect(pad + 4, y - 10, 2, 13);
-        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
       } else if (row.t === 'row') {
         y += ROW_H.row;
         ctx.font = '400 13px ' + IMG_SANS;
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillStyle = 'rgba(255,255,255,0.78)';
       } else { /* prow */
         y += ROW_H.prow;
         ctx.font = '600 15px ' + IMG_SANS;
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillStyle = 'rgba(255,255,255,0.97)';
       }
       var leftX = pad + (row.t === 'sub' ? 16 : 0);
       var amtFont = row.t === 'prow' ? ('700 16px ' + IMG_SERIF) : ctx.font;
@@ -3935,7 +3981,7 @@ var RECEIPT_CUR_MAP = {
       ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
       ctx.textAlign = 'center';
       ctx.font = '600 11px ' + IMG_SANS;
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.fillStyle = 'rgba(255,255,255,0.62)';
       y += 28;
       ctx.fillText(t('grand_total').toUpperCase(), W / 2, y);
       ctx.font = '900 32px ' + IMG_SERIF;
@@ -4741,6 +4787,14 @@ var RECEIPT_CUR_MAP = {
 
   document.addEventListener('change', function(e) {
     if (e.target.id === 'tax-on-service') calculate();
+  });
+
+  /* tapping a still-default buddy name selects it, so typing replaces "Buddy 1" outright */
+  document.addEventListener('focusin', function(e) {
+    var el = e.target;
+    if (!el || !el.classList || !el.classList.contains('person-name-input')) return;
+    if (el.getAttribute('data-auto') !== '1') return;
+    setTimeout(function() { try { el.select(); } catch (err) {} }, 0);
   });
 
   /* ====== INIT ====== */
